@@ -3,27 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Түп сана — AI қиял генераторы</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .dream-bg {
+      background:
+        radial-gradient(circle at top left, rgba(244, 114, 182, 0.22), transparent 34%),
+        radial-gradient(circle at top right, rgba(125, 211, 252, 0.26), transparent 35%),
+        linear-gradient(135deg, #fff7fb 0%, #ffffff 45%, #f0f9ff 100%);
+    }
+
+    .btn-dream {
+      background: linear-gradient(135deg, #ec4899, #8b5cf6, #38bdf8);
+      box-shadow: 0 18px 40px rgba(236, 72, 153, 0.25);
+    }
+
+    .btn-dream:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
+    }
+  </style>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-pink-50 via-white to-sky-50 text-slate-800">
-  <header class="border-b bg-white/80 backdrop-blur">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+<body class="dream-bg min-h-screen text-slate-800">
+  <header class="border-b border-white/70 glass">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
       <div>
-        <p class="text-xs uppercase tracking-[0.25em] text-pink-500 font-semibold">
+        <p class="text-xs uppercase tracking-[0.24em] text-pink-500 font-bold">
           SCHOOL PORTAL AI92
         </p>
-        <h1 class="text-xl md:text-2xl font-bold text-slate-900">
+        <h1 class="text-xl md:text-2xl font-black text-slate-900">
           Түп сана · AI қиял генераторы
         </h1>
       </div>
 
       <nav class="flex gap-2 text-sm">
-        <a href="index.html" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200">
+        <a href="index.html" class="px-4 py-2 rounded-2xl bg-white border hover:bg-slate-50 font-semibold">
           Басты бет
         </a>
-        <a href="tools.html" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200">
+        <a href="tools.html" class="px-4 py-2 rounded-2xl bg-white border hover:bg-slate-50 font-semibold">
           Цифрлық құралдар
         </a>
       </nav>
@@ -32,52 +58,52 @@
 
   <main class="max-w-6xl mx-auto px-4 py-8">
     <section class="grid lg:grid-cols-2 gap-6 items-start">
-      <div class="bg-white rounded-3xl shadow-sm border p-6">
-        <p class="text-sm font-semibold text-pink-500 mb-2">
+      <div class="glass rounded-[2rem] shadow-sm border border-white/80 p-6 md:p-8">
+        <p class="text-sm font-bold text-pink-500 mb-3">
           Қиял бейнесін ашу
         </p>
 
-        <h2 class="text-3xl md:text-4xl font-bold leading-tight text-slate-900">
+        <h2 class="text-3xl md:text-5xl font-black leading-tight text-slate-900">
           Түп сана қиялыңдағы суретті ашады
         </h2>
 
-        <p class="mt-4 text-slate-600 leading-relaxed">
+        <p class="mt-5 text-slate-600 leading-relaxed text-base md:text-lg">
           Адам қиялындағы бейнені сипаттайды, ал платформа оны AI-суретке айналдырып,
           астына жұмсақ шығармашылық сипаттама береді. Бұл нақты психологиялық диагноз емес,
           тек қиялды көркем талдау.
         </p>
 
-        <div class="mt-6 grid sm:grid-cols-3 gap-3">
-          <div class="rounded-2xl bg-pink-50 p-4">
-            <div class="text-2xl">☁️</div>
-            <h3 class="font-bold mt-2">Dream style</h3>
+        <div class="mt-7 grid sm:grid-cols-3 gap-3">
+          <div class="rounded-3xl bg-white/80 border border-pink-100 p-4">
+            <div class="text-3xl">☁️</div>
+            <h3 class="font-black mt-2">Dream style</h3>
             <p class="text-sm text-slate-600">Pink clouds, glow, fantasy</p>
           </div>
 
-          <div class="rounded-2xl bg-sky-50 p-4">
-            <div class="text-2xl">🎨</div>
-            <h3 class="font-bold mt-2">AI image</h3>
+          <div class="rounded-3xl bg-white/80 border border-sky-100 p-4">
+            <div class="text-3xl">🎨</div>
+            <h3 class="font-black mt-2">AI image</h3>
             <p class="text-sm text-slate-600">Қиялдан сурет</p>
           </div>
 
-          <div class="rounded-2xl bg-violet-50 p-4">
-            <div class="text-2xl">✨</div>
-            <h3 class="font-bold mt-2">Сипаттама</h3>
+          <div class="rounded-3xl bg-white/80 border border-violet-100 p-4">
+            <div class="text-3xl">✨</div>
+            <h3 class="font-black mt-2">Сипаттама</h3>
             <p class="text-sm text-slate-600">Жұмсақ рефлексия</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl shadow-sm border p-6">
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <h2 class="text-2xl font-bold text-slate-900">
+      <div class="glass rounded-[2rem] shadow-sm border border-white/80 p-6 md:p-8">
+        <div class="flex items-center justify-between gap-3 mb-5">
+          <h2 class="text-2xl font-black text-slate-900">
             Ішкі бейнені сипатта
           </h2>
 
           <button
             type="button"
             id="demoBtn"
-            class="text-sm px-3 py-2 rounded-xl bg-pink-100 text-pink-700 hover:bg-pink-200"
+            class="px-4 py-2 rounded-2xl bg-white/80 border border-pink-100 text-sm font-bold hover:bg-pink-50"
           >
             Демо толтыру
           </button>
@@ -85,21 +111,22 @@
 
         <div class="space-y-4">
           <div>
-            <label for="imagination" class="block text-sm font-semibold mb-1">
+            <label for="imagination" class="block text-sm font-bold mb-2">
               Қиялыңдағы негізгі бейне
             </label>
+
             <textarea
               id="imagination"
               rows="5"
-              class="w-full rounded-2xl border p-3 outline-none focus:ring-2 focus:ring-pink-300"
+              class="w-full rounded-3xl border border-pink-100 bg-white/90 p-4 outline-none focus:ring-4 focus:ring-pink-100"
               placeholder="Мысалы: аспанда қалқып тұрған қызғылт бұлттардың ішінде жарық есік ашылып тұр..."
             ></textarea>
           </div>
 
           <div class="grid md:grid-cols-2 gap-4">
             <div>
-              <label for="mood" class="block text-sm font-semibold mb-1">Көңіл күйі</label>
-              <select id="mood" class="w-full rounded-2xl border p-3 outline-none focus:ring-2 focus:ring-pink-300">
+              <label for="mood" class="block text-sm font-bold mb-2">Көңіл күйі</label>
+              <select id="mood" class="w-full rounded-3xl border border-pink-100 bg-white/90 p-4 outline-none focus:ring-4 focus:ring-pink-100">
                 <option>Жұмсақ әрі тыныш</option>
                 <option>Арманшыл</option>
                 <option>Қуанышты</option>
@@ -109,8 +136,8 @@
             </div>
 
             <div>
-              <label for="palette" class="block text-sm font-semibold mb-1">Негізгі түс</label>
-              <select id="palette" class="w-full rounded-2xl border p-3 outline-none focus:ring-2 focus:ring-pink-300">
+              <label for="palette" class="block text-sm font-bold mb-2">Негізгі түс</label>
+              <select id="palette" class="w-full rounded-3xl border border-pink-100 bg-white/90 p-4 outline-none focus:ring-4 focus:ring-pink-100">
                 <option>Ашық розовый</option>
                 <option>Ақ-көк</option>
                 <option>Күлгін-розовый</option>
@@ -120,8 +147,8 @@
             </div>
 
             <div>
-              <label for="world" class="block text-sm font-semibold mb-1">Әлем түрі</label>
-              <select id="world" class="w-full rounded-2xl border p-3 outline-none focus:ring-2 focus:ring-pink-300">
+              <label for="world" class="block text-sm font-bold mb-2">Әлем түрі</label>
+              <select id="world" class="w-full rounded-3xl border border-pink-100 bg-white/90 p-4 outline-none focus:ring-4 focus:ring-pink-100">
                 <option>Бұлтты қиял әлемі</option>
                 <option>Ертегі бағы</option>
                 <option>Айлы түн</option>
@@ -131,8 +158,8 @@
             </div>
 
             <div>
-              <label for="character" class="block text-sm font-semibold mb-1">Кейіпкер</label>
-              <select id="character" class="w-full rounded-2xl border p-3 outline-none focus:ring-2 focus:ring-pink-300">
+              <label for="character" class="block text-sm font-bold mb-2">Кейіпкер</label>
+              <select id="character" class="w-full rounded-3xl border border-pink-100 bg-white/90 p-4 outline-none focus:ring-4 focus:ring-pink-100">
                 <option>Кейіпкерсіз, тек пейзаж</option>
                 <option>Алыстан тұрған адам сұлбасы</option>
                 <option>Кішкентай жарық силуэт</option>
@@ -143,13 +170,14 @@
           </div>
 
           <div>
-            <label for="details" class="block text-sm font-semibold mb-1">
+            <label for="details" class="block text-sm font-bold mb-2">
               Қосымша деталь
             </label>
+
             <input
               id="details"
               type="text"
-              class="w-full rounded-2xl border p-3 outline-none focus:ring-2 focus:ring-pink-300"
+              class="w-full rounded-3xl border border-pink-100 bg-white/90 p-4 outline-none focus:ring-4 focus:ring-pink-100"
               placeholder="Мысалы: жұмсақ жарық, тұман, ұшып жүрген көбелектер..."
             />
           </div>
@@ -157,7 +185,7 @@
           <button
             type="button"
             id="generateBtn"
-            class="w-full rounded-2xl bg-pink-500 text-white font-bold py-3 hover:bg-pink-600 disabled:opacity-60 disabled:cursor-not-allowed"
+            class="btn-dream w-full rounded-3xl py-4 text-white font-black flex items-center justify-center gap-3 transition"
           >
             Түп сананы ашу
           </button>
@@ -170,42 +198,44 @@
     </section>
 
     <section class="mt-6 grid lg:grid-cols-2 gap-6">
-      <div class="bg-white rounded-3xl shadow-sm border p-6">
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <h2 class="text-2xl font-bold text-slate-900">
+      <div class="glass rounded-[2rem] shadow-sm border border-white/80 p-6 md:p-8">
+        <div class="flex items-center justify-between gap-3 mb-5">
+          <h2 class="text-2xl font-black text-slate-900">
             Қиялдан туған бейне
           </h2>
 
           <button
             type="button"
             id="saveBtn"
-            class="text-sm px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 hidden"
+            class="text-sm px-4 py-2 rounded-2xl bg-white border hover:bg-slate-50 font-bold hidden"
           >
             Суретті сақтау
           </button>
         </div>
 
-        <div id="imageBox" class="aspect-square rounded-3xl bg-gradient-to-br from-pink-100 via-white to-sky-100 border flex items-center justify-center overflow-hidden">
+        <div id="imageBox" class="aspect-square rounded-[2rem] bg-gradient-to-br from-pink-100 via-white to-sky-100 border border-white/80 flex items-center justify-center overflow-hidden">
           <div class="text-center p-6">
-            <div class="text-5xl mb-3">☁️</div>
-            <h3 class="font-bold text-lg">Қиялыңды жаз</h3>
-            <p class="text-slate-500 text-sm mt-1">Сурет осы жерде пайда болады.</p>
+            <div class="text-6xl mb-4">☁️</div>
+            <h3 class="font-black text-xl">Қиялыңды жаз</h3>
+            <p class="text-slate-500 text-sm mt-2">
+              Сурет осы жерде пайда болады.
+            </p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl shadow-sm border p-6">
-        <p class="text-sm font-semibold text-pink-500 mb-2">
+      <div class="glass rounded-[2rem] shadow-sm border border-white/80 p-6 md:p-8">
+        <p class="text-sm font-bold text-pink-500 mb-3">
           Шығармашылық сипаттама
         </p>
 
-        <h2 class="text-2xl font-bold text-slate-900 mb-4">
+        <h2 class="text-2xl font-black text-slate-900 mb-5">
           Ойдағы бейненің мағынасы
         </h2>
 
         <div
           id="descriptionBox"
-          class="prose prose-slate max-w-none text-slate-700 leading-relaxed"
+          class="text-slate-700 leading-relaxed bg-white/70 rounded-3xl border border-white p-5 min-h-[220px]"
         >
           Мұнда адамның жазған қиялы бойынша жұмсақ, мектепке қауіпсіз сипаттама шығады.
           Бұл медициналық немесе нақты психологиялық қорытынды емес.
@@ -224,6 +254,15 @@
 
     let currentImageDataUrl = '';
 
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
     function getPayload() {
       return {
         imagination: document.getElementById('imagination').value.trim(),
@@ -238,7 +277,9 @@
     function setLoading(isLoading) {
       generateBtn.disabled = isLoading;
       generateBtn.textContent = isLoading ? 'Сурет жасалып жатыр...' : 'Түп сананы ашу';
-      statusText.textContent = isLoading ? 'OpenAI сурет генерация жасап жатыр. 20–60 секунд күтіңіз...' : 'Дайын.';
+      statusText.textContent = isLoading
+        ? 'OpenAI сурет генерация жасап жатыр. 20–60 секунд күтіңіз...'
+        : 'Дайын.';
     }
 
     function renderImage(imageDataUrl, description) {
@@ -257,12 +298,14 @@
     }
 
     function showError(message) {
+      const safeMessage = escapeHtml(message);
+
       statusText.textContent = 'Қате: ' + message;
 
       descriptionBox.innerHTML = `
-        <div class="rounded-2xl bg-red-50 border border-red-200 p-4 text-red-700">
+        <div class="rounded-3xl bg-red-50 border border-red-200 p-5 text-red-700">
           <b>Қате шықты:</b><br>
-          ${message}<br><br>
+          ${safeMessage}<br><br>
           <span class="text-sm">
             Vercel → Functions Logs ішінен толық қатені қараңыз.
           </span>
