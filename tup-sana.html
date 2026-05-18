@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Түп сана — қиял бейнесі</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --pink:#ff6fb3;
+      --rose:#ffb6d9;
+      --violet:#8b5cf6;
+      --sky:#9ee7ff;
+      --ink:#2d2442;
+    }
+    *{box-sizing:border-box}
+    body{
+      min-height:100vh;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255,214,236,.95), transparent 34%),
+        radial-gradient(circle at 86% 16%, rgba(183,159,255,.65), transparent 30%),
+        radial-gradient(circle at 70% 90%, rgba(159,231,255,.55), transparent 32%),
+        linear-gradient(135deg,#fff6fb 0%,#ffe8f4 42%,#f4edff 74%,#ecfbff 100%);
+      overflow-x:hidden;
+    }
+    .cloud{position:fixed;border-radius:999px;filter:blur(1px);opacity:.55;pointer-events:none;animation:floatCloud 18s ease-in-out infinite alternate;z-index:0}
+    .cloud:before,.cloud:after{content:"";position:absolute;border-radius:999px;background:inherit}
+    .cloud:before{width:52%;height:85%;left:12%;top:-42%}
+    .cloud:after{width:64%;height:100%;right:10%;top:-55%}
+    .cloud-a{width:260px;height:82px;background:rgba(255,255,255,.85);left:-70px;top:130px}
+    .cloud-b{width:330px;height:94px;background:rgba(255,229,244,.85);right:-90px;top:250px;animation-duration:23s}
+    .cloud-c{width:240px;height:76px;background:rgba(236,247,255,.9);left:14%;bottom:70px;animation-duration:26s}
+    @keyframes floatCloud{from{transform:translateX(-8px) translateY(0)}to{transform:translateX(38px) translateY(-18px)}}
+    .glass{background:rgba(255,255,255,.72);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.75);box-shadow:0 24px 70px rgba(103,61,128,.14)}
+    .dream-card{position:relative;overflow:hidden}
+    .dream-card:before{content:"";position:absolute;inset:-2px;background:linear-gradient(120deg,rgba(255,111,179,.55),rgba(139,92,246,.35),rgba(158,231,255,.45));opacity:.35;filter:blur(28px)}
+    .dream-card>*{position:relative}
+    .orb{position:absolute;border-radius:999px;filter:blur(22px);opacity:.7;pointer-events:none;animation:pulseOrb 5s ease-in-out infinite alternate}
+    @keyframes pulseOrb{from{transform:scale(.94);opacity:.45}to{transform:scale(1.08);opacity:.75}}
+    .btn-dream{background:linear-gradient(135deg,#ff6fb3,#8b5cf6);box-shadow:0 18px 38px rgba(255,111,179,.32);transition:.25s ease}
+    .btn-dream:hover{transform:translateY(-2px);box-shadow:0 26px 48px rgba(139,92,246,.26)}
+    .soft-input{background:rgba(255,255,255,.82);border:1px solid rgba(255,160,210,.34);outline:none;transition:.2s ease}
+    .soft-input:focus{border-color:rgba(255,111,179,.75);box-shadow:0 0 0 5px rgba(255,111,179,.12)}
+    .bubble{position:absolute;border-radius:999px;background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.65);animation:rise 10s linear infinite;pointer-events:none}
+    @keyframes rise{from{transform:translateY(35px) scale(.6);opacity:0}20%{opacity:.7}to{transform:translateY(-620px) scale(1.35);opacity:0}}
+    .result-image{background:linear-gradient(145deg,#fff1f8,#eef8ff);min-height:390px}
+    .loader{width:18px;height:18px;border-radius:50%;border:3px solid rgba(255,255,255,.4);border-top-color:white;animation:spin .8s linear infinite;display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading .loader{display:inline-block}
+    .loading .btn-label{opacity:.85}
+    .dream-preview svg{width:100%;height:100%;display:block}
+    .shine{position:absolute;inset:0;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.28) 38%,transparent 62%);transform:translateX(-130%);animation:shine 5.5s ease-in-out infinite}
+    @keyframes shine{0%,55%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+  </style>
+</head>
+<body>
+  <div class="cloud cloud-a"></div>
+  <div class="cloud cloud-b"></div>
+  <div class="cloud cloud-c"></div>
+  <div id="bubbles" aria-hidden="true"></div>
+
+  <header class="relative z-10 sticky top-0 bg-white/70 backdrop-blur-xl border-b border-white/70">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <span class="h-12 w-12 rounded-2xl bg-white border border-pink-100 overflow-hidden grid place-content-center shadow-sm"><img src="logo.png" class="h-11 w-11 object-contain" alt="logo"></span>
+        <div class="min-w-0">
+          <div class="font-extrabold truncate">SCHOOL PORTAL AI92</div>
+          <div class="text-xs text-slate-500 truncate">Түп сана · AI қиял генераторы</div>
+        </div>
+      </a>
+      <nav class="ml-auto hidden md:flex gap-2 text-sm">
+        <a href="index.html" class="px-4 py-2 rounded-2xl hover:bg-white/80">Басты бет</a>
+        <a href="tools.html" class="px-4 py-2 rounded-2xl hover:bg-white/80">Цифрлық құралдар</a>
+        <a href="feedback-reactions.html" class="px-4 py-2 rounded-2xl hover:bg-white/80">Әсер Толқыны</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12 space-y-8">
+    <section class="grid lg:grid-cols-[1.02fr_.98fr] gap-6 items-stretch">
+      <div class="dream-card glass rounded-[2.4rem] p-6 md:p-9 min-h-[520px]">
+        <div class="orb bg-pink-300/60 w-40 h-40 -right-10 -top-10"></div>
+        <div class="orb bg-violet-300/45 w-52 h-52 -left-16 bottom-8" style="animation-delay:1.2s"></div>
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/72 border border-pink-100 text-pink-700 text-sm font-bold mb-5">🌸 Қиял бейнесін ашу</div>
+        <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tight mb-5">
+          Түп сана <span class="block text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-fuchsia-500 to-violet-600">қиялыңдағы суретті</span> ашады
+        </h1>
+        <p class="text-slate-600 text-base md:text-lg max-w-2xl mb-7">
+          Адам қиялындағы бейнені сипаттайды, ал платформа оны AI-суретке айналдырып, астына жұмсақ шығармашылық сипаттама береді. Бұл нақты психологиялық диагноз емес, тек қиялды көркем талдау.
+        </p>
+        <div class="grid sm:grid-cols-3 gap-3">
+          <div class="glass rounded-3xl p-4"><div class="text-2xl mb-1">☁️</div><b>Dream style</b><p class="text-xs text-slate-500 mt-1">Pink clouds, glow, fantasy</p></div>
+          <div class="glass rounded-3xl p-4"><div class="text-2xl mb-1">🎨</div><b>AI image</b><p class="text-xs text-slate-500 mt-1">Қиялдан сурет</p></div>
+          <div class="glass rounded-3xl p-4"><div class="text-2xl mb-1">💬</div><b>Сипаттама</b><p class="text-xs text-slate-500 mt-1">Жұмсақ рефлексия</p></div>
+        </div>
+      </div>
+
+      <div class="glass rounded-[2.4rem] p-5 md:p-7">
+        <div class="flex items-center justify-between gap-3 mb-5">
+          <div>
+            <p class="text-sm font-bold text-pink-600">Қиял формасы</p>
+            <h2 class="text-2xl font-black">Ішкі бейнені сипатта</h2>
+          </div>
+          <button id="demoBtn" class="px-4 py-2 rounded-2xl bg-white/80 border border-pink-100 text-sm font-bold hover:bg-pink-50">Демо толтыру</button>
+        </div>
+
+        <form id="dreamForm" class="space-y-4">
+          <label class="block">
+            <span class="text-sm font-bold text-slate-700">Қиялыңдағы негізгі бейне</span>
+            <textarea id="imagination" class="soft-input mt-2 w-full min-h-32 rounded-3xl p-4 text-sm" placeholder="Мысалы: ашық розовый бұлттар, жұмсақ жарық, алыс жерде есік, тыныш көл, аспанда жұлдыздар..."></textarea>
+          </label>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block"><span class="text-sm font-bold text-slate-700">Көңіл күйі</span><select id="mood" class="soft-input mt-2 w-full rounded-2xl p-3 text-sm"><option>Жұмсақ әрі тыныш</option><option>Арманшыл</option><option>Қуанышты</option><option>Сәл жұмбақ</option><option>Шабытты</option></select></label>
+            <label class="block"><span class="text-sm font-bold text-slate-700">Негізгі түс</span><select id="palette" class="soft-input mt-2 w-full rounded-2xl p-3 text-sm"><option>Ашық розовый</option><option>Ақ-көк</option><option>Күлгін-розовый</option><option>Алтын жарық</option><option>Пастель түстер</option></select></label>
+            <label class="block"><span class="text-sm font-bold text-slate-700">Әлем түрі</span><select id="world" class="soft-input mt-2 w-full rounded-2xl p-3 text-sm"><option>Бұлтты қиял әлемі</option><option>Ертегі бағы</option><option>Айлы түн</option><option>Жарық портал</option><option>Тыныш көл жағасы</option></select></label>
+            <label class="block"><span class="text-sm font-bold text-slate-700">Кейіпкер</span><select id="character" class="soft-input mt-2 w-full rounded-2xl p-3 text-sm"><option>Кейіпкерсіз, тек пейзаж</option><option>Алыстан тұрған адам сұлбасы</option><option>Кішкентай жарық силуэт</option><option>Құс немесе көбелек</option><option>Сиқырлы зат</option></select></label>
+          </div>
+          <label class="block">
+            <span class="text-sm font-bold text-slate-700">Қосымша деталь</span>
+            <input id="details" class="soft-input mt-2 w-full rounded-2xl p-3 text-sm" placeholder="Мысалы: ұшқан жұлдыздар, нәзік тұман, кітап, гүлдер, жарық жол..." />
+          </label>
+          <button id="generateBtn" type="submit" class="btn-dream w-full rounded-3xl py-4 text-white font-black flex items-center justify-center gap-3">
+            <span class="loader"></span><span class="btn-label">Түп сананы ашу</span>
+          </button>
+          <p class="text-xs text-slate-500 text-center">API key Vercel-де қойылса — нақты AI сурет жасайды. API жоқ болса — демо визуал шығады.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-[1.05fr_.95fr] gap-6">
+      <div class="glass rounded-[2.4rem] p-4 md:p-6 overflow-hidden">
+        <div class="flex items-center justify-between gap-4 mb-4">
+          <div>
+            <p class="text-sm font-bold text-pink-600">Нәтиже</p>
+            <h2 class="text-2xl font-black">Қиялдан туған бейне</h2>
+          </div>
+          <button id="downloadBtn" class="px-4 py-2 rounded-2xl bg-white/80 border border-pink-100 text-sm font-bold hover:bg-pink-50">Суретті сақтау</button>
+        </div>
+        <div id="imageBox" class="result-image dream-preview rounded-[2rem] border border-white/80 shadow-inner overflow-hidden relative grid place-items-center text-center p-5">
+          <div class="shine"></div>
+          <div class="max-w-sm mx-auto">
+            <div class="text-6xl mb-4">☁️</div>
+            <h3 class="text-2xl font-black mb-2">Қиялыңды жаз</h3>
+            <p class="text-slate-500 text-sm">Сурет осы жерде пайда болады.</p>
+          </div>
+        </div>
+      </div>
+      <div class="glass rounded-[2.4rem] p-5 md:p-7">
+        <p class="text-sm font-bold text-violet-600 mb-1">Шығармашылық сипаттама</p>
+        <h2 class="text-2xl font-black mb-4">Ойдағы бейненің мағынасы</h2>
+        <div id="analysisText" class="rounded-3xl bg-white/78 border border-white/80 p-5 min-h-72 text-slate-700 leading-7">
+          Мұнда адамның жазған қиялы бойынша жұмсақ, мектепке қауіпсіз сипаттама шығады. Бұл медициналық немесе нақты психологиялық қорытынды емес.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const form = $('dreamForm');
+    const btn = $('generateBtn');
+    const imageBox = $('imageBox');
+    const analysisText = $('analysisText');
+    let currentImageUrl = '';
+
+    function spawnBubbles(){
+      const wrap = $('bubbles');
+      for(let i=0;i<26;i++){
+        const b=document.createElement('span');
+        b.className='bubble';
+        const size=8+Math.random()*28;
+        b.style.width=size+'px'; b.style.height=size+'px';
+        b.style.left=Math.random()*100+'vw'; b.style.bottom=(-60-Math.random()*160)+'px';
+        b.style.animationDelay=(-Math.random()*10)+'s'; b.style.animationDuration=(8+Math.random()*9)+'s';
+        wrap.appendChild(b);
+      }
+    }
+    spawnBubbles();
+
+    $('demoBtn').addEventListener('click',()=>{
+      $('imagination').value='Ашық розовый бұлттардың арасында нәзік жарық есік тұр. Есіктің ар жағында тыныш көл, ұсақ жұлдыздар және гүлдерге толы жұмсақ жол көрінеді.';
+      $('mood').value='Арманшыл'; $('palette').value='Күлгін-розовый'; $('world').value='Бұлтты қиял әлемі'; $('character').value='Кішкентай жарық силуэт'; $('details').value='жарық көбелектер, жұмсақ тұман, жылтыр жұлдыздар';
+    });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const payload = collectPayload();
+      if(!payload.imagination.trim()){
+        analysisText.innerHTML='<b>Алдымен қиялдағы бейнені жазыңыз.</b><br>Мысалы: ашық розовый бұлттар, жарық есік, тыныш көл, жұлдыздар.';
+        return;
+      }
+      setLoading(true);
+      try{
+        const res = await fetch('/api/tup-sana', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+        if(!res.ok) throw new Error('API route unavailable');
+        const data = await res.json();
+        if(!data.ok) throw new Error(data.message || 'AI жауап бермеді');
+        renderImage(data.imageDataUrl || demoSvg(payload), data.description || localDescription(payload), false);
+      }catch(err){
+        renderImage(demoSvg(payload), localDescription(payload) + '<br><br><span class="text-pink-600 font-bold">Демо режим:</span> нақты AI сурет үшін жобаны Vercel-ге қосып, Environment Variables ішіне OPENAI_API_KEY қойыңыз.', true);
+      }finally{
+        setLoading(false);
+      }
+    });
+
+    function collectPayload(){
+      return {imagination:$('imagination').value, mood:$('mood').value, palette:$('palette').value, world:$('world').value, character:$('character').value, details:$('details').value};
+    }
+
+    function setLoading(state){
+      btn.classList.toggle('loading', state); btn.disabled=state;
+      btn.querySelector('.btn-label').textContent = state ? 'Қиял бейнесі жасалып жатыр...' : 'Түп сананы ашу';
+      if(state){
+        imageBox.innerHTML='<div class="shine"></div><div class="text-center"><div class="text-6xl mb-4 animate-pulse">🌸</div><h3 class="text-2xl font-black mb-2">AI қиялды бейнеге айналдырып жатыр...</h3><p class="text-slate-500 text-sm">Бірнеше секунд күтіңіз.</p></div>';
+        analysisText.innerHTML='Сипаттама дайындалып жатыр...';
+      }
+    }
+
+    function renderImage(src, description, isDemo){
+      currentImageUrl = src;
+      imageBox.innerHTML = `<img src="${src}" alt="Түп сана нәтижесі" class="w-full h-full object-cover min-h-[390px] rounded-[1.65rem]">${isDemo?'<div class="absolute left-4 top-4 px-3 py-1 rounded-full bg-white/80 text-xs font-bold text-pink-700">DEMO</div>':''}`;
+      analysisText.innerHTML = description;
+    }
+
+    function localDescription(p){
+      const main = escapeHtml(p.imagination).slice(0,320);
+      return `<p><b>Қиял бағыты:</b> ${escapeHtml(p.mood)} көңіл күйі мен ${escapeHtml(p.palette).toLowerCase()} реңк адамның ойында нәзіктік, жылылық және шығармашылық ізденіс бар екенін көрсететін көркем белгі ретінде көрінеді.</p><p class="mt-3"><b>Бейне өзегі:</b> ${main}</p><p class="mt-3"><b>Жұмсақ түсіндірме:</b> бұл образ армандауға, қауіпсіз кеңістік іздеуге және өз ойын бейне арқылы жеткізуге жақын қиял стилін береді. Бұл нақты психологиялық диагноз емес, тек шығармашылық сипаттама.</p>`;
+    }
+
+    function demoSvg(p){
+      const title = escapeHtml(p.palette || 'Пастель');
+      const desc = escapeHtml((p.imagination || 'dream').slice(0,95));
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='900' viewBox='0 0 1200 900'>
+        <defs>
+          <linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='#fff1f8'/><stop offset='.45' stop-color='#ffd4ea'/><stop offset='1' stop-color='#e9ddff'/></linearGradient>
+          <radialGradient id='r' cx='.5' cy='.5' r='.5'><stop offset='0' stop-color='#ffffff' stop-opacity='.92'/><stop offset='1' stop-color='#ff7abf' stop-opacity='.08'/></radialGradient>
+          <filter id='blur'><feGaussianBlur stdDeviation='18'/></filter>
+        </defs>
+        <rect width='1200' height='900' fill='url(#g)'/>
+        <circle cx='220' cy='210' r='150' fill='#ffffff' opacity='.55' filter='url(#blur)'/><circle cx='970' cy='170' r='180' fill='#a78bfa' opacity='.28' filter='url(#blur)'/><circle cx='800' cy='720' r='210' fill='#7dd3fc' opacity='.24' filter='url(#blur)'/>
+        <g opacity='.85'><ellipse cx='610' cy='380' rx='355' ry='95' fill='#fff' opacity='.72'/><circle cx='390' cy='330' r='105' fill='#fff' opacity='.72'/><circle cx='560' cy='285' r='135' fill='#fff' opacity='.68'/><circle cx='755' cy='320' r='120' fill='#fff' opacity='.70'/></g>
+        <path d='M600 285 C690 335 725 430 684 515 C645 596 555 596 516 515 C475 430 510 335 600 285Z' fill='url(#r)' stroke='#ff74b8' stroke-width='5' opacity='.92'/>
+        <path d='M200 705 C390 620 750 620 1010 705' fill='none' stroke='#ffffff' stroke-width='18' opacity='.78' stroke-linecap='round'/>
+        <g fill='#fff' opacity='.9'><circle cx='240' cy='150' r='7'/><circle cx='930' cy='290' r='8'/><circle cx='700' cy='115' r='5'/><circle cx='455' cy='665' r='6'/><circle cx='870' cy='640' r='5'/></g>
+        <text x='600' y='760' text-anchor='middle' font-family='Arial, sans-serif' font-size='34' fill='#6d2d74' font-weight='700'>Түп сана · ${title}</text>
+        <text x='600' y='808' text-anchor='middle' font-family='Arial, sans-serif' font-size='22' fill='#7c5b88'>${desc}</text>
+      </svg>`;
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    function escapeHtml(str){return String(str||'').replace(/[&<>'"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+
+    $('downloadBtn').addEventListener('click',()=>{
+      if(!currentImageUrl){ analysisText.innerHTML='<b>Алдымен сурет жасаңыз.</b>'; return; }
+      const a=document.createElement('a'); a.href=currentImageUrl; a.download='tup-sana-result.png'; document.body.appendChild(a); a.click(); a.remove();
+    });
+  </script>
+</body>
+</html>

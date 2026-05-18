@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCHOOL PORTAL AI92 — Ата-ана кабинеті</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --primary:#5266c7;
+      --primary-2:#6e63c8;
+      --primary-dark:#33479b;
+      --soft:#f6f8ff;
+      --line:#dfe6fb;
+      --ink:#172033;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}
+    .page-bg{
+      background:
+        radial-gradient(circle at 5% 8%, rgba(82,102,199,.16), transparent 26%),
+        radial-gradient(circle at 92% 10%, rgba(130,118,213,.14), transparent 28%),
+        linear-gradient(180deg,#f8faff 0%,#f3f6ff 55%,#ffffff 100%);
+    }
+    .hero-bg{background:linear-gradient(135deg,#5064c3,#7568c8 58%,#4059ad)}
+    .card{background:rgba(255,255,255,.96);border:1px solid var(--line);box-shadow:0 18px 45px rgba(56,70,130,.08)}
+    .mini-card{background:#fff;border:1px solid var(--line);box-shadow:0 10px 26px rgba(56,70,130,.07)}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff}
+    .btn-outline{border:1px solid #c9d3fa;background:#fff;color:var(--primary-dark)}
+    .btn-soft{background:#eef2ff;color:#4052aa;border:1px solid #dce4ff}
+    .nav-item{display:flex;align-items:center;gap:.72rem;width:100%;border-radius:1.1rem;padding:.76rem .88rem;font-size:.9rem;color:#475569;transition:.18s;text-align:left}
+    .nav-item:hover{background:#f0f4ff;color:#35489d}
+    .nav-item.active{background:linear-gradient(135deg,#5266c7,#7568c8);color:white;box-shadow:0 12px 26px rgba(84,104,201,.24)}
+    .badge{font-size:.68rem;border-radius:999px;padding:.14rem .5rem;background:#fee2e2;color:#b91c1c;font-weight:800}
+    .badge-blue{font-size:.68rem;border-radius:999px;padding:.14rem .5rem;background:#e0e7ff;color:#3730a3;font-weight:800}
+    .badge-green{font-size:.68rem;border-radius:999px;padding:.14rem .5rem;background:#dcfce7;color:#166534;font-weight:800}
+    .chip{background:#eef3ff;color:#3d4fac;border:1px solid #dbe5ff}
+    .panel{display:none}.panel.active{display:block}
+    .toast{animation:slideIn .25s ease-out}@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    input,select,textarea{outline:none}
+    input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(82,102,199,.16);border-color:#9aa8ee!important}
+    @media print{header,aside,#toastBox,.no-print{display:none!important}main{max-width:100%!important}.card{box-shadow:none!important}.panel{display:block!important}}
+  </style>
+</head>
+<body class="page-bg min-h-screen">
+
+<header class="sticky top-0 z-50 bg-white/88 backdrop-blur border-b border-indigo-100">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="index.html" class="flex items-center gap-3">
+      <img src="logo.png" alt="№92 лицей логотипі" class="h-12 w-12 object-contain drop-shadow-sm">
+      <div>
+        <div class="font-extrabold text-sm md:text-base tracking-tight">SCHOOL PORTAL AI92</div>
+        <div class="text-[11px] text-slate-500">Ата-ана жеке кабинеті</div>
+      </div>
+    </a>
+    <div class="ml-auto flex items-center gap-2">
+      <button id="notifyBtn" class="relative h-11 w-11 rounded-2xl btn-soft grid place-content-center text-xl" title="Хабарламалар">
+        🔔<span class="absolute -top-1 -right-1 badge">3</span>
+      </button>
+      <a href="index.html" class="btn-outline rounded-2xl px-4 py-2.5 text-sm font-bold">Басты бет</a>
+      <a href="login.html" class="text-rose-600 hover:bg-rose-50 rounded-2xl px-3 py-2 text-sm font-semibold">Шығу</a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+  <section class="hero-bg text-white rounded-[2rem] p-5 md:p-7 shadow-2xl mb-6 overflow-hidden relative">
+    <div class="absolute -right-24 -top-24 w-72 h-72 rounded-full bg-white/12 blur-3xl"></div>
+    <div class="relative flex flex-col xl:flex-row xl:items-center justify-between gap-5">
+      <div class="flex items-center gap-4">
+        <label class="relative h-20 w-20 rounded-[1.5rem] overflow-hidden bg-white/15 border border-white/25 grid place-content-center cursor-pointer group shadow-xl">
+          <img id="parentPhoto" class="hidden h-full w-full object-cover" alt="Ата-ана суреті">
+          <span id="avatarLetters" class="font-extrabold text-2xl">АА</span>
+          <span class="absolute inset-0 bg-black/35 hidden group-hover:grid place-content-center text-[11px] text-center px-2">Сурет қосу</span>
+          <input id="photoInput" type="file" accept="image/*" class="hidden">
+        </label>
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/14 border border-white/25 text-xs font-semibold mb-2">👨‍👩‍👦 10 «А» сынып · ата-ана бақылауы</div>
+          <h1 class="text-2xl md:text-3xl font-extrabold leading-tight">Ата-ана порталы</h1>
+          <p class="text-white/82 text-sm md:text-base">Бала: Қабдолов Аслан · бүгінгі сабақ, баға, үй жұмысы және өтініштер</p>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-3 min-w-full xl:min-w-[580px]">
+        <div class="rounded-2xl bg-white/12 border border-white/18 p-4">
+          <p class="text-xs text-white/70">Бүгін баға алды</p><b class="text-2xl">3 пән</b>
+        </div>
+        <div class="rounded-2xl bg-white/12 border border-white/18 p-4">
+          <p class="text-xs text-white/70">Жаңа үй жұмысы</p><b class="text-2xl">2</b>
+        </div>
+        <div class="rounded-2xl bg-white/12 border border-white/18 p-4">
+          <p class="text-xs text-white/70">Қазіргі уақыт</p><b id="liveClock" class="text-sm md:text-base">—</b>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid lg:grid-cols-[310px_1fr] gap-6">
+    <aside class="card rounded-[2rem] p-4 h-max lg:sticky lg:top-24">
+      <div class="flex items-center gap-3 p-3 rounded-[1.4rem] bg-indigo-50 border border-indigo-100 mb-4">
+        <div class="h-11 w-11 rounded-2xl bg-white grid place-content-center text-xl">👤</div>
+        <div class="min-w-0">
+          <div class="font-extrabold leading-tight">Ата-ана аккаунты</div>
+          <div class="text-xs text-slate-500 truncate">parent.kabdolov@ai92.kz</div>
+        </div>
+      </div>
+
+      <nav class="space-y-1" id="sideNav">
+        <button class="nav-item active" data-panel="overview"><span>🏠</span><span>Басты шолу</span></button>
+        <button class="nav-item" data-panel="today"><span>📊</span><span>Бүгінгі бағалар</span><span class="ml-auto badge">3</span></button>
+        <button class="nav-item" data-panel="homework"><span>📝</span><span>Үй жұмысы · кесте</span><span class="ml-auto badge">2</span></button>
+        <button class="nav-item" data-panel="achievements"><span>🏅</span><span>Жетістіктер</span></button>
+        <button class="nav-item" data-panel="messages"><span>💬</span><span>Хабарламалар</span><span class="ml-auto badge">1</span></button>
+        <button class="nav-item" data-panel="passport"><span>📄</span><span>Әлеуметтік паспорт</span></button>
+        <button class="nav-item" data-panel="requests"><span>📌</span><span>Өтініштер</span></button>
+        <button class="nav-item" data-panel="parentAccess"><span>🔐</span><span>Ата-ананы қосу</span></button>
+        <button class="nav-item" data-panel="canteen"><span>🍽️</span><span>Асхана · хабарландыру</span></button>
+        <button class="nav-item" data-panel="settings"><span>⚙️</span><span>Аккаунт баптауы</span></button>
+      </nav>
+
+      <div class="mt-5 rounded-[1.4rem] border border-indigo-100 bg-white p-4">
+        <div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold mb-2">Жедел ескерту</div>
+        <p class="text-sm text-slate-600 mb-3">Химия пәнінен жаңа тапсырма және сынып жетекшіден хабарлама келді.</p>
+        <button class="w-full btn-primary rounded-2xl px-3 py-2 text-sm font-bold" data-open-panel="messages">Қарау</button>
+      </div>
+    </aside>
+
+    <div class="space-y-6">
+      <section id="panel-overview" class="panel active">
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <button data-open-panel="today" class="mini-card rounded-3xl p-5 text-left hover:-translate-y-1 transition relative">
+            <span class="absolute right-4 top-4 badge">бүгін</span>
+            <div class="h-12 w-12 rounded-2xl bg-sky-50 text-sky-700 grid place-content-center text-2xl mb-4">📊</div>
+            <p class="text-xs text-slate-500">Бағалар</p><b class="text-lg">Бүгінгі бағаларды көру</b>
+          </button>
+          <button data-open-panel="homework" class="mini-card rounded-3xl p-5 text-left hover:-translate-y-1 transition relative">
+            <span class="absolute right-4 top-4 badge">жаңа</span>
+            <div class="h-12 w-12 rounded-2xl bg-amber-50 text-amber-700 grid place-content-center text-2xl mb-4">📝</div>
+            <p class="text-xs text-slate-500">Үй жұмысы</p><b class="text-lg">2 жаңа тапсырма</b>
+          </button>
+          <button data-open-panel="passport" class="mini-card rounded-3xl p-5 text-left hover:-translate-y-1 transition relative">
+            <span class="absolute right-4 top-4 badge-green">толтыру</span>
+            <div class="h-12 w-12 rounded-2xl bg-violet-50 text-violet-700 grid place-content-center text-2xl mb-4">📄</div>
+            <p class="text-xs text-slate-500">Сауалнама</p><b class="text-lg">Әлеуметтік паспорт</b>
+          </button>
+        </div>
+
+        <div class="grid xl:grid-cols-[1fr_.9fr] gap-6">
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Бүгін</div>
+                <h2 class="text-xl font-extrabold">Бүгін қойылған бағалар</h2>
+              </div>
+              <span id="todayLabel" class="chip rounded-full px-3 py-1 text-xs font-bold">—</span>
+            </div>
+            <div id="todayGradePreview" class="space-y-3"></div>
+          </div>
+
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Хабарлама</div>
+                <h2 class="text-xl font-extrabold">Жаңа ақпараттар</h2>
+              </div>
+              <span class="text-2xl">🔔</span>
+            </div>
+            <div id="noticeList" class="space-y-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-today" class="panel">
+        <div class="card rounded-[2rem] p-5 md:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div>
+              <div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">БілімClass.kz</div>
+              <h2 class="text-2xl font-extrabold">Бүгінгі бағалар</h2>
+              <p class="text-sm text-slate-500">Ата-анаға бала бүгін қандай баға алғанын тез көруге арналған қысқа журнал.</p>
+            </div>
+            <button class="btn-primary rounded-2xl px-4 py-2.5 text-sm font-bold" id="refreshGradesBtn">Жаңарту</button>
+          </div>
+          <div class="overflow-x-auto rounded-2xl border border-indigo-100">
+            <table class="w-full text-sm">
+              <thead class="bg-indigo-50 text-slate-700">
+                <tr><th class="text-left px-4 py-3">Уақыты</th><th class="text-left px-4 py-3">Пән</th><th class="text-left px-4 py-3">Баға</th><th class="text-left px-4 py-3">Мұғалім пікірі</th></tr>
+              </thead>
+              <tbody id="todayGradesTable" class="divide-y divide-indigo-50"></tbody>
+            </table>
+          </div>
+          <div class="mt-5 rounded-2xl bg-slate-50 border border-slate-200 p-4 text-sm text-slate-600">
+            <b>Ескерту:</b> бұл бетте баланың жалпы рейтингін қайталамай, тек ата-анаға қажет күнделікті бақылау ақпараты көрсетіледі: бүгінгі баға, үй жұмысы, мұғалім ескертпесі.
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-homework" class="panel">
+        <div class="grid xl:grid-cols-[1.1fr_.9fr] gap-6">
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Сабақ кестесі</div><h2 class="text-2xl font-extrabold">Бүгінгі сабақтар</h2></div>
+              <span id="scheduleDate" class="chip rounded-full px-3 py-1 text-xs font-bold">—</span>
+            </div>
+            <div class="overflow-x-auto rounded-2xl border border-indigo-100">
+              <table class="w-full text-sm">
+                <thead class="bg-indigo-50"><tr><th class="text-left px-3 py-2">Уақыты</th><th class="text-left px-3 py-2">Пән</th><th class="text-left px-3 py-2">Кабинет</th><th class="text-left px-3 py-2">Мұғалім</th></tr></thead>
+                <tbody id="scheduleRows" class="divide-y divide-indigo-50"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Үй жұмысы</div><h2 class="text-2xl font-extrabold">Жақын тапсырмалар</h2></div>
+              <span class="badge">2 жаңа</span>
+            </div>
+            <div id="homeworkList" class="space-y-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-achievements" class="panel">
+        <div class="card rounded-[2rem] p-5 md:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div>
+              <div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Жетістіктер</div>
+              <h2 class="text-2xl font-extrabold">Баланың маңызды жетістіктері</h2>
+              <p class="text-sm text-slate-500">Мұнда рейтинг емес, ата-анаға арналған қысқа жетістік тарихы көрсетіледі.</p>
+            </div>
+            <button class="btn-outline rounded-2xl px-4 py-2.5 text-sm font-bold" onclick="window.print()">Басып шығару</button>
+          </div>
+          <div id="achievementList" class="grid md:grid-cols-2 gap-4"></div>
+        </div>
+      </section>
+
+      <section id="panel-messages" class="panel">
+        <div class="grid xl:grid-cols-[.9fr_1.1fr] gap-6">
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Кіріс хаттар</div><h2 class="text-2xl font-extrabold">Мұғалімдерден хабарлама</h2></div>
+              <span class="badge">1 жаңа</span>
+            </div>
+            <div id="incomingMessages" class="space-y-3"></div>
+          </div>
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Жауап жазу</div><h2 class="text-2xl font-extrabold mb-4">Мұғалімге немесе сынып жетекшіге хат</h2></div>
+            <div class="grid md:grid-cols-2 gap-3 mb-3">
+              <select id="messageTarget" class="border border-indigo-100 rounded-2xl px-4 py-3 text-sm bg-white">
+                <option>Сынып жетекші — Рамазанова Ақбаян Азаматқызы</option>
+                <option>Химия пәні — Қаумбаев Сунатулла</option>
+                <option>Математика пәні — Есқалиева Айнұр</option>
+                <option>Қазақ тілі — Мунасаева Рая Нуровна</option>
+                <option>Ағылшын тілі — Алимбекова Халима</option>
+                <option>Директор қабылдауы</option>
+              </select>
+              <input id="messageSubject" class="border border-indigo-100 rounded-2xl px-4 py-3 text-sm" placeholder="Тақырып: үй жұмысы, кездесу, анықтама...">
+            </div>
+            <textarea id="messageText" class="w-full min-h-[150px] border border-indigo-100 rounded-3xl p-4 text-sm" placeholder="Хабарламаңызды жазыңыз..."></textarea>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button id="sendMessageBtn" class="btn-primary rounded-2xl px-5 py-3 text-sm font-bold">Хабарлама жіберу</button>
+              <button id="clearMessageBtn" class="btn-outline rounded-2xl px-5 py-3 text-sm font-bold">Тазарту</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-passport" class="panel">
+        <div class="card rounded-[2rem] p-5 md:p-6">
+          <div class="mb-5">
+            <div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Әлеуметтік паспорт</div>
+            <h2 class="text-2xl font-extrabold">Ата-ана сауалнамасы</h2>
+            <p class="text-sm text-slate-500">Толтырылған ақпарат сынып жетекші мен әлеуметтік педагог кабинетіне жіберілді деп белгіленеді.</p>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <label class="text-sm font-semibold">Отбасы құрамы
+              <select id="familyType" class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 bg-white font-normal">
+                <option>Толық отбасы</option><option>Толық емес отбасы</option><option>Қамқоршы/қорғаншы</option><option>Көпбалалы отбасы</option>
+              </select>
+            </label>
+            <label class="text-sm font-semibold">Баланың тұратын мекенжайы
+              <input id="addressInput" class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 font-normal" placeholder="Алматы қ., аудан, көше...">
+            </label>
+            <label class="text-sm font-semibold">Ата-ананың байланыс телефоны
+              <input id="phoneInput" class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 font-normal" placeholder="+7 ...">
+            </label>
+            <label class="text-sm font-semibold">Ыстық тамақ бойынша мәлімет
+              <select id="foodSupport" class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 bg-white font-normal">
+                <option>Жалпы тәртіппен тамақтанады</option><option>Ыстық тамақпен қамтуды сұранамын</option><option>Жеңілдік санатын нақтылау қажет</option>
+              </select>
+            </label>
+            <label class="md:col-span-2 text-sm font-semibold">Қосымша ақпарат
+              <textarea id="passportNote" class="mt-2 w-full min-h-[110px] border border-indigo-100 rounded-3xl p-4 font-normal" placeholder="Сынып жетекшіге/әлеуметтік педагогке қажет қысқаша мәлімет..."></textarea>
+            </label>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button id="sendPassportBtn" class="btn-primary rounded-2xl px-5 py-3 text-sm font-bold">Сынып жетекшіге жіберу</button>
+            <button id="savePassportBtn" class="btn-outline rounded-2xl px-5 py-3 text-sm font-bold">Черновик сақтау</button>
+          </div>
+          <div id="passportStatus" class="hidden mt-4 rounded-2xl bg-green-50 border border-green-100 p-4 text-sm text-green-700 font-semibold">Әлеуметтік паспорт сақталды және сынып жетекшіге жіберілді.</div>
+        </div>
+      </section>
+
+      <section id="panel-requests" class="panel">
+        <div class="grid xl:grid-cols-[1fr_.9fr] gap-6">
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="mb-5"><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Өтініштер</div><h2 class="text-2xl font-extrabold">Мектепке онлайн өтініш жіберу</h2></div>
+            <select id="requestType" class="w-full border border-indigo-100 rounded-2xl px-4 py-3 bg-white text-sm mb-3">
+              <option>Сабақтан уақытша босату туралы өтініш</option>
+              <option>Анықтама сұрау</option>
+              <option>Директор қабылдауына жазылу</option>
+              <option>Сынып жетекшімен кездесу</option>
+              <option>Асхана/тамақтану бойынша өтініш</option>
+            </select>
+            <textarea id="requestText" class="w-full min-h-[150px] border border-indigo-100 rounded-3xl p-4 text-sm" placeholder="Өтініш мәтінін жазыңыз..."></textarea>
+            <button id="sendRequestBtn" class="mt-3 btn-primary rounded-2xl px-5 py-3 text-sm font-bold">Өтініш жіберу</button>
+          </div>
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="mb-4"><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Ата-аналар жиналысы</div><h2 class="text-2xl font-extrabold">Жоспарланған кездесулер</h2></div>
+            <div class="space-y-3">
+              <div class="rounded-2xl border border-indigo-100 p-4 bg-indigo-50/60"><b>10 «А» сынып жиналысы</b><p class="text-sm text-slate-600 mt-1">Жұма, 18:30 · 204 кабинет · оқу үлгерімі және тәрбие жұмысы.</p></div>
+              <div class="rounded-2xl border border-slate-200 p-4 bg-white"><b>Жеке кеңес беру</b><p class="text-sm text-slate-600 mt-1">Сынып жетекшімен алдын ала жазылу арқылы.</p></div>
+              <div class="rounded-2xl border border-slate-200 p-4 bg-white"><b>Пән мұғалімдерімен кездесу</b><p class="text-sm text-slate-600 mt-1">Қажет пәнді хабарлама бөлімінен таңдап жазыңыз.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-parentAccess" class="panel">
+        <div class="card rounded-[2rem] p-5 md:p-6">
+          <div class="mb-5">
+            <div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Ата-ананы жүйеге қосу</div>
+            <h2 class="text-2xl font-extrabold">Мектеп ата-ананы порталға қалай қосады?</h2>
+            <p class="text-sm text-slate-500">Бұл бөлімді кейін нақты мектеп ережесіне қарай өзгерте аласыз.</p>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-5">
+              <h3 class="font-extrabold mb-3">Қосу тәртібі</h3>
+              <ol class="space-y-2 text-sm text-slate-700 list-decimal pl-4">
+                <li>Сынып жетекші ата-ананың телефон нөмірі мен электронды поштасын нақтылайды.</li>
+                <li>Хатшы немесе жүйе әкімшісі ата-ана аккаунтын ашады.</li>
+                <li>Ата-анаға уақытша логин/құпиясөз беріледі.</li>
+                <li>Алғаш кіргенде құпиясөзді ауыстырады және баламен байланысын растайды.</li>
+                <li>Әлеуметтік паспорт пен байланыс мәліметтері жаңартылады.</li>
+              </ol>
+            </div>
+            <div class="rounded-3xl border border-slate-200 bg-white p-5">
+              <h3 class="font-extrabold mb-3">Қажет мәліметтер</h3>
+              <ul class="space-y-2 text-sm text-slate-700">
+                <li>• Ата-ананың толық аты-жөні</li>
+                <li>• Баланың аты-жөні және сыныбы</li>
+                <li>• Телефон нөмірі</li>
+                <li>• Электронды пошта</li>
+                <li>• Туыстық байланысы: анасы, әкесі, қамқоршысы</li>
+                <li>• Құпиялық келісімі және деректерді өңдеуге рұқсат</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-5 rounded-2xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-800">
+            <b>Ескерту:</b> бұл — үлгі ақпарат. Нақты мектеп регламенті болса, осы мәтінді сол талапқа сай ауыстырып қоюға болады.
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-canteen" class="panel">
+        <div class="grid xl:grid-cols-[.9fr_1.1fr] gap-6">
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="mb-4"><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Асхана</div><h2 class="text-2xl font-extrabold">Бүгінгі мәзір</h2></div>
+            <div id="canteenMenu" class="space-y-3"></div>
+          </div>
+          <div class="card rounded-[2rem] p-5 md:p-6">
+            <div class="mb-4"><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Хабарландыру</div><h2 class="text-2xl font-extrabold">Ата-анаға қосымша ақпарат</h2></div>
+            <div class="space-y-3 text-sm text-slate-700">
+              <div class="rounded-2xl border border-indigo-100 p-4 bg-indigo-50/60"><b>Қауіпсіздік</b><p class="mt-1">Баланы сабақтан алып кету немесе босату туралы өтініш алдын ала портал арқылы жіберіледі.</p></div>
+              <div class="rounded-2xl border border-slate-200 p-4 bg-white"><b>Үй жұмысы туралы</b><p class="mt-1">Жаңа тапсырма келген кезде хабарлама белгісі автоматты түрде көрсетіледі.</p></div>
+              <div class="rounded-2xl border border-slate-200 p-4 bg-white"><b>Байланыс</b><p class="mt-1">Мұғалімге жеке хат жазуға немесе сынып жетекші арқылы сұрақ жолдауға болады.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-settings" class="panel">
+        <div class="card rounded-[2rem] p-5 md:p-6">
+          <div class="mb-5"><div class="text-[11px] uppercase tracking-wide text-indigo-600 font-bold">Аккаунт баптауы</div><h2 class="text-2xl font-extrabold">Профиль және қауіпсіздік</h2></div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <label class="text-sm font-semibold">Ата-ананың аты-жөні
+              <input id="parentFullName" class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 font-normal" value="Асланның ата-анасы">
+            </label>
+            <label class="text-sm font-semibold">Электронды пошта
+              <input class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 font-normal" value="parent.kabdolov@ai92.kz">
+            </label>
+            <label class="text-sm font-semibold">Телефон
+              <input class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 font-normal" placeholder="+7 ...">
+            </label>
+            <label class="text-sm font-semibold">Хабарлама түрі
+              <select class="mt-2 w-full border border-indigo-100 rounded-2xl px-4 py-3 bg-white font-normal"><option>Портал + SMS</option><option>Тек портал</option><option>Email хабарлама</option></select>
+            </label>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2"><button id="saveSettingsBtn" class="btn-primary rounded-2xl px-5 py-3 text-sm font-bold">Сақтау</button><button id="resetPhotoBtn" class="btn-outline rounded-2xl px-5 py-3 text-sm font-bold">Профиль суретін өшіру</button></div>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<div id="toastBox" class="fixed right-4 bottom-4 z-[80] space-y-2"></div>
+
+<script>
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+
+  const todayGrades = [
+    {time:'09:25', subject:'Химия', grade:'5', note:'Зертханалық жұмысты толық орындады', teacher:'Қаумбаев Сунатулла'},
+    {time:'10:20', subject:'Математика', grade:'4', note:'Есеп шығару жолын нақтылау қажет', teacher:'Есқалиева Айнұр'},
+    {time:'12:05', subject:'Қазақ тілі', grade:'5', note:'Мәтін талдау тапсырмасы жақсы орындалды', teacher:'Мунасаева Рая Нуровна'}
+  ];
+
+  const schedule = [
+    ['08:00–08:45','Химия','304','Қаумбаев Сунатулла'],
+    ['08:55–09:40','Математика','212','Есқалиева Айнұр'],
+    ['09:50–10:35','Қазақ тілі','107','Мунасаева Рая Нуровна'],
+    ['10:50–11:35','Ағылшын тілі','215','Алимбекова Халима'],
+    ['11:45–12:30','Информатика','309','Ергеш Н.С.']
+  ];
+
+  const homework = [
+    {subject:'Химия', task:'§12. Ерітінді концентрациясы. 5 есеп шығару', deadline:'Бүгін, 18:00', status:'жаңа'},
+    {subject:'Математика', task:'Квадрат теңдеулер бойынша 1–8 есеп', deadline:'Ертең, 09:00', status:'жаңа'},
+    {subject:'Қазақ тілі', task:'Мәтін бойынша қысқаша талдау жазу', deadline:'20 мамыр, 18:00', status:'қаралды'}
+  ];
+
+  const achievements = [
+    {title:'Президенттік олимпиада', text:'Қабдолов Аслан республикалық Президенттік олимпиадасына қатысып, I орын иеленді.', icon:'🏆'},
+    {title:'Ғылыми жоба', text:'Химия бағыты бойынша зерттеу жобасын қорғады.', icon:'🧪'},
+    {title:'Робототехника', text:'Мектеп командасында инженерлік тапсырмаларға белсенді қатысты.', icon:'🤖'},
+    {title:'Мектеп белсенділігі', text:'Сынып іс-шараларында жауапкершілік көрсетіп жүр.', icon:'⭐'}
+  ];
+
+  const notices = [
+    {title:'Жаңа үй жұмысы', text:'Химия пәнінен жаңа тапсырма қосылды.', color:'bg-amber-50 border-amber-100'},
+    {title:'Сынып жетекші хабарламасы', text:'Жұма күні ата-аналар жиналысы өтеді.', color:'bg-indigo-50 border-indigo-100'},
+    {title:'Бүгінгі баға', text:'Қазақ тілі пәнінен 5 қойылды.', color:'bg-green-50 border-green-100'}
+  ];
+
+  const incomingMessages = [
+    {from:'Рамазанова Ақбаян Азаматқызы', text:'Жұма күні 18:30-да ата-аналар жиналысы өтеді. Күн тәртібі: үлгерім, тәртіп, үй жұмысы.'},
+    {from:'Қаумбаев Сунатулла', text:'Химиядан зертханалық жұмыс жақсы орындалды. Үй тапсырмасын уақытында жіберу қажет.'}
+  ];
+
+  const canteen = [
+    ['Таңғы ас','Сүт ботқасы, нан, шай'],
+    ['Түскі ас','Сорпа, күріш, котлет, компот'],
+    ['Қосымша','Жеміс және су']
+  ];
+
+  function showPanel(name){
+    $$('.panel').forEach(p=>p.classList.remove('active'));
+    $('#panel-' + name)?.classList.add('active');
+    $$('.nav-item').forEach(b=>b.classList.toggle('active', b.dataset.panel===name));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  $$('.nav-item').forEach(btn=>btn.addEventListener('click',()=>showPanel(btn.dataset.panel)));
+  $$('[data-open-panel]').forEach(btn=>btn.addEventListener('click',()=>showPanel(btn.dataset.openPanel)));
+
+  function fmtDate(){
+    return new Date().toLocaleString('kk-KZ',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  }
+  function updateClock(){
+    const s = new Date().toLocaleString('kk-KZ',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    $('#liveClock').textContent = s;
+    $('#todayLabel').textContent = fmtDate();
+    $('#scheduleDate').textContent = fmtDate();
+  }
+  setInterval(updateClock,1000); updateClock();
+
+  function toast(text){
+    const el=document.createElement('div');
+    el.className='toast card rounded-2xl px-4 py-3 text-sm font-semibold shadow-2xl';
+    el.textContent=text;
+    $('#toastBox').appendChild(el);
+    setTimeout(()=>el.remove(),3300);
+  }
+
+  function render(){
+    $('#todayGradePreview').innerHTML = todayGrades.map(g=>`<div class="rounded-2xl border border-indigo-100 bg-white p-4 flex items-start justify-between gap-3">
+      <div><b>${g.subject}</b><p class="text-sm text-slate-600 mt-1">${g.time} · ${g.note}</p><p class="text-xs text-slate-500 mt-1">${g.teacher}</p></div>
+      <span class="h-11 w-11 rounded-2xl bg-indigo-600 text-white grid place-content-center text-lg font-extrabold">${g.grade}</span>
+    </div>`).join('');
+
+    $('#todayGradesTable').innerHTML = todayGrades.map(g=>`<tr><td class="px-4 py-3">${g.time}</td><td class="px-4 py-3 font-bold">${g.subject}</td><td class="px-4 py-3"><span class="inline-flex h-9 w-9 rounded-xl bg-indigo-600 text-white items-center justify-center font-extrabold">${g.grade}</span></td><td class="px-4 py-3 text-slate-600">${g.note}<br><span class="text-xs text-slate-400">${g.teacher}</span></td></tr>`).join('');
+
+    $('#scheduleRows').innerHTML = schedule.map(r=>`<tr><td class="px-3 py-3 font-semibold">${r[0]}</td><td class="px-3 py-3">${r[1]}</td><td class="px-3 py-3">${r[2]}</td><td class="px-3 py-3 text-slate-600">${r[3]}</td></tr>`).join('');
+
+    $('#homeworkList').innerHTML = homework.map(h=>`<div class="rounded-2xl border ${h.status==='жаңа'?'border-amber-100 bg-amber-50/70':'border-indigo-100 bg-white'} p-4">
+      <div class="flex items-center justify-between gap-3"><b>${h.subject}</b><span class="${h.status==='жаңа'?'badge':'badge-blue'}">${h.status}</span></div>
+      <p class="text-sm text-slate-600 mt-2">${h.task}</p><p class="text-xs text-slate-500 mt-2">Тапсыру уақыты: ${h.deadline}</p>
+    </div>`).join('');
+
+    $('#achievementList').innerHTML = achievements.map(a=>`<div class="rounded-3xl border border-indigo-100 bg-white p-5"><div class="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-700 grid place-content-center text-2xl mb-3">${a.icon}</div><h3 class="font-extrabold mb-2">${a.title}</h3><p class="text-sm text-slate-600">${a.text}</p></div>`).join('');
+
+    $('#noticeList').innerHTML = notices.map(n=>`<div class="rounded-2xl border ${n.color} p-4"><b>${n.title}</b><p class="text-sm text-slate-600 mt-1">${n.text}</p></div>`).join('');
+
+    $('#incomingMessages').innerHTML = incomingMessages.map((m,i)=>`<div class="rounded-2xl border ${i===0?'border-indigo-100 bg-indigo-50/70':'border-slate-200 bg-white'} p-4"><b>${m.from}</b><p class="text-sm text-slate-600 mt-2">${m.text}</p></div>`).join('');
+
+    $('#canteenMenu').innerHTML = canteen.map(c=>`<div class="rounded-2xl border border-indigo-100 bg-white p-4 flex items-start justify-between gap-3"><div><b>${c[0]}</b><p class="text-sm text-slate-600 mt-1">${c[1]}</p></div><span class="text-2xl">🍽️</span></div>`).join('');
+  }
+  render();
+
+  $('#notifyBtn').addEventListener('click',()=>showPanel('messages'));
+  $('#refreshGradesBtn').addEventListener('click',()=>toast('Бағалар жаңартылды.'));
+
+  $('#sendMessageBtn').addEventListener('click',()=>{
+    const text=$('#messageText').value.trim();
+    if(!text){toast('Алдымен хабарлама мәтінін жазыңыз.');return;}
+    const target=$('#messageTarget').value;
+    incomingMessages.unshift({from:'Сіз → '+target, text});
+    $('#messageText').value=''; $('#messageSubject').value=''; render(); toast('Хабарлама жіберілді.');
+  });
+  $('#clearMessageBtn').addEventListener('click',()=>{$('#messageText').value='';$('#messageSubject').value='';});
+
+  $('#sendPassportBtn').addEventListener('click',()=>{localStorage.setItem('parentPassportSent','1');$('#passportStatus').classList.remove('hidden');toast('Әлеуметтік паспорт сынып жетекшіге жіберілді.');});
+  $('#savePassportBtn').addEventListener('click',()=>toast('Сауалнама черновик ретінде сақталды.'));
+  if(localStorage.getItem('parentPassportSent')) $('#passportStatus').classList.remove('hidden');
+
+  $('#sendRequestBtn').addEventListener('click',()=>{
+    if(!$('#requestText').value.trim()){toast('Өтініш мәтінін жазыңыз.');return;}
+    toast('Өтініш мектеп әкімшілігіне жіберілді.'); $('#requestText').value='';
+  });
+
+  $('#saveSettingsBtn').addEventListener('click',()=>toast('Аккаунт баптауы сақталды.'));
+
+  const photoInput = $('#photoInput');
+  photoInput.addEventListener('change', e=>{
+    const file=e.target.files?.[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>{localStorage.setItem('parentPhoto',reader.result);loadPhoto();toast('Профиль суреті жаңартылды.');};
+    reader.readAsDataURL(file);
+  });
+  function loadPhoto(){
+    const data=localStorage.getItem('parentPhoto');
+    if(data){$('#parentPhoto').src=data;$('#parentPhoto').classList.remove('hidden');$('#avatarLetters').classList.add('hidden');}
+    else{$('#parentPhoto').classList.add('hidden');$('#avatarLetters').classList.remove('hidden');}
+  }
+  $('#resetPhotoBtn').addEventListener('click',()=>{localStorage.removeItem('parentPhoto');loadPhoto();toast('Профиль суреті өшірілді.');});
+  loadPhoto();
+</script>
+</body>
+</html>

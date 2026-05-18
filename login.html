@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCHOOL PORTAL AI92 — Кіру</title>
+  <style>
+    :root{
+      --primary:#4f65d8;
+      --primary-dark:#2f3b96;
+      --violet:#6d5bd0;
+      --soft:#eef3ff;
+      --line:#dbe5ff;
+      --text:#172033;
+      --muted:#64748b;
+      --white:#ffffff;
+      --danger:#e11d48;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:#f7f9ff;
+    }
+
+    .page{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255,255,255,.20), transparent 26%),
+        radial-gradient(circle at 84% 18%, rgba(205,216,255,.28), transparent 32%),
+        linear-gradient(135deg, rgba(76,103,214,.96), rgba(109,91,208,.94) 52%, rgba(47,59,150,.97));
+      position:relative;
+      overflow:hidden;
+    }
+
+    .page:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image:url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1');
+      background-size:cover;
+      background-position:center;
+      opacity:.08;
+      pointer-events:none;
+    }
+
+    .page:after{
+      content:"";
+      position:absolute;
+      width:520px;
+      height:520px;
+      right:-180px;
+      bottom:-220px;
+      border-radius:50%;
+      background:rgba(255,255,255,.13);
+      filter:blur(1px);
+      pointer-events:none;
+    }
+
+    .topbar{
+      position:relative;
+      z-index:2;
+      width:100%;
+      padding:22px clamp(18px, 4vw, 54px);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      color:white;
+      text-decoration:none;
+      min-width:0;
+    }
+
+    .brand img{
+      width:76px;
+      height:76px;
+      object-fit:contain;
+      filter:drop-shadow(0 10px 22px rgba(0,0,0,.18));
+      background:transparent;
+      border:0;
+    }
+
+    .brand-title{
+      font-weight:900;
+      letter-spacing:.02em;
+      font-size:18px;
+      line-height:1.1;
+    }
+
+    .brand-subtitle{
+      margin-top:4px;
+      color:rgba(255,255,255,.78);
+      font-size:12px;
+      line-height:1.25;
+    }
+
+    .home-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:10px 18px;
+      border:2px solid rgba(255,255,255,.86);
+      border-radius:16px;
+      color:white;
+      text-decoration:none;
+      font-weight:800;
+      font-size:14px;
+      background:rgba(30,49,150,.18);
+      box-shadow:0 10px 30px rgba(0,0,0,.12);
+      transition:.18s ease;
+      white-space:nowrap;
+    }
+
+    .home-link:hover{
+      transform:translateY(-1px);
+      background:white;
+      color:var(--primary-dark);
+      border-color:white;
+    }
+
+    .main{
+      position:relative;
+      z-index:2;
+      flex:1;
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:40px;
+      align-items:center;
+      width:min(1160px, calc(100% - 36px));
+      margin:0 auto;
+      padding:18px 0 54px;
+    }
+
+    .hero-copy{
+      color:white;
+      padding:24px 0;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.24);
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:18px;
+      backdrop-filter:blur(10px);
+    }
+
+    .hero-copy h1{
+      margin:0 0 14px;
+      max-width:680px;
+      font-size:clamp(34px, 5vw, 62px);
+      line-height:1.03;
+      font-weight:950;
+      letter-spacing:-.04em;
+    }
+
+    .hero-copy p{
+      margin:0;
+      max-width:590px;
+      color:rgba(255,255,255,.82);
+      font-size:16px;
+      line-height:1.7;
+    }
+
+    .quick-row{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+      margin-top:28px;
+      max-width:650px;
+    }
+
+    .quick-card{
+      min-height:98px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:24px;
+      padding:16px;
+      background:rgba(255,255,255,.11);
+      backdrop-filter:blur(12px);
+      color:white;
+    }
+
+    .quick-card b{
+      display:block;
+      font-size:14px;
+      margin-bottom:6px;
+    }
+
+    .quick-card span{
+      display:block;
+      color:rgba(255,255,255,.75);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .auth-card{
+      width:100%;
+      max-width:470px;
+      margin-left:auto;
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(255,255,255,.8);
+      border-radius:34px;
+      box-shadow:0 28px 70px rgba(15,23,42,.28);
+      overflow:hidden;
+      backdrop-filter:blur(18px);
+    }
+
+    .auth-head{
+      padding:28px 30px 18px;
+      text-align:center;
+    }
+
+    .auth-icon{
+      width:68px;
+      height:68px;
+      margin:0 auto 14px;
+      border-radius:24px;
+      background:linear-gradient(135deg, var(--primary), var(--violet));
+      color:white;
+      display:grid;
+      place-items:center;
+      box-shadow:0 14px 30px rgba(79,101,216,.34);
+    }
+
+    .auth-icon svg{width:34px;height:34px}
+
+    .auth-head h2{
+      margin:0 0 7px;
+      font-size:26px;
+      letter-spacing:-.02em;
+    }
+
+    .auth-head p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .tabs{
+      margin:0 30px 18px;
+      padding:5px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:5px;
+      border-radius:18px;
+      background:#eef3ff;
+      border:1px solid var(--line);
+    }
+
+    .tab-btn{
+      border:0;
+      background:transparent;
+      border-radius:14px;
+      padding:11px 10px;
+      color:#53617d;
+      font-weight:850;
+      cursor:pointer;
+      transition:.18s ease;
+      font-size:14px;
+    }
+
+    .tab-btn.active{
+      color:white;
+      background:linear-gradient(135deg, var(--primary), var(--violet));
+      box-shadow:0 8px 18px rgba(79,101,216,.25);
+    }
+
+    .form{
+      padding:0 30px 30px;
+      display:none;
+    }
+
+    .form.active{display:block}
+
+    .field{margin-bottom:14px}
+
+    .field label{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:7px;
+      font-size:13px;
+      color:#334155;
+      font-weight:800;
+    }
+
+    .field input,
+    .field select{
+      width:100%;
+      border:1px solid #cfd9f3;
+      background:white;
+      color:var(--text);
+      border-radius:16px;
+      padding:13px 14px;
+      font-size:14px;
+      outline:none;
+      transition:.18s ease;
+    }
+
+    .field input:focus,
+    .field select:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 4px rgba(79,101,216,.14);
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:5px 0 17px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .row label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+    }
+
+    .row a{
+      color:var(--primary-dark);
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    .btn{
+      width:100%;
+      border:0;
+      border-radius:17px;
+      padding:14px 16px;
+      font-size:15px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn-primary{
+      color:white;
+      background:linear-gradient(135deg, var(--primary), var(--violet));
+      box-shadow:0 14px 30px rgba(79,101,216,.30);
+    }
+
+    .btn-primary:hover{transform:translateY(-1px); box-shadow:0 18px 36px rgba(79,101,216,.36)}
+
+    .btn-outline{
+      margin-top:10px;
+      color:var(--primary-dark);
+      background:white;
+      border:2px solid var(--primary);
+    }
+
+    .btn-outline:hover{background:var(--soft)}
+
+    .auth-note{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:#f6f8ff;
+      border:1px solid var(--line);
+      color:#5b6885;
+      font-size:12px;
+      line-height:1.55;
+    }
+
+    .footer{
+      position:relative;
+      z-index:2;
+      padding:16px clamp(18px, 4vw, 54px) 22px;
+      color:rgba(255,255,255,.74);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width:900px){
+      .main{grid-template-columns:1fr; gap:18px; padding-top:0}
+      .auth-card{margin:0 auto}
+      .hero-copy{text-align:center; padding-top:4px}
+      .hero-copy p{margin:0 auto}
+      .quick-row{margin-left:auto; margin-right:auto}
+    }
+
+    @media (max-width:640px){
+      .topbar{align-items:flex-start; padding-top:16px}
+      .brand img{width:58px;height:58px}
+      .brand-title{font-size:15px}
+      .brand-subtitle{display:none}
+      .home-link{padding:9px 12px; font-size:12px; border-radius:14px}
+      .quick-row{grid-template-columns:1fr}
+      .auth-head{padding:23px 20px 16px}
+      .tabs,.form{margin-left:20px;margin-right:20px;padding-left:0;padding-right:0}
+      .form{padding-bottom:22px}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="Басты бетке өту">
+        <img src="logo.png" alt="№92 лицей логотипі" />
+        <div>
+          <div class="brand-title">SCHOOL PORTAL AI92</div>
+          <div class="brand-subtitle">Махатма Ганди атындағы №92 мамандандырылған лицей</div>
+        </div>
+      </a>
+      <a class="home-link" href="index.html">← Басты бетке өту</a>
+    </header>
+
+    <main class="main">
+      <section class="hero-copy">
+        <div class="eyebrow">🔐 Жеке кабинетке қауіпсіз кіру</div>
+        <h1>SPAI92 мектеп порталына кіру</h1>
+        <p>
+          Мұғалім, оқушы, ата-ана, сынып жетекші және әкімшілік кабинеттері бір ортада.
+          Логин арқылы өз рөліңізге сәйкес жеке бетке өтесіз.
+        </p>
+        <div class="quick-row">
+          <div class="quick-card"><b>БілімClass.kz</b><span>Кесте, үй жұмысы, баға және хабарлама.</span></div>
+          <div class="quick-card"><b>KPI және есеп</b><span>Мұғалім жетістігі мен құжаттарын бақылау.</span></div>
+          <div class="quick-card"><b>AI көмекші</b><span>Мектеп жұмысына арналған цифрлық ассистент.</span></div>
+        </div>
+      </section>
+
+      <section class="auth-card" aria-label="Кіру және тіркелу формасы">
+        <div class="auth-head">
+          <div class="auth-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z"/></svg>
+          </div>
+          <h2>Жүйеге кіру</h2>
+          <p>Аккаунтыңызға кіріңіз немесе жаңа қолданушы ретінде тіркеліңіз.</p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" type="button" data-tab="loginForm">Кіру</button>
+          <button class="tab-btn" type="button" data-tab="registerForm">Тіркелу</button>
+        </div>
+
+        <form class="form active" id="loginForm">
+          <div class="field">
+            <label for="loginEmail">Email / логин</label>
+            <input id="loginEmail" type="email" placeholder="name@ai92.edu.kz" autocomplete="username" />
+          </div>
+          <div class="field">
+            <label for="loginPassword">Құпиясөз</label>
+            <input id="loginPassword" type="password" placeholder="Құпиясөзіңіз" autocomplete="current-password" />
+          </div>
+          <div class="field">
+            <label for="loginRole">Рөлі</label>
+            <select id="loginRole">
+              <option value="student">Оқушы</option>
+              <option value="teacher">Мұғалім</option>
+              <option value="classTeacher">Сынып жетекші</option>
+              <option value="parent">Ата-ана</option>
+              <option value="admin">Әкімшілік</option>
+            </select>
+          </div>
+          <div class="row">
+            <label><input type="checkbox" checked /> Мені есте сақтау</label>
+            <a href="#">Құпиясөзді ұмыттым</a>
+          </div>
+          <button class="btn btn-primary" type="submit">Кіру</button>
+          <a class="btn btn-outline" style="display:block;text-align:center;text-decoration:none" href="index.html">Басты бет</a>
+          <div class="auth-note">Логин мен құпиясөзді мектеп әкімшілігі береді. Бұл бет демо режимде рөл бойынша тиісті кабинетке өткізеді.</div>
+        </form>
+
+        <form class="form" id="registerForm">
+          <div class="field">
+            <label for="regName">Толық аты-жөні</label>
+            <input id="regName" type="text" placeholder="Аты-жөніңіз" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="regEmail">Email</label>
+            <input id="regEmail" type="email" placeholder="name@ai92.edu.kz" autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="regRole">Рөлі</label>
+            <select id="regRole">
+              <option value="student">Оқушы</option>
+              <option value="teacher">Мұғалім</option>
+              <option value="classTeacher">Сынып жетекші</option>
+              <option value="parent">Ата-ана</option>
+              <option value="admin">Әкімшілік</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="regPassword">Құпиясөз</label>
+            <input id="regPassword" type="password" placeholder="Жаңа құпиясөз" autocomplete="new-password" />
+          </div>
+          <button class="btn btn-primary" type="submit">Тіркелу</button>
+          <a class="btn btn-outline" style="display:block;text-align:center;text-decoration:none" href="index.html">Басты бет</a>
+          <div class="auth-note">Тіркелгеннен кейін қолданушы дерегі браузер жадында сақталады және таңдалған кабинетке өтеді.</div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>© 2025–2026 SCHOOL PORTAL AI92</span>
+      <span>Махатма Ганди атындағы №92 мамандандырылған лицей</span>
+    </footer>
+  </div>
+
+  <script>
+    const routes = {
+      student: 'student.html',
+      teacher: 'teacher.html',
+      classTeacher: 'class-teacher.html',
+      parent: 'parent.html',
+      admin: 'admin.html'
+    };
+
+    function setActiveTab(tabId){
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
+      document.querySelectorAll('.form').forEach(form => form.classList.toggle('active', form.id === tabId));
+      const title = document.querySelector('.auth-head h2');
+      title.textContent = tabId === 'registerForm' ? 'Тіркелу' : 'Жүйеге кіру';
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim() || 'guest@ai92.edu.kz';
+      const role = document.getElementById('loginRole').value;
+      localStorage.setItem('ai92_user', JSON.stringify({ name: email.split('@')[0], email, role }));
+      window.location.href = routes[role] || 'index.html';
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const name = document.getElementById('regName').value.trim() || 'Жаңа қолданушы';
+      const email = document.getElementById('regEmail').value.trim() || 'new.user@ai92.edu.kz';
+      const role = document.getElementById('regRole').value;
+      localStorage.setItem('ai92_user', JSON.stringify({ name, email, role, registered: true }));
+      window.location.href = routes[role] || 'index.html';
+    });
+  </script>
+</body>
+</html>

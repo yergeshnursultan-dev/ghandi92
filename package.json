@@ -1,0 +1,9 @@
+{
+  "name": "spai92-platform-tup-sana",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SPAI92 platform with Tup Sana AI imagination tool and feedback reactions",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

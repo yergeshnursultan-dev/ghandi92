@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCHOOL PORTAL AI92 — Мұғалім кабинеті</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --primary:#5165d8;
+      --primary2:#6d5bd0;
+      --soft:#eef3ff;
+      --line:#dce5ff;
+      --ink:#172033;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f7f9ff;color:var(--ink)}
+    .portal-bg{background:
+      radial-gradient(circle at 12% 10%, rgba(255,255,255,.25), transparent 28%),
+      radial-gradient(circle at 88% 12%, rgba(212,222,255,.35), transparent 32%),
+      linear-gradient(135deg,#5165d8 0%,#6d5bd0 52%,#344ba8 100%)}
+    .card{background:#fff;border:1px solid var(--line);border-radius:1.5rem;box-shadow:0 18px 45px rgba(50,73,160,.08)}
+    .navItem{display:flex;align-items:center;gap:.75rem;width:100%;padding:.8rem 1rem;border-radius:1rem;color:#475569;font-weight:700;font-size:.92rem;transition:.2s;text-align:left}
+    .navItem:hover{background:#eef3ff;color:#344ba8}
+    .navItem.active{background:linear-gradient(135deg,#5165d8,#6d5bd0);color:white;box-shadow:0 10px 25px rgba(81,101,216,.24)}
+    .btn-primary{background:linear-gradient(135deg,#5165d8,#6d5bd0);color:white;box-shadow:0 12px 22px rgba(81,101,216,.22)}
+    .btn-primary:hover{filter:brightness(.96)}
+    .btn-outline{background:white;border:1px solid var(--line);color:#334155}
+    .btn-soft{background:#eef3ff;border:1px solid #dbe5ff;color:#344ba8}
+    .input{width:100%;border:1px solid var(--line);border-radius:1rem;padding:.78rem .9rem;background:white;outline:none}
+    .input:focus{box-shadow:0 0 0 4px rgba(81,101,216,.12);border-color:#8fa0ff}
+    .panel{display:none}.panel.active{display:block}
+    .badge{display:inline-flex;align-items:center;gap:.35rem;padding:.32rem .65rem;border-radius:999px;font-size:.72rem;font-weight:800}
+    .badge-blue{background:#eef3ff;color:#344ba8;border:1px solid #dce5ff}
+    .badge-green{background:#ecfdf3;color:#157347;border:1px solid #bbf7d0}
+    .badge-amber{background:#fff7ed;color:#b45309;border:1px solid #fed7aa}
+    .progress{height:.65rem;background:#e8eefc;border-radius:999px;overflow:hidden}.progress>span{height:100%;display:block;background:linear-gradient(90deg,#5165d8,#7a67dd);border-radius:999px}
+    .ai-logo{height:3rem;width:3rem;border-radius:1rem;background:white;border:1px solid var(--line);display:grid;place-content:center;font-size:1.55rem;margin:0 auto .75rem auto;box-shadow:0 8px 20px rgba(30,41,59,.06)}
+    .modal{display:none}.modal.show{display:flex}
+    .qrGrid{display:grid;grid-template-columns:repeat(7,10px);gap:3px}.qrGrid span{width:10px;height:10px;border-radius:2px;background:#0f172a}.qrGrid span.off{background:#e2e8f0}
+    @media(max-width:900px){.layout{grid-template-columns:1fr!important}.sidebar{position:relative!important;top:auto!important}.topStat{grid-template-columns:1fr!important}}
+  </style>
+</head>
+<body>
+  <header class="sticky top-0 z-40 bg-white/82 backdrop-blur border-b border-indigo-100">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <span class="h-11 w-11 rounded-xl bg-white overflow-hidden grid place-content-center"><img src="logo.png" class="h-10 w-10 object-contain" alt="logo"></span>
+        <div class="min-w-0">
+          <div class="font-extrabold leading-tight truncate">SCHOOL PORTAL AI92</div>
+          <div class="text-xs text-slate-500 truncate">№92 мамандандырылған лицей · Мұғалім порталы</div>
+        </div>
+      </a>
+      <nav class="ml-auto hidden md:flex items-center gap-2 text-sm">
+        <a href="index.html" class="px-3 py-2 rounded-xl hover:bg-indigo-50">Басты бет</a>
+        <a href="tools.html" class="px-3 py-2 rounded-xl hover:bg-indigo-50">Құралдар</a>
+        <button id="openAiTop" class="btn-primary rounded-2xl px-4 py-2 text-sm font-bold flex items-center gap-2"><span>🤖</span> ЖИ көмекші</button>
+        <a href="login.html" class="px-3 py-2 text-rose-600 hover:underline">Шығу</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="portal-bg text-white">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 items-center">
+        <div class="flex items-center gap-5">
+          <label class="relative shrink-0 cursor-pointer">
+            <div class="h-24 w-24 md:h-28 md:w-28 rounded-[2rem] bg-white/16 border border-white/25 overflow-hidden grid place-content-center text-5xl shadow-xl">
+              <img id="avatarPreview" class="hidden h-full w-full object-cover" alt="avatar">
+              <span id="avatarIcon">👨‍🏫</span>
+            </div>
+            <input id="avatarInput" type="file" accept="image/*" class="hidden">
+          </label>
+          <div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="badge bg-white/18 border border-white/25 text-white">🏆 Рейтинг №1</span>
+              <span class="badge bg-white/18 border border-white/25 text-white">Педагог-шебер</span>
+              <span class="badge bg-white/18 border border-white/25 text-white">Химия пәні</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black leading-tight">Қаумбаев Сунатулла</h1>
+            <p class="mt-3 max-w-2xl text-white/86">Мұғалімнің жеке кабинеті: сабақ құжаттары, оқушылармен байланыс, ЖИ көмекшілер, KPI және әдістемелік жұмыс.</p>
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-3 topStat">
+          <div class="rounded-3xl bg-white/14 border border-white/20 p-4"><p class="text-xs text-white/70">KPI болжамы</p><b id="heroKpi" class="text-3xl">82%</b></div>
+          <div class="rounded-3xl bg-white/14 border border-white/20 p-4"><p class="text-xs text-white/70">КМЖ</p><b class="text-3xl">2</b><span class="block text-xs text-white/70">дайын жоспар</span></div>
+          <div class="rounded-3xl bg-white/14 border border-white/20 p-4"><p class="text-xs text-white/70">Кафедра</p><b class="text-3xl">96%</b><span class="block text-xs text-white/70">тапсырма орындалуы</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div class="layout grid grid-cols-[280px_1fr] gap-6">
+      <aside class="sidebar sticky top-20 self-start card p-4">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="h-12 w-12 rounded-2xl bg-indigo-50 grid place-content-center text-2xl">🧪</div>
+          <div>
+            <b class="block leading-tight">Мұғалім мәзірі</b>
+            <span class="text-xs text-slate-500">Бөлімді таңдаңыз</span>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <button class="navItem active" data-panel="overview">🏠 Негізгі бет</button>
+          <button class="navItem" data-panel="bilimclass">📘 БілімClass</button>
+          <button class="navItem" data-panel="kmj">🧾 КМЖ генераторы <span class="ml-auto badge badge-green">QR</span></button>
+          <button class="navItem" data-panel="ktp">📅 КТЖ</button>
+          <button class="navItem" data-panel="ai">🤖 ЖИ көмекшілер</button>
+          <button class="navItem" data-panel="kpi">📊 Менің жетістіктерім / KPI</button>
+          <button class="navItem" data-panel="analysis">🧮 БЖБ/ТЖБ талдау</button>
+          <button class="navItem" data-panel="methods">💡 Әдіс-тәсілдер</button>
+          <button class="navItem" data-panel="attestation">🎖️ Аттестаттау</button>
+          <button class="navItem" data-panel="messages">💬 Хабарлама</button>
+          <button class="navItem" data-panel="chat">👥 Мұғалімдер чаты</button>
+          <button class="navItem" data-panel="settings">⚙️ Баптау</button>
+        </div>
+      </aside>
+
+      <section class="space-y-6">
+        <div id="overview" class="panel active">
+          <div class="grid md:grid-cols-3 gap-5 mb-6">
+            <button data-open-panel="bilimclass" class="card p-5 text-left hover:-translate-y-1 transition"><div class="text-3xl mb-3">📘</div><p class="text-xs text-slate-500">Журнал және тапсырма</p><b class="text-lg">БілімClass-қа кіру</b></button>
+            <button data-open-panel="kmj" class="card p-5 text-left hover:-translate-y-1 transition"><div class="text-3xl mb-3">🧾</div><p class="text-xs text-slate-500">Дайын және жаңа жоспар</p><b class="text-lg">КМЖ генераторы</b></button>
+            <button data-open-panel="ai" class="card p-5 text-left hover:-translate-y-1 transition"><div class="text-3xl mb-3">🤖</div><p class="text-xs text-slate-500">Екінші версиядағы формат</p><b class="text-lg">ЖИ көмекшілер</b></button>
+          </div>
+          <div class="grid lg:grid-cols-[1fr_.9fr] gap-6">
+            <div class="card p-6">
+              <div class="flex items-center justify-between mb-4"><h2 class="text-2xl font-extrabold">Бүгінгі жұмыс панелі</h2><span id="nowText" class="badge badge-blue"></span></div>
+              <div class="space-y-3">
+                <div class="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 flex justify-between gap-3"><div><b>10 «А» · Химия</b><p class="text-sm text-slate-600">Химиялық реакция теңдеулерін теңестіру</p></div><span class="text-sm font-bold text-indigo-700">08:50–09:35</span></div>
+                <div class="rounded-2xl border border-indigo-100 bg-white p-4 flex justify-between gap-3"><div><b>9 «Б» · Химия</b><p class="text-sm text-slate-600">Ерітінді концентрациясы</p></div><span class="text-sm font-bold text-indigo-700">09:45–10:30</span></div>
+                <div class="rounded-2xl border border-indigo-100 bg-white p-4 flex justify-between gap-3"><div><b>Әдістемелік жұмыс</b><p class="text-sm text-slate-600">БЖБ талдауын жаңарту, КТЖ қарау</p></div><span class="text-sm font-bold text-indigo-700">14:30–15:10</span></div>
+              </div>
+            </div>
+            <div class="card p-6">
+              <h2 class="text-2xl font-extrabold mb-4">Статус және рейтинг</h2>
+              <div class="rounded-3xl bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 p-5 mb-4">
+                <div class="flex items-center justify-between"><div><p class="text-sm text-slate-500">Лицей рейтингі</p><b class="text-4xl text-indigo-700">№1</b></div><div class="text-4xl">🏆</div></div>
+                <div class="progress mt-4"><span style="width:98%"></span></div>
+              </div>
+              <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="rounded-2xl bg-slate-50 border p-4"><b>Пәні</b><p class="text-slate-600">Химия</p></div>
+                <div class="rounded-2xl bg-slate-50 border p-4"><b>Санаты</b><p class="text-slate-600">Педагог-шебер</p></div>
+                <div class="rounded-2xl bg-slate-50 border p-4"><b>КМЖ</b><p class="text-slate-600">2 дайын</p></div>
+                <div class="rounded-2xl bg-slate-50 border p-4"><b>Есеп</b><p class="text-slate-600">Айлық дайын</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="bilimclass" class="panel">
+          <div class="card p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-5"><div><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">БілімClass.kz</div><h2 class="text-2xl font-extrabold">Мұғалім журналы</h2><p class="text-sm text-slate-500">Баға, үй жұмысы, сабақ кестесі және оқушы белсенділігі бір экранда.</p></div><button id="openBilim" class="btn-primary rounded-2xl px-5 py-3 font-bold">БілімClass-қа кіру</button></div>
+            <div id="bilimFrame" class="hidden rounded-[2rem] border border-indigo-100 overflow-hidden bg-slate-50">
+              <div class="bg-white border-b p-4 flex items-center justify-between"><b>БілімClass.kz · ішкі экран</b><span class="badge badge-green">Онлайн</span></div>
+              <div class="grid lg:grid-cols-3 gap-4 p-5">
+                <div class="rounded-3xl bg-white border p-5"><p class="text-sm text-slate-500">Үй жұмысы берілді</p><b class="text-4xl text-indigo-700">86%</b><div class="progress mt-4"><span style="width:86%"></span></div></div>
+                <div class="rounded-3xl bg-white border p-5"><p class="text-sm text-slate-500">Баға қойылды</p><b class="text-4xl text-indigo-700">92%</b><div class="progress mt-4"><span style="width:92%"></span></div></div>
+                <div class="rounded-3xl bg-white border p-5"><p class="text-sm text-slate-500">Баға қойылмады</p><b class="text-4xl text-amber-600">8%</b><div class="progress mt-4"><span style="width:8%"></span></div></div>
+              </div>
+              <div class="p-5 pt-0 overflow-auto"><table class="w-full text-sm bg-white rounded-3xl overflow-hidden border"><thead class="bg-indigo-50"><tr><th class="p-3 text-left">Сынып</th><th class="p-3 text-left">Сабақ</th><th class="p-3 text-left">Үй жұмысы</th><th class="p-3 text-left">Баға</th></tr></thead><tbody><tr class="border-t"><td class="p-3">10 «А»</td><td class="p-3">Реакция теңдеулері</td><td class="p-3">§18, 5 есеп</td><td class="p-3">24/26 оқушы</td></tr><tr class="border-t"><td class="p-3">9 «Б»</td><td class="p-3">Ерітінділер</td><td class="p-3">№3 зертханалық жұмыс</td><td class="p-3">21/23 оқушы</td></tr></tbody></table></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="kmj" class="panel">
+          <div class="card p-6">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-5"><div><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">КМЖ генераторы</div><h2 class="text-2xl font-extrabold">Химия сабағына дайын жоспарлар</h2><p class="text-sm text-slate-500">Өзі жасаған КМЖларды ашып, түзетіп, әкімшілікке жіберуге болады.</p></div><div class="flex flex-wrap gap-2"><button id="kmjGen" class="btn-primary rounded-2xl px-4 py-2.5 text-sm font-bold">Жаңа КМЖ жасау</button><button id="kmjDownload" class="btn-outline rounded-2xl px-4 py-2.5 text-sm font-bold">Word жүктеу</button><button id="kmjSend" class="btn-outline rounded-2xl px-4 py-2.5 text-sm font-bold">Әкімшілікке жіберу</button><button id="kmjApprove" class="btn-soft rounded-2xl px-4 py-2.5 text-sm font-bold">Бекітілді</button></div></div>
+            <div class="grid lg:grid-cols-[.9fr_1.4fr] gap-5">
+              <div class="space-y-4">
+                <div class="rounded-3xl border border-indigo-100 p-4 bg-white space-y-3">
+                  <label class="text-sm font-bold">Пән<input id="kmjSubject" value="Химия" class="input mt-2 font-normal"></label>
+                  <label class="text-sm font-bold">Сынып<select id="kmjGrade" class="input mt-2 font-normal"><option>8 «А»</option><option>9 «Б»</option><option selected>10 «А»</option><option>11 «А»</option></select></label>
+                  <label class="text-sm font-bold">Тақырып<input id="kmjTopic" value="Химиялық реакция теңдеулерін теңестіру" class="input mt-2 font-normal"></label>
+                  <label class="text-sm font-bold">Оқу мақсаты<input id="kmjGoal" value="реакция теңдеулерін құрастыру және коэффициенттер арқылы теңестіру" class="input mt-2 font-normal"></label>
+                  <div id="kmjStatus" class="rounded-2xl bg-indigo-50 border border-indigo-100 p-3 text-sm text-indigo-800">КМЖ ашық. Қажет болса түзетіп, әкімшілікке жіберіңіз.</div>
+                  <div id="qrArea" class="hidden rounded-3xl border border-green-100 bg-green-50 p-4"><div class="font-bold text-green-700 mb-2">✅ Тексерілді · қол қойылды · бекітілді</div><div class="qrGrid" id="qrGrid"></div><p class="text-xs text-slate-500 mt-2">QR: KMJ-AI92-2026-CH-001</p></div>
+                </div>
+                <div class="rounded-3xl border border-indigo-100 p-4 bg-indigo-50/50">
+                  <div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold mb-3">Өзі жасаған КМЖлар</div>
+                  <div class="space-y-2">
+                    <button class="readyKmj w-full text-left bg-white border border-indigo-100 rounded-2xl p-3 hover:bg-indigo-50" data-id="1"><b>КМЖ №1</b><p class="text-xs text-slate-500">10 «А» · Химиялық реакция теңдеулерін теңестіру</p></button>
+                    <button class="readyKmj w-full text-left bg-white border border-indigo-100 rounded-2xl p-3 hover:bg-indigo-50" data-id="2"><b>КМЖ №2</b><p class="text-xs text-slate-500">9 «Б» · Ерітінді концентрациясы</p></button>
+                    <button class="readyKmj w-full text-left bg-white border border-indigo-100 rounded-2xl p-3 hover:bg-indigo-50" data-id="3"><b>КМЖ №3</b><p class="text-xs text-slate-500">8 «А» · Металдар және бейметалдар</p></button>
+                  </div>
+                </div>
+              </div>
+              <textarea id="kmjPreview" class="input min-h-[660px] text-sm leading-relaxed bg-slate-50"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="ktp" class="panel">
+          <div class="card p-6">
+            <div class="flex flex-wrap justify-between gap-4 mb-5"><div><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">Күнтізбелік тақырыптық жоспарлау</div><h2 class="text-2xl font-extrabold">КТЖ құжаттары</h2><p class="text-sm text-slate-500">Тоқсан бойынша тақырып, сағат саны, БЖБ/ТЖБ мерзімі және оқу мақсаттары.</p></div><button id="ktpDownload" class="btn-primary rounded-2xl px-5 py-3 font-bold">КТЖ жүктеу</button></div>
+            <div class="overflow-auto rounded-3xl border border-indigo-100"><table class="w-full text-sm"><thead class="bg-indigo-50"><tr><th class="p-3 text-left">№</th><th class="p-3 text-left">Тақырып</th><th class="p-3 text-left">Сағат</th><th class="p-3 text-left">Оқу мақсаты</th><th class="p-3 text-left">Мерзім</th></tr></thead><tbody id="ktpRows"></tbody></table></div>
+          </div>
+        </div>
+
+        <div id="ai" class="panel">
+          <section class="card p-6">
+            <h2 class="text-2xl font-bold text-slate-900 text-center mb-1">Мұғалімнің ЖИ көмекшілері</h2>
+            <p class="text-sm text-slate-600 text-center mb-6">Сабақ дайындауда, тексеруде және жоспарлауда қолдануға болатын тиімді құралдар</p>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4" id="aiCards"></div>
+          </section>
+        </div>
+
+        <div id="kpi" class="panel">
+          <div class="card p-6">
+            <div class="flex flex-wrap justify-between gap-4 mb-5"><div><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">Менің жетістіктерім</div><h2 class="text-2xl font-extrabold">KPI есебі</h2><p class="text-sm text-slate-500">Жетістік түрін таңдап, құжат тіркеңіз. Пайыз автоматты жаңарады.</p></div><button id="kpiDownload" class="btn-primary rounded-2xl px-5 py-3 font-bold">Excel жүктеу</button></div>
+            <div class="grid lg:grid-cols-[.8fr_1.2fr] gap-5">
+              <div class="rounded-3xl bg-indigo-50/70 border border-indigo-100 p-5 space-y-3">
+                <label class="text-sm font-bold">Жетістік түрі<select id="kpiType" class="input mt-2 font-normal"><option value="22">Олимпиада жүлдегерін дайындау</option><option value="18">Ғылыми жоба жетекшілігі</option><option value="16">Авторлық бағдарлама</option><option value="14">Ашық сабақ / семинар</option><option value="12">Біліктілік арттыру курсы</option><option value="10">Цифрлық ресурс әзірлеу</option></select></label>
+                <label class="text-sm font-bold">Атауы<input id="kpiTitle" class="input mt-2 font-normal" placeholder="Мысалы: қалалық олимпиада, I орын"></label>
+                <label class="text-sm font-bold">Құжат<input id="kpiFile" type="file" class="input mt-2 font-normal"></label>
+                <button id="kpiAdd" class="w-full btn-primary rounded-2xl py-3 font-bold">Жетістікті қосу</button>
+                <div class="rounded-3xl bg-white border border-indigo-100 p-5 text-center"><p class="text-sm text-slate-500">Жалпы KPI</p><b id="kpiPercent" class="text-5xl text-indigo-700">82%</b><div class="progress mt-4"><span id="kpiBar" style="width:82%"></span></div></div>
+              </div>
+              <div class="overflow-auto rounded-3xl border border-indigo-100"><table class="w-full text-sm"><thead class="bg-indigo-50"><tr><th class="p-3 text-left">№</th><th class="p-3 text-left">Жетістік</th><th class="p-3 text-left">Балл</th><th class="p-3 text-left">Құжат</th></tr></thead><tbody id="kpiBody"></tbody></table></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="analysis" class="panel">
+          <div class="card p-6">
+            <div class="flex flex-wrap justify-between gap-4 mb-5"><div><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">БЖБ/ТЖБ талдау</div><h2 class="text-2xl font-extrabold">Автоматты талдау құралы</h2><p class="text-sm text-slate-500">Сынып, жұмыс түрі және нәтижелерді енгізіңіз, жүйе есеп мәтінін дайындайды.</p></div><button id="analysisDownload" class="btn-primary rounded-2xl px-5 py-3 font-bold">Талдауды жүктеу</button></div>
+            <div class="grid lg:grid-cols-[.7fr_1.3fr] gap-5">
+              <div class="space-y-3 rounded-3xl bg-indigo-50/70 border border-indigo-100 p-5">
+                <label class="text-sm font-bold">Сынып<select id="analysisClass" class="input mt-2"><option>10 «А»</option><option>9 «Б»</option><option>8 «А»</option></select></label>
+                <label class="text-sm font-bold">Жұмыс түрі<select id="analysisType" class="input mt-2"><option>БЖБ</option><option>ТЖБ</option></select></label>
+                <label class="text-sm font-bold">Оқушы саны<input id="studentsTotal" type="number" value="26" class="input mt-2"></label>
+                <label class="text-sm font-bold">Жоғары деңгей<input id="highCount" type="number" value="8" class="input mt-2"></label>
+                <label class="text-sm font-bold">Орта деңгей<input id="midCount" type="number" value="14" class="input mt-2"></label>
+                <label class="text-sm font-bold">Төмен деңгей<input id="lowCount" type="number" value="4" class="input mt-2"></label>
+                <button id="makeAnalysis" class="w-full btn-primary rounded-2xl py-3 font-bold">Талдау жасау</button>
+              </div>
+              <textarea id="analysisText" class="input min-h-[520px] text-sm leading-relaxed bg-slate-50"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="methods" class="panel">
+          <div class="card p-6">
+            <div class="mb-5"><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">Әдіс-тәсілдер банкі</div><h2 class="text-2xl font-extrabold">Сабақта бірден қолдануға дайын тәсілдер</h2><p class="text-sm text-slate-500">Әр тәсілге қолдану қадамы, уақыт және дайын шаблон берілді.</p></div>
+            <div class="grid md:grid-cols-2 gap-5" id="methodCards"></div>
+          </div>
+        </div>
+
+        <div id="attestation" class="panel">
+          <div class="card p-6">
+            <div class="flex flex-wrap justify-between gap-4 mb-5"><div><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">Аттестаттау портфолиосы</div><h2 class="text-2xl font-extrabold">Құжаттарды жинау және бақылау</h2><p class="text-sm text-slate-500">Педагог-шебер мәртебесіне сәйкес портфолио бөлімдері.</p></div><button id="attReport" class="btn-primary rounded-2xl px-5 py-3 font-bold">Есеп жүктеу</button></div>
+            <div class="grid lg:grid-cols-[1fr_.7fr] gap-5">
+              <div class="grid md:grid-cols-2 gap-4" id="attChecks"></div>
+              <div class="rounded-3xl bg-indigo-50 border border-indigo-100 p-5"><p class="text-sm text-slate-500">Дайындық пайызы</p><b id="attPercent" class="text-5xl text-indigo-700">0%</b><div class="progress my-4"><span id="attBar" style="width:0%"></span></div><label class="text-sm font-bold">Құжат жүктеу<input id="attFile" type="file" multiple class="input mt-2 text-sm bg-white"></label><div id="attFiles" class="mt-3 text-sm text-slate-600 space-y-1"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="messages" class="panel">
+          <div class="card p-6">
+            <div class="mb-5"><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">Хабарлама</div><h2 class="text-2xl font-extrabold">Оқушыға және сыныпқа жазу</h2></div>
+            <div class="grid lg:grid-cols-[.7fr_1.3fr] gap-5">
+              <div class="rounded-3xl bg-indigo-50/60 border border-indigo-100 p-5 space-y-3"><label class="text-sm font-bold">Қабылдаушы<select id="recipient" class="input mt-2"><option>10 «А» сынып тобы</option><option>9 «Б» сынып тобы</option><option>Қабдолов Аслан</option><option>Есқалиева Айару</option><option>Ата-аналар тобы</option></select></label><textarea id="msgText" class="input min-h-[130px]" placeholder="Хабарлама мәтіні..."></textarea><button id="sendMsg" class="w-full btn-primary rounded-2xl py-3 font-bold">Жіберу</button></div>
+              <div id="msgList" class="space-y-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="chat" class="panel">
+          <div class="card p-6">
+            <div class="mb-5"><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">Мұғалімдер чаты</div><h2 class="text-2xl font-extrabold">Кафедра және топтық жұмыс</h2><p class="text-sm text-slate-500">Мұғалімдер өзара сөйлесіп, тапсырма беріп, орындалуын пайызбен бақылайды.</p></div>
+            <div class="grid lg:grid-cols-[.8fr_1.2fr] gap-5">
+              <div class="rounded-3xl bg-indigo-50/60 border border-indigo-100 p-5"><div class="flex flex-wrap gap-2 mb-4"><button class="chatRoom btn-primary rounded-2xl px-3 py-2 text-sm font-bold" data-room="Кафедра">Кафедра</button><button class="chatRoom btn-outline rounded-2xl px-3 py-2 text-sm font-bold" data-room="Химия">Химия</button><button class="chatRoom btn-outline rounded-2xl px-3 py-2 text-sm font-bold" data-room="Жеке">Жеке</button></div><div id="chatBox" class="space-y-2 min-h-[220px]"></div><div class="flex gap-2 mt-4"><input id="chatInput" class="input" placeholder="Хабарлама..."><button id="chatSend" class="btn-primary rounded-2xl px-4 font-bold">Жіберу</button></div></div>
+              <div class="rounded-3xl border border-indigo-100 p-5"><h3 class="font-extrabold text-lg mb-3">Кафедра тапсырмалары</h3><div class="grid sm:grid-cols-[1fr_120px_auto] gap-2 mb-4"><input id="taskName" class="input" placeholder="Тапсырма атауы"><input id="taskPercent" type="number" class="input" value="60"><button id="taskAdd" class="btn-primary rounded-2xl px-4 font-bold">Қосу</button></div><div id="taskList" class="space-y-3"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="settings" class="panel">
+          <div class="card p-6">
+            <div class="mb-5"><div class="text-xs uppercase tracking-wide text-indigo-600 font-extrabold">Баптау</div><h2 class="text-2xl font-extrabold">Профиль және кабинет параметрлері</h2></div>
+            <div class="grid md:grid-cols-2 gap-5"><label class="text-sm font-bold">Аты-жөні<input id="setName" class="input mt-2" value="Қаумбаев Сунатулла"></label><label class="text-sm font-bold">Пән<input id="setSubject" class="input mt-2" value="Химия"></label><label class="text-sm font-bold">Статус<input id="setStatus" class="input mt-2" value="Педагог-шебер"></label><label class="text-sm font-bold">Кафедра<input id="setDept" class="input mt-2" value="Физика-информатика және жаратылыстану бағыты"></label></div>
+            <button id="saveSettings" class="mt-5 btn-primary rounded-2xl px-5 py-3 font-bold">Сақтау</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="aiModal" class="modal fixed inset-0 z-50 bg-slate-950/55 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] shadow-2xl max-w-6xl w-full h-[86vh] overflow-hidden flex flex-col border border-indigo-100">
+      <div class="px-5 py-4 border-b flex items-center justify-between gap-3"><div class="flex items-center gap-3"><div class="h-11 w-11 rounded-2xl bg-indigo-50 grid place-content-center text-2xl">🤖</div><div><div id="aiModalTitle" class="font-bold text-lg">ЖИ көмекші</div><div class="text-xs text-slate-500">Сайттан шықпай ашылады · онлайн тақта бірге</div></div></div><button id="closeAi" class="h-10 w-10 rounded-2xl bg-slate-100 hover:bg-slate-200 font-bold">×</button></div>
+      <div class="grid lg:grid-cols-[1.3fr_.7fr] flex-1 min-h-0">
+        <iframe id="aiFrame" src="about:blank" class="w-full h-full bg-white border-0"></iframe>
+        <div class="border-l bg-slate-50 p-4 overflow-auto"><h3 class="font-extrabold mb-2">Онлайн тақта</h3><p class="text-xs text-slate-500 mb-3">Жоспар, идея, тапсырма, prompt немесе қысқа ескертпе жазыңыз.</p><textarea id="onlineBoard" class="input min-h-[430px] bg-white" placeholder="Мысалы: 10А сыныбына химиялық реакция теңдеулерін теңестіру бойынша 3 деңгейлі тапсырма дайындау..."></textarea><div class="flex gap-2 mt-3"><button id="saveBoard" class="btn-primary rounded-2xl px-4 py-2 text-sm font-bold">Сақтау</button><button id="clearBoard" class="btn-outline rounded-2xl px-4 py-2 text-sm font-bold">Тазарту</button></div><div id="boardSaved" class="text-xs text-green-700 mt-2 hidden">Сақталды.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 hidden z-[60] rounded-2xl bg-slate-900 text-white px-5 py-3 shadow-2xl text-sm"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+function toast(t){const el=$('#toast'); el.textContent=t; el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'),2200)}
+function downloadFile(name,text){const blob=new Blob([text],{type:'application/msword;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function showPanel(id){$$('.panel').forEach(p=>p.classList.toggle('active',p.id===id)); $$('.navItem').forEach(n=>n.classList.toggle('active',n.dataset.panel===id)); window.scrollTo({top:0,behavior:'smooth'});}
+$$('.navItem').forEach(btn=>btn.addEventListener('click',()=>showPanel(btn.dataset.panel)));
+$$('[data-open-panel]').forEach(btn=>btn.addEventListener('click',()=>showPanel(btn.dataset.openPanel)));
+function updateNow(){const d=new Date(); $('#nowText').textContent=d.toLocaleDateString('kk-KZ')+' · '+d.toLocaleTimeString('kk-KZ',{hour:'2-digit',minute:'2-digit'});} updateNow(); setInterval(updateNow,30000);
+
+$('#avatarInput').addEventListener('change',e=>{const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{$('#avatarPreview').src=r.result; $('#avatarPreview').classList.remove('hidden'); $('#avatarIcon').classList.add('hidden')}; r.readAsDataURL(f)});
+
+$('#openBilim').addEventListener('click',()=>{$('#bilimFrame').classList.remove('hidden'); toast('БілімClass ішкі экранда ашылды')});
+
+const kmjDocs={
+1:`ҚЫСҚА МЕРЗІМДІ ЖОСПАР №1\n\nПәні: Химия\nСыныбы: 10 «А»\nМұғалім: Қаумбаев Сунатулла\nСабақ тақырыбы: Химиялық реакция теңдеулерін теңестіру\nОқу мақсаты: реакция теңдеулерін құрастыру және коэффициенттер арқылы теңестіру.\n\nСабақ мақсаты:\n1) Оқушылар реагент пен өнімді ажыратады.\n2) Коэффициент қою арқылы теңдеуді теңестіреді.\n3) Атом санының сақталу заңын дәлелдейді.\n\nБағалау критерийлері:\n- реакция теңдеуінің екі бөлігін дұрыс анықтайды;\n- атом санын салыстырады;\n- коэффициентті дұрыс таңдайды;\n- қорытындыны ғылыми тілде жазады.\n\nСабақ барысы:\nҰйымдастыру кезеңі — 3 минут. Сынып дайындығын тексеру, қауіпсіздік ережесін еске түсіру.\nҚызығушылықты ояту — 5 минут. «Реакцияны тап» әдісі: үш тұрмыстық құбылысты химиялық/физикалық өзгеріске бөлу.\nЖаңа білім — 12 минут. Теңдеу құрылымы, коэффициент, индекс және атом санының сақталу заңы модель арқылы түсіндіріледі.\nЖұптық жұмыс — 10 минут. Әр жұпқа төрт теңдеу беріледі: бірі теңестіреді, екіншісі тексереді.\nТәжірибелік тапсырма — 8 минут. Реакция белгілерін бақылау және қорытынды жазу.\nБекіту — 5 минут. Exit ticket: бір теңдеу, бір қате, бір қорытынды.\nРефлексия — 2 минут. «Мен түсіндім / әлі сұрағым бар» картасы.\n\nСаралау:\nҚолдауды қажет ететін оқушыға дайын атом саны кестесі беріледі. Қабілетті оқушыға күрделі теңдеу ұсынылады.\n\nҮй жұмысы:\n§18 оқу, 5 теңдеуді теңестіру, бір реакцияны өмірден мысалмен түсіндіру.\n\nӘкімшілік белгісі: тексеруге жіберілмеген.`,
+2:`ҚЫСҚА МЕРЗІМДІ ЖОСПАР №2\n\nПәні: Химия\nСыныбы: 9 «Б»\nМұғалім: Қаумбаев Сунатулла\nСабақ тақырыбы: Ерітінді концентрациясы\nОқу мақсаты: ерітіндідегі еріген заттың массалық үлесін есептеу және практикалық есептерде қолдану.\n\nСабақ мақсаты:\n1) Оқушылар ерітінді, еріген зат, еріткіш ұғымдарын ажыратады.\n2) Массалық үлес формуласын қолданады.\n3) Есептің шартын талдап, шешімін дәлелдейді.\n\nСабақ барысы:\nҰйымдастыру — 3 минут.\nАлдыңғы білімді тексеру — 6 минут. «Формуланы толықтыр» қысқа тапсырмасы.\nЖаңа білім — 10 минут. Массалық үлес формуласы және өлшем бірліктері.\nТоптық жұмыс — 12 минут. Үш деңгейлі есептер: базалық, қолданбалы, күрделі.\nПрактикалық байланыс — 8 минут. Тұзды су, дәрілік ерітінді, тұрмыстық химия мысалдары.\nБекіту — 4 минут. Бір есепті тақтада талдау.\nРефлексия — 2 минут. «Қай қадам қиын болды?» сұрағы.\n\nБағалау критерийлері:\n- формуланы дұрыс жазады;\n- берілгендерді анықтайды;\n- есептеу нәтижесін пайызбен көрсетеді;\n- жауаптың мағынасын түсіндіреді.\n\nҮй жұмысы:\nМассалық үлеске 4 есеп шығару, бір тұрмыстық мысал келтіру.\n\nӘкімшілік белгісі: тексеруге жіберілмеген.`,
+3:`ҚЫСҚА МЕРЗІМДІ ЖОСПАР №3\n\nПәні: Химия\nСыныбы: 8 «А»\nМұғалім: Қаумбаев Сунатулла\nСабақ тақырыбы: Металдар және бейметалдар\nОқу мақсаты: металдар мен бейметалдардың негізгі қасиеттерін салыстыру.\n\nСабақ барысы:\nҰйымдастыру — 3 минут.\nҚызығушылықты ояту — 5 минут. «Затты таны» визуалды тапсырмасы.\nЖаңа білім — 12 минут. Физикалық қасиеттерді салыстыру кестесі.\nТоптық жұмыс — 12 минут. Металл/бейметалл карточкаларын жіктеу.\nҚорытынды — 8 минут. Венн диаграммасы арқылы салыстыру.\nРефлексия — 5 минут. «Бір ұқсастық, екі айырмашылық» әдісі.\n\nҮй жұмысы:\nМеталдар мен бейметалдардың 5 мысалын жазып, қолданылуын түсіндіру.\n\nӘкімшілік белгісі: тексеруге жіберілмеген.`
+};
+function setKmj(id){$('#kmjPreview').value=kmjDocs[id]; $('#kmjStatus').textContent='Дайын КМЖ ашылды. Қажет болса түзетіп, әкімшілікке жіберіңіз.'}
+setKmj(1); $$('.readyKmj').forEach(b=>b.addEventListener('click',()=>setKmj(b.dataset.id)));
+function kmjNew(){const sub=$('#kmjSubject').value, grade=$('#kmjGrade').value, topic=$('#kmjTopic').value, goal=$('#kmjGoal').value; $('#kmjPreview').value=`ҚЫСҚА МЕРЗІМДІ ЖОСПАР\n\nПәні: ${sub}\nСыныбы: ${grade}\nМұғалім: Қаумбаев Сунатулла\nСабақ тақырыбы: ${topic}\nОқу мақсаты: ${goal}.\n\nСабақ мақсаты:\n1) Негізгі ұғымдарды анықтайды.\n2) Тақырып бойынша есеп/тапсырма орындайды.\n3) Нәтижені ғылыми тілде түсіндіреді.\n\nБағалау критерийлері:\n- ұғымдарды дұрыс қолданады;\n- дәлелді жауап береді;\n- тапсырманы толық орындайды.\n\nСабақ барысы:\nҰйымдастыру — 3 минут.\nҚызығушылықты ояту — 5 минут.\nЖаңа білім — 12 минут.\nЖұптық/топтық жұмыс — 10 минут.\nПрактикалық тапсырма — 8 минут.\nБекіту — 5 минут.\nРефлексия — 2 минут.\n\nҮй жұмысы:\nТақырып бойынша 5 тапсырма орындау.\n\nӘкімшілік белгісі: тексеруге жіберілмеген.`; $('#kmjStatus').textContent='Жаңа КМЖ дайындалды.'; toast('КМЖ жасалды')}
+$('#kmjGen').addEventListener('click',kmjNew); $('#kmjDownload').addEventListener('click',()=>downloadFile('KMJ_Kaumbaev_Sunatulla.doc',$('#kmjPreview').value)); $('#kmjSend').addEventListener('click',()=>{$('#kmjStatus').textContent='КМЖ әкімшілікке жіберілді. Әдістемелік завуч тексеруінде.';toast('КМЖ жіберілді')});
+function drawQR(){const box=$('#qrGrid');box.innerHTML='';for(let i=0;i<49;i++){const s=document.createElement('span');if((i*7+i)%5===0||[0,1,2,7,14,42,43,44,6,13,20,48].includes(i))s.classList.remove('off');else s.classList.toggle('off',Math.random()>.48);box.appendChild(s)}}
+$('#kmjApprove').addEventListener('click',()=>{$('#qrArea').classList.remove('hidden'); $('#kmjPreview').value=$('#kmjPreview').value.replace('Әкімшілік белгісі: тексеруге жіберілмеген.','Әкімшілік белгісі: тексерілді, қол қойылды, бекітілді. QR: KMJ-AI92-2026-CH-001'); drawQR(); toast('QR белгі шықты')});
+
+const ktp=[['1','Атом құрылысы және периодтық заң','2','атом құрылымын сипаттау','02.09'],['2','Химиялық байланыс түрлері','2','байланыс түрлерін ажырату','09.09'],['3','Химиялық реакция теңдеулері','3','теңдеулерді теңестіру','16.09'],['4','БЖБ №1','1','бөлім бойынша білімді бағалау','25.09'],['5','Ерітінділер және концентрация','3','массалық үлес есептеу','01.10'],['6','ТЖБ дайындық','1','тоқсандық мақсаттарды бекіту','20.10']];
+$('#ktpRows').innerHTML=ktp.map(r=>`<tr class="border-t"><td class="p-3">${r[0]}</td><td class="p-3 font-semibold">${r[1]}</td><td class="p-3">${r[2]}</td><td class="p-3">${r[3]}</td><td class="p-3">${r[4]}</td></tr>`).join(''); $('#ktpDownload').addEventListener('click',()=>downloadFile('KTZH_Kaumbaev_Sunatulla.doc',ktp.map(r=>r.join(' | ')).join('\n')));
+
+const aiTools=[['ChatGPT','Жоспар, тапсырма, тест, рефлексия және мәтін генерациялауға көмектеседі.','https://chatgpt.com','💬'],['Khanmigo','Khan Academy негізінде жеке түсіндіру және тапсырма беру.','https://www.khanacademy.org/khan-labs','🎓'],['Google Gemini','Docs/Slides үшін мәтін, жоспар және талдау генерациялау.','https://gemini.google.com','✨'],['Canva Magic','Постер, жұмыс дәптері және инфографика дайындау.','https://www.canva.com','🎨'],['MathGPT','Математика есептерін шығару және қадамдық түсіндіру.','https://mathgpt.com','🧮'],['Diffit AI','Мәтінді деңгейге бейімдеп, оқу тапсырмасын құру.','https://web.diffit.me','📚'],['Quizizz AI','Тест, викторина және қалыптастырушы бағалау дайындау.','https://quizizz.com','✅'],['Perplexity','Дерек іздеу, қысқа шолу және сабаққа материал жинау.','https://www.perplexity.ai','🔎']];
+$('#aiCards').innerHTML=aiTools.map(t=>`<div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-md transition"><div class="flex-1"><div class="ai-logo">${t[3]}</div><h3 class="text-center font-semibold mb-1">${t[0]}</h3><p class="text-xs text-slate-600 text-center">${t[1]}</p></div><button class="openAi mt-3 inline-flex justify-center px-3 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold" data-url="${t[2]}" data-name="${t[0]}">Ашу</button></div>`).join('');
+function openAi(url,name){$('#aiModalTitle').textContent=name||'ЖИ көмекші'; $('#aiFrame').src=url; $('#aiModal').classList.add('show')}
+$('#aiCards').addEventListener('click',e=>{const b=e.target.closest('.openAi'); if(b)openAi(b.dataset.url,b.dataset.name)}); $('#openAiTop').addEventListener('click',()=>openAi('https://chatgpt.com','ChatGPT')); $('#closeAi').addEventListener('click',()=>{$('#aiModal').classList.remove('show'); $('#aiFrame').src='about:blank'}); $('#saveBoard').addEventListener('click',()=>{localStorage.setItem('teacherOnlineBoard',$('#onlineBoard').value); $('#boardSaved').classList.remove('hidden'); setTimeout(()=>$('#boardSaved').classList.add('hidden'),1600)}); $('#clearBoard').addEventListener('click',()=>{$('#onlineBoard').value='';localStorage.removeItem('teacherOnlineBoard')}); $('#onlineBoard').value=localStorage.getItem('teacherOnlineBoard')||'';
+
+let kpi=[['Олимпиада жүлдегерін дайындау','22','Бұйрық/диплом'],['Ашық сабақ / семинар','14','Әдістемелік анықтама'],['Цифрлық ресурс әзірлеу','10','Сілтеме']];
+function renderKpi(){let sum=kpi.reduce((a,x)=>a+Number(x[1]),0);let percent=Math.min(100,Math.round(50+sum*1.2));$('#kpiPercent').textContent=percent+'%';$('#kpiBar').style.width=percent+'%';$('#heroKpi').textContent=percent+'%';$('#kpiBody').innerHTML=kpi.map((x,i)=>`<tr class="border-t"><td class="p-3">${i+1}</td><td class="p-3 font-semibold">${x[0]}</td><td class="p-3">${x[1]}</td><td class="p-3">${x[2]}</td></tr>`).join('')}
+renderKpi(); $('#kpiAdd').addEventListener('click',()=>{const sel=$('#kpiType'); const title=$('#kpiTitle').value.trim()||sel.options[sel.selectedIndex].text; const point=sel.value; const f=$('#kpiFile').files[0]?.name||'құжат тіркелді'; kpi.push([title,point,f]); $('#kpiTitle').value=''; renderKpi(); toast('Жетістік қосылды')}); $('#kpiDownload').addEventListener('click',()=>downloadFile('KPI_Kaumbaev_Sunatulla.xls',kpi.map((x,i)=>`${i+1}\t${x[0]}\t${x[1]}\t${x[2]}`).join('\n')));
+
+function makeAnalysis(){const total=Number($('#studentsTotal').value), high=Number($('#highCount').value), mid=Number($('#midCount').value), low=Number($('#lowCount').value); const success=Math.round((high+mid*.75)/total*100); $('#analysisText').value=`${$('#analysisClass').value} сыныбы бойынша ${$('#analysisType').value} талдауы\n\nҚатысқан оқушы саны: ${total}.\nЖоғары деңгей: ${high} оқушы.\nОрта деңгей: ${mid} оқушы.\nТөмен деңгей: ${low} оқушы.\n\nЖалпы сапа көрсеткіші: ${success}%.\n\nҚорытынды:\nОқушылардың басым бөлігі тақырыптың негізгі ұғымдарын меңгерген. Жоғары деңгей көрсеткен оқушылар есептің шартын талдап, шешу жолын ғылыми тілде түсіндіре алды. Орта деңгейдегі оқушыларға формула қолдану және дәлелді жауап жазу бойынша қосымша жұмыс қажет. Төмен деңгейдегі оқушылармен жеке түзету жұмысы жүргізіледі.\n\nҰсыныс:\n1) Қате жиі кеткен оқу мақсаттары бойынша 10 минуттық қайталау ұйымдастыру.\n2) Деңгейлік тапсырмалар беру.\n3) Келесі сабақта қысқа қалыптастырушы бағалау жүргізу.\n4) Нәтижені БілімClass журналына тіркеу.`}
+$('#makeAnalysis').addEventListener('click',makeAnalysis); makeAnalysis(); $('#analysisDownload').addEventListener('click',()=>downloadFile('BZHB_TZHB_taldau.doc',$('#analysisText').value));
+
+const methods=[['«Ойлан – Жұптас – Бөліс»','Мақсат: жаңа тақырыпты талқылау.\n1) Оқушы 1 минут жеке ойланады.\n2) 2 минут жұппен пікір алмасады.\n3) Топ алдында қысқа жауап береді.\nШаблон: «Менің дәлелім..., себебі...»','8 минут'],['«Exit ticket»','Мақсат: сабақ соңындағы түсінуді тексеру.\nОқушы қағазға 3 нәрсе жазады: бүгін түсіндім, қиын болды, келесі сұрағым.\nМұғалім келесі сабаққа түзету жасайды.','5 минут'],['«Қате теңдеуді тап»','Химияға ыңғайлы әдіс. Мұғалім әдейі қате теңдеу береді, оқушы қатені тауып, дұрысын жазады.\nШаблон: қате → дәлел → дұрыс жауап.','10 минут'],['«Деңгейлік станция»','Сынып 3 станцияға бөлінеді: базалық, қолданбалы, күрделі. Әр оқушы өз деңгейінен бастап, жоғары қарай өтеді.','15 минут']];
+$('#methodCards').innerHTML=methods.map(m=>`<div class="rounded-3xl bg-white border border-indigo-100 p-5"><div class="flex justify-between gap-3 mb-3"><h3 class="font-extrabold text-lg">${m[0]}</h3><span class="badge badge-blue">${m[2]}</span></div><pre class="whitespace-pre-wrap text-sm text-slate-600 font-sans leading-relaxed">${m[1]}</pre><button class="methodCopy mt-4 btn-outline rounded-2xl px-4 py-2 text-sm font-bold" data-text="${m[1].replace(/"/g,'&quot;')}">Шаблонды көшіру</button></div>`).join(''); $$('.methodCopy').forEach(b=>b.addEventListener('click',()=>{navigator.clipboard?.writeText(b.dataset.text); toast('Шаблон көшірілді')}));
+
+const att=['Жеке мәлімет және өтініш','Педагогикалық тәжірибе сипаттамасы','Оқушы жетістіктері','Ашық сабақ материалдары','КМЖ және КТЖ құжаттары','БЖБ/ТЖБ талдауы','Курстар мен сертификаттар','Авторлық жұмыс/цифрлық ресурс']; $('#attChecks').innerHTML=att.map((x,i)=>`<label class="rounded-3xl bg-white border border-indigo-100 p-4 flex items-start gap-3"><input type="checkbox" class="att mt-1" ${i<5?'checked':''}><span><b>${x}</b><p class="text-xs text-slate-500">Портфолио бөлімі</p></span></label>`).join(''); function renderAtt(){const checked=$$('.att:checked').length; const p=Math.round(checked/att.length*100); $('#attPercent').textContent=p+'%'; $('#attBar').style.width=p+'%'} $$('.att').forEach(c=>c.addEventListener('change',renderAtt)); renderAtt(); $('#attFile').addEventListener('change',()=>{$('#attFiles').innerHTML=Array.from($('#attFile').files).map(f=>`<div>📎 ${f.name}</div>`).join('')}); $('#attReport').addEventListener('click',()=>downloadFile('Attestattau_portfolio.doc','Қаумбаев Сунатулла\nАттестаттау портфолиосы\nДайындық: '+$('#attPercent').textContent));
+
+$('#sendMsg').addEventListener('click',()=>{const r=$('#recipient').value,t=$('#msgText').value.trim(); if(!t)return; $('#msgList').prepend(Object.assign(document.createElement('div'),{className:'rounded-3xl bg-white border border-indigo-100 p-4',innerHTML:`<b>${r}</b><p class="text-sm text-slate-600 mt-1">${t}</p><p class="text-xs text-slate-400 mt-2">Жіберілді · ${new Date().toLocaleTimeString('kk-KZ',{hour:'2-digit',minute:'2-digit'})}</p>`})); $('#msgText').value=''; toast('Хабарлама жіберілді')});
+
+let room='Кафедра'; const chatSeed=[{r:'Кафедра',u:'Әдістемелік завуч',t:'БЖБ талдауын жұмаға дейін жіберіңіз.'},{r:'Кафедра',u:'Қаумбаев Сунатулла',t:'10А бойынша есеп дайындалып жатыр.'},{r:'Химия',u:'Химия пәні мұғалімі',t:'Ерітінді тақырыбына ортақ тапсырма дайындайық.'},{r:'Жеке',u:'Мунасаева Рая Нуровна',t:'КТЖ файлын қарап жібересіз бе?'}]; function renderChat(){const box=$('#chatBox'); box.innerHTML=''; chatSeed.filter(x=>x.r===room).forEach(m=>box.insertAdjacentHTML('beforeend',`<div class="rounded-2xl bg-white border border-indigo-100 p-3"><b>${m.u}</b><p class="text-sm text-slate-600">${m.t}</p></div>`))} $$('.chatRoom').forEach(b=>b.addEventListener('click',()=>{room=b.dataset.room; $$('.chatRoom').forEach(x=>x.className='chatRoom btn-outline rounded-2xl px-3 py-2 text-sm font-bold'); b.className='chatRoom btn-primary rounded-2xl px-3 py-2 text-sm font-bold'; renderChat()})); $('#chatSend').addEventListener('click',()=>{const t=$('#chatInput').value.trim(); if(!t)return; chatSeed.push({r:room,u:'Қаумбаев Сунатулла',t}); $('#chatInput').value=''; renderChat()}); renderChat(); function renderTasks(){const tasks=[['БЖБ талдауын тапсыру',84],['КТЖ жаңарту',72],['Ашық сабақ материалын жүктеу',60]]; $('#taskList').innerHTML=tasks.map(t=>`<div class="rounded-3xl border border-indigo-100 p-4"><div class="flex justify-between mb-2"><b>${t[0]}</b><span>${t[1]}%</span></div><div class="progress"><span style="width:${t[1]}%"></span></div></div>`).join('')} renderTasks(); $('#taskAdd').addEventListener('click',()=>{const n=$('#taskName').value.trim()||'Жаңа тапсырма',p=Math.max(0,Math.min(100,Number($('#taskPercent').value||0))); $('#taskList').insertAdjacentHTML('afterbegin',`<div class="rounded-3xl border border-indigo-100 p-4"><div class="flex justify-between mb-2"><b>${n}</b><span>${p}%</span></div><div class="progress"><span style="width:${p}%"></span></div></div>`); $('#taskName').value=''; toast('Тапсырма қосылды')});
+$('#saveSettings').addEventListener('click',()=>toast('Профиль баптауы сақталды'));
+</script>
+</body>
+</html>

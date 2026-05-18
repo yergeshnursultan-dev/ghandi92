@@ -1,0 +1,1845 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCHOOL PORTAL AI92 — Әкімшілік панелі</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Section show/hide */
+    .panel-section { display: none; }
+    .panel-section.active { display: block; }
+
+    /* Sidebar */
+    .side-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 12px;
+      font-size: 13.5px; color: #475569;
+      cursor: pointer; transition: all .15s;
+      user-select: none;
+    }
+    .side-link:hover { background: #eef3ff; color: #31439f; }
+    .side-link.active {
+      background: linear-gradient(135deg, #4f65d8, #6d5bd0);
+      color: #fff; font-weight: 600;
+      box-shadow: 0 6px 16px rgba(79,101,216,.25);
+    }
+    .side-link .ic { font-size: 17px; min-width: 22px; text-align: center; }
+    .side-section-title {
+      font-size: 10.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: #94a3b8; padding: 14px 12px 6px;
+    }
+
+    /* Stat card */
+    .stat-card {
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 16px; padding: 14px 16px;
+    }
+    .stat-card .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #64748b; }
+    .stat-card .val { font-size: 26px; font-weight: 800; color: #31439f; margin-top: 2px; line-height: 1; }
+    .stat-card .delta { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+
+    /* Progress bar */
+    .pbar { height: 8px; background: #f1f5f9; border-radius: 999px; overflow: hidden; }
+    .pbar > div { height: 100%; border-radius: 999px; }
+
+    /* Document status */
+    .doc-status {
+      font-size: 10.5px; font-weight: 700;
+      padding: 3px 9px; border-radius: 999px;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .ds-wait { background: #fef3c7; color: #78350f; }
+    .ds-ok   { background: #e0e7ff; color: #31439f; }
+    .ds-back { background: #fee2e2; color: #7f1d1d; }
+    .ds-rev  { background: #dbeafe; color: #1e40af; }
+
+    /* Risk card */
+    .risk-card { padding: 12px 14px; border-radius: 14px; border: 1.5px solid; background: #fff; }
+    .risk-high { border-color: #fca5a5; background: #fef2f2; }
+    .risk-mid  { border-color: #fcd34d; background: #fffbeb; }
+    .risk-low  { border-color: #a5b4fc; background: #eef3ff; }
+    .risk-pill {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 999px; letter-spacing: .05em;
+    }
+    .rp-high { background:#dc2626; color:#fff; }
+    .rp-mid  { background:#f59e0b; color:#fff; }
+    .rp-low  { background:#6d5bd0; color:#fff; }
+
+    /* Card */
+    .a-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 18px; }
+    .a-table { width: 100%; font-size: 13px; }
+    .a-table th { text-align: left; padding: 8px 10px; background: #f8fafc; color: #475569; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #e2e8f0; }
+    .a-table td { padding: 9px 10px; border-bottom: 1px solid #f1f5f9; }
+    .a-table tr:hover td { background: #f8fafc; }
+
+    /* Buttons */
+    .a-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 11px; font-size: 13px; font-weight: 600; transition: all .15s; cursor: pointer; border: 0; }
+    .a-btn-primary { background: #4f65d8; color: #fff; }
+    .a-btn-primary:hover { background: #31439f; }
+    .a-btn-soft { background: #e0e7ff; color: #31439f; }
+    .a-btn-soft:hover { background: #c7d2fe; }
+    .a-btn-outline { background: #fff; color: #31439f; border: 1.5px solid #e0e7ff; }
+    .a-btn-outline:hover { border-color: #4f65d8; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #1e293b; color: #fff;
+      padding: 12px 18px; border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.2);
+      z-index: 2000; opacity: 0; transform: translateY(20px);
+      transition: all .3s; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .module-tile {
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 18px; padding: 16px;
+      cursor: pointer; transition: all .15s;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .module-tile:hover {
+      transform: translateY(-3px);
+      border-color: #6d5bd0;
+      box-shadow: 0 14px 30px rgba(79,101,216,.12);
+    }
+    .module-tile .mt-ic {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: grid; place-content: center;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+  <!-- Navbar (v2 stilde) -->
+  <header class="sticky top-0 z-40 backdrop-blur bg-white/85 border-b">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="h-10 w-10 rounded-xl bg-white border overflow-hidden grid place-content-center shadow-sm">
+          <img src="logo.png" alt="logo" class="h-9 w-9 object-contain">
+        </span>
+        <div>
+          <div class="font-bold leading-tight text-sm md:text-base">SCHOOL PORTAL AI92</div>
+          <div class="text-[10px] md:text-xs text-slate-500">
+            Әкімшілік панелі · Махатма Ганди атындағы №92 лицей
+          </div>
+        </div>
+      </a>
+      <nav class="ml-auto flex flex-wrap items-center gap-3 text-xs md:text-sm">
+        <a href="index.html" class="hover:text-indigo-600">Басты бет</a>
+        <a href="tools.html" class="hover:text-indigo-600">Цифрлық құралдар</a>
+        <span id="userBadge" class="text-slate-500"></span>
+        <button id="logoutBtn" class="text-rose-600 hover:underline">Шығу</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <div class="max-w-7xl mx-auto px-4 py-5 grid lg:grid-cols-[260px,1fr] gap-5">
+
+      <!-- ============ SIDEBAR ============ -->
+      <aside class="bg-white rounded-2xl border border-slate-200 p-3 lg:sticky lg:top-[80px] lg:self-start lg:max-h-[calc(100vh-100px)] lg:overflow-auto">
+
+        <div class="px-3 py-2 mb-2">
+          <div class="text-[11px] uppercase tracking-wider text-indigo-700 font-semibold">SPAI92 · Әкімшілік</div>
+          <div class="font-bold text-slate-800 mt-0.5" id="adminTitle">Сейітов А.Б.</div>
+          <div class="text-xs text-slate-500">Директордың орынбасары</div>
+        </div>
+
+        <div class="side-section-title">Басты</div>
+        <div class="side-link active" data-section="dashboard"><span class="ic">🏠</span>Басты тақта</div>
+        <div class="side-link" data-section="director"><span class="ic">🏛️</span>Директор бақылауы</div>
+
+        <div class="side-section-title">Орынбасарлар</div>
+        <div class="side-link" data-section="vice-edu"><span class="ic">📚</span>Оқу ісі жөніндегі</div>
+        <div class="side-link" data-section="vice-method"><span class="ic">🧩</span>Әдістемелік жөніндегі</div>
+        <div class="side-link" data-section="vice-discipline"><span class="ic">🎯</span>Тәрбие ісі жөніндегі</div>
+        <div class="side-link" data-section="vice-economy"><span class="ic">🛠️</span>Шаруашылық жөніндегі</div>
+
+        <div class="side-section-title">Мамандар</div>
+        <div class="side-link" data-section="psychologist"><span class="ic">🧠</span>Психологтар кабинеті</div>
+        <div class="side-link" data-section="medical"><span class="ic">🏥</span>Медициналық пункт</div>
+        <div class="side-link" data-section="bookkeeper"><span class="ic">💰</span>Бухгалтерия</div>
+        <div class="side-section-title">ЖИ автоматтандыру</div>
+        <div class="side-link" data-section="ai-warning"><span class="ic">🚨</span>ЖИ ерте ескерту</div>
+        <div class="side-link" data-section="documents"><span class="ic">📄</span>Құжат айналымы</div>
+        <div class="side-link" data-section="cafeteria"><span class="ic">🍽️</span>Smart Асхана</div>
+        <div class="side-link" data-section="library"><span class="ic">📖</span>Smart Кітапхана</div>
+        <div class="side-link" data-section="security"><span class="ic">🛡️</span>Қауіпсіздік + кіру</div>
+        <div class="side-link" data-section="transport"><span class="ic">🚌</span>Көлік / автобус</div>
+        <div class="side-link" data-section="olympiad"><span class="ic">🏆</span>Олимпиада басқару</div>
+
+        <div class="side-section-title">Басқа</div>
+        <div class="side-link" data-section="kpi"><span class="ic">📊</span>Мұғалім KPI шолуы</div>
+        <div class="side-link" data-section="orders"><span class="ic">📋</span>Бұйрықтар</div>
+        <div class="side-link" data-section="news-feed"><span class="ic">📢</span>Жаңалықтар тізімі</div>
+
+      </aside>
+
+      <!-- ============ CONTENT ============ -->
+      <div>
+
+        <!-- ===== DASHBOARD ===== -->
+        <section class="panel-section active" data-section="dashboard">
+          <div class="rounded-2xl p-6 mb-5 text-white" style="background: linear-gradient(135deg, #4f65d8, #6d5bd0 60%, #7c3aed);">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90 mb-1">Қош келдіңіз</div>
+                <h1 class="text-2xl font-bold">Әкімшілік басқару орталығы</h1>
+                <p class="text-sm opacity-90 mt-1">Барлық бөлімдерді бір жерден басқарыңыз: оқу, тәрбие, шаруашылық, психология, қаржы.</p>
+              </div>
+              <div class="flex gap-2 flex-wrap">
+                <button class="px-4 py-2 rounded-xl bg-white text-indigo-700 font-semibold text-sm" onclick="openSection('ai-warning')">🚨 ЖИ ескертулер</button>
+                <button class="px-4 py-2 rounded-xl bg-white/20 text-white font-semibold text-sm" onclick="openSection('documents')">📄 Құжаттар</button>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="text-lg font-bold text-slate-800 mb-3">📊 Жалпы көрсеткіштер</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div class="stat-card"><div class="lbl">Оқушы саны</div><div class="val">612</div><div class="delta">↑ 4 жаңа</div></div>
+            <div class="stat-card"><div class="lbl">Мұғалімдер</div><div class="val">48</div><div class="delta">5 кафедра</div></div>
+            <div class="stat-card"><div class="lbl">Қатысу</div><div class="val">96.4%</div><div class="delta">↑ 1.2% / апта</div></div>
+            <div class="stat-card"><div class="lbl">Орт. рейтинг</div><div class="val">4.32</div><div class="delta">/ 5.0</div></div>
+          </div>
+
+          <h2 class="text-lg font-bold text-slate-800 mb-3">👥 Әкімшілік құрамы</h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+            <div class="module-tile" onclick="openSection('director')">
+              <div class="mt-ic" style="background:#ede9fe; color:#6d28d9;">🏛️</div>
+              <div class="font-bold text-slate-800">Директор</div>
+              <p class="text-xs text-slate-600">Жалпы стратегиялық басқару, KPI бақылау, маңызды шешімдер.</p>
+            </div>
+            <div class="module-tile" onclick="openSection('vice-edu')">
+              <div class="mt-ic" style="background:#dbeafe; color:#1e40af;">📚</div>
+              <div class="font-bold text-slate-800">Оқу ісі жөніндегі орынбасары</div>
+              <p class="text-xs text-slate-600">Кесте, КМЖ, бақылау жұмыстары, үлгерім мониторингі.</p>
+            </div>
+            <div class="module-tile" onclick="openSection('vice-method')">
+              <div class="mt-ic" style="background:#e0e7ff; color:#31439f;">🧩</div>
+              <div class="font-bold text-slate-800">Әдістемелік жөніндегі орынбасары</div>
+              <p class="text-xs text-slate-600">Мұғалімдер жұмысы, біліктілік арттыру, аттестация, портфолио және әдістемелік сүйемелдеу.</p>
+            </div>
+            <div class="module-tile" onclick="openSection('vice-discipline')">
+              <div class="mt-ic" style="background:#fef3c7; color:#b45309;">🎯</div>
+              <div class="font-bold text-slate-800">Тәрбие ісі жөніндегі орынбасары</div>
+              <p class="text-xs text-slate-600">Тәрбие жоспары, іс-шара, сынып жетекшілер.</p>
+            </div>
+            <div class="module-tile" onclick="openSection('vice-economy')">
+              <div class="mt-ic" style="background:#fee2e2; color:#b91c1c;">🛠️</div>
+              <div class="font-bold text-slate-800">Шаруашылық жөніндегі орынбасары</div>
+              <p class="text-xs text-slate-600">Жөндеу, инвентарь, материалдық-техникалық база.</p>
+            </div>
+            <div class="module-tile" onclick="openSection('psychologist')">
+              <div class="mt-ic" style="background:#fce7f3; color:#be185d;">🧠</div>
+              <div class="font-bold text-slate-800">Психологтар</div>
+              <p class="text-xs text-slate-600">Жеке кеңес, топтық тренинг, сауалнама нәтижелері.</p>
+            </div>
+            <div class="module-tile" onclick="openSection('bookkeeper')">
+              <div class="mt-ic" style="background:#dcfce7; color:#166534;">💰</div>
+              <div class="font-bold text-slate-800">Бухгалтерия</div>
+              <p class="text-xs text-slate-600">Жалақы, қосымша сағат, төлемдер, Excel есептер.</p>
+            </div>
+          </div>
+
+          <h2 class="text-lg font-bold text-slate-800 mb-3">🚀 ЖИ автоматтандыру модульдері</h2>
+          <div class="rounded-2xl p-5 mb-4 text-white" style="background: linear-gradient(135deg, #31439f, #0d9488);">
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <h3 class="text-lg font-bold">🤖 7 жаңа автоматтандыру идеясы</h3>
+              <span class="px-3 py-1 rounded-full bg-white/25 text-xs font-semibold">SPAI92 v4 жаңа</span>
+            </div>
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('ai-warning')">
+                <div class="text-2xl mb-1">🚨</div>
+                <div class="font-bold">ЖИ ерте ескерту</div>
+                <p class="text-[11px] opacity-90 mt-1">Тәуекелдегі оқушыларды табу.</p>
+              </div>
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('documents')">
+                <div class="text-2xl mb-1">📄</div>
+                <div class="font-bold">Құжат айналымы</div>
+                <p class="text-[11px] opacity-90 mt-1">Электронды қол қою.</p>
+              </div>
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('cafeteria')">
+                <div class="text-2xl mb-1">🍽️</div>
+                <div class="font-bold">Smart Асхана</div>
+                <p class="text-[11px] opacity-90 mt-1">QR-төлем, аллергия.</p>
+              </div>
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('library')">
+                <div class="text-2xl mb-1">📖</div>
+                <div class="font-bold">Smart Кітапхана</div>
+                <p class="text-[11px] opacity-90 mt-1">QR-кітап, AI ұсыныс.</p>
+              </div>
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('security')">
+                <div class="text-2xl mb-1">🛡️</div>
+                <div class="font-bold">Қауіпсіздік</div>
+                <p class="text-[11px] opacity-90 mt-1">QR-кіру, SMS.</p>
+              </div>
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('transport')">
+                <div class="text-2xl mb-1">🚌</div>
+                <div class="font-bold">Көлік басқару</div>
+                <p class="text-[11px] opacity-90 mt-1">Автобус трекинг.</p>
+              </div>
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('olympiad')">
+                <div class="text-2xl mb-1">🏆</div>
+                <div class="font-bold">Олимпиада</div>
+                <p class="text-[11px] opacity-90 mt-1">Жүлделер, рейтинг.</p>
+              </div>
+              <div class="bg-white/15 backdrop-blur rounded-xl p-3 cursor-pointer hover:bg-white/25" onclick="openSection('medical')">
+                <div class="text-2xl mb-1">🏥</div>
+                <div class="font-bold">Медпункт</div>
+                <p class="text-[11px] opacity-90 mt-1">Вакцина, ауыруы.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== DIRECTOR ===== -->
+        <section class="panel-section" data-section="director">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Директор</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Жалпы бақылау орталығы</h1>
+          <p class="text-sm text-slate-500 mb-4">KPI, мұғалім белсенділігі, жылдық трендтер, маңызды шешімдер.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Жалпы KPI</div><div class="val">91%</div><div class="delta">↑ 4% жыл</div></div>
+            <div class="stat-card"><div class="lbl">Олимпиада</div><div class="val">42</div><div class="delta">жүлделер</div></div>
+            <div class="stat-card"><div class="lbl">Педагог-шебер</div><div class="val">7</div><div class="delta">мұғалім</div></div>
+            <div class="stat-card"><div class="lbl">Үлгерім</div><div class="val">4.32</div><div class="delta">мектеп орт.</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🏆 Үздік мұғалімдер (KPI)</h3>
+              <div class="space-y-2">
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-indigo-50">
+                  <span class="text-2xl font-bold text-indigo-700">1</span>
+                  <div class="flex-1"><div class="font-semibold text-sm">Каумбаев Сунатулла</div><div class="text-xs text-slate-500">Информатика</div></div>
+                  <div class="text-right"><div class="text-lg font-bold text-indigo-700">7842</div><div class="text-[10px] text-slate-500">балл</div></div>
+                </div>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-indigo-50">
+                  <span class="text-2xl font-bold text-indigo-700">2</span>
+                  <div class="flex-1"><div class="font-semibold text-sm">Алимбекова Халима</div><div class="text-xs text-slate-500">Ағылшын тілі</div></div>
+                  <div class="text-right"><div class="text-lg font-bold text-indigo-700">6924</div><div class="text-[10px] text-slate-500">балл</div></div>
+                </div>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-indigo-50">
+                  <span class="text-2xl font-bold text-indigo-700">3</span>
+                  <div class="flex-1"><div class="font-semibold text-sm">Мунасаева Р.Н.</div><div class="text-xs text-slate-500">Қазақ тілі</div></div>
+                  <div class="text-right"><div class="text-lg font-bold text-indigo-700">5723</div><div class="text-[10px] text-slate-500">балл</div></div>
+                </div>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50">
+                  <span class="text-2xl font-bold text-slate-500">4</span>
+                  <div class="flex-1"><div class="font-semibold text-sm">Қайратұлы Ақылжан</div><div class="text-xs text-slate-500">Физика</div></div>
+                  <div class="text-right"><div class="text-lg font-bold text-slate-700">5104</div><div class="text-[10px] text-slate-500">балл</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📈 Жылдық трендтер</h3>
+              <div class="space-y-3 text-sm">
+                <div><div class="flex justify-between mb-1"><span>Үлгерім</span><span class="font-bold">4.32 / 5.0</span></div><div class="pbar"><div style="width:86%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Қатысу</span><span class="font-bold">96.4%</span></div><div class="pbar"><div style="width:96%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Олимпиада жетістігі</span><span class="font-bold">+18%</span></div><div class="pbar"><div style="width:78%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Ата-ана қанағаттанушылығы</span><span class="font-bold">92%</span></div><div class="pbar"><div style="width:92%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between mb-1"><span>Цифрлық құжат айналымы</span><span class="font-bold">89%</span></div><div class="pbar"><div style="width:89%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="a-card mt-4">
+            <h3 class="font-bold text-slate-800 mb-3">📋 Маңызды шешімдер тізімі</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200">
+                <div><div class="font-semibold">Жаңа кафедра меңгерушісін бекіту</div><div class="text-xs text-slate-500">Математика кафедрасы · 17.05</div></div>
+                <button class="a-btn a-btn-primary">Қарау →</button>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200">
+                <div><div class="font-semibold">11А сыныбына жаңа кесте бекіту</div><div class="text-xs text-slate-500">2-жарты жыл · 19.05</div></div>
+                <button class="a-btn a-btn-primary">Қарау →</button>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                <div><div class="font-semibold">Олимпиада жеңімпаздарын марапаттау</div><div class="text-xs text-indigo-700">✓ 13.05 · бұйрық №47</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== VICE-EDU ===== -->
+        <section class="panel-section" data-section="vice-edu">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Оқу ісі жөніндегі орынбасары</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Оқу процесін автоматтандыру</h1>
+          <p class="text-sm text-slate-500 mb-4">Кесте, мұғалім жүктемесі, бақылау жұмыстары, КМЖ бекіту, үлгерім мониторингі.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Жалпы кесте</div><div class="val">36</div><div class="delta">сынып</div></div>
+            <div class="stat-card"><div class="lbl">Бақылау жұм.</div><div class="val">14</div><div class="delta">бұл айда</div></div>
+            <div class="stat-card"><div class="lbl">КМЖ бекіту</div><div class="val">8</div><div class="delta text-amber-700">күтілуде</div></div>
+            <div class="stat-card"><div class="lbl">Орт. үлгерім</div><div class="val">4.32</div><div class="delta">↑ 0.12</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📅 Кафедралар бойынша кесте</h3>
+              <table class="a-table">
+                <thead><tr><th>Кафедра</th><th>Сағат</th><th>Мұғалім</th><th>Статус</th></tr></thead>
+                <tbody>
+                  <tr><td>Физика-информатика</td><td>96</td><td>5</td><td><span class="doc-status ds-ok">Бекітілді</span></td></tr>
+                  <tr><td>Қазақ тілі-әдебиет</td><td>112</td><td>6</td><td><span class="doc-status ds-ok">Бекітілді</span></td></tr>
+                  <tr><td>Математика</td><td>104</td><td>5</td><td><span class="doc-status ds-rev">Тексеруде</span></td></tr>
+                  <tr><td>Ағылшын тілі</td><td>88</td><td>4</td><td><span class="doc-status ds-ok">Бекітілді</span></td></tr>
+                  <tr><td>Жаратылыстану</td><td>80</td><td>4</td><td><span class="doc-status ds-wait">Күтілуде</span></td></tr>
+                </tbody>
+              </table>
+              <button class="a-btn a-btn-primary mt-3">+ Жаңа кесте</button>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📝 КМЖ бекіту кезегі</h3>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between border border-amber-200 bg-amber-50 rounded-xl px-3 py-2">
+                  <div><div class="font-semibold text-sm">Мунасаева Р.Н. · Қазақ тілі · Құрмалас сөйлем (10Ә)</div><div class="text-xs text-slate-500">бүгін, 09:15</div></div>
+                  <div class="flex gap-1">
+                    <button class="a-btn a-btn-primary !py-1 text-xs">Бекіту</button>
+                    <button class="a-btn a-btn-soft !py-1 text-xs">Қайтару</button>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between border border-amber-200 bg-amber-50 rounded-xl px-3 py-2">
+                  <div><div class="font-semibold text-sm">Каумбаев С.А. · Информатика (11А)</div><div class="text-xs text-slate-500">бүгін, 08:30</div></div>
+                  <div class="flex gap-1">
+                    <button class="a-btn a-btn-primary !py-1 text-xs">Бекіту</button>
+                    <button class="a-btn a-btn-soft !py-1 text-xs">Қайтару</button>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between border border-indigo-200 bg-indigo-50 rounded-xl px-3 py-2">
+                  <div><div class="font-semibold text-sm">Қайратұлы А. · Физика (9Б)</div><div class="text-xs text-indigo-700">✓ Бекітілді</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📈 Сыныптар бойынша үлгерім</h3>
+              <div class="space-y-3">
+                <div><div class="flex justify-between text-xs mb-1"><span>10 «А»</span><span class="font-bold">4.62</span></div><div class="pbar"><div style="width:92%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>10 «Б»</span><span class="font-bold">4.41</span></div><div class="pbar"><div style="width:88%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>11 «А»</span><span class="font-bold">4.55</span></div><div class="pbar"><div style="width:91%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>9 «А»</span><span class="font-bold">4.21</span></div><div class="pbar"><div style="width:84%; background:#f59e0b;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>8 «Б»</span><span class="font-bold">3.92</span></div><div class="pbar"><div style="width:78%; background:#f59e0b;"></div></div></div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📋 Бақылау жұмыстары</h3>
+              <table class="a-table">
+                <thead><tr><th>Күн</th><th>Пән</th><th>Сынып</th><th>Орт. балл</th></tr></thead>
+                <tbody>
+                  <tr><td>12.05</td><td>Математика</td><td>10А</td><td><b class="text-indigo-700">4.5</b></td></tr>
+                  <tr><td>10.05</td><td>Қазақ тілі</td><td>9Б</td><td><b class="text-indigo-700">4.3</b></td></tr>
+                  <tr><td>09.05</td><td>Физика</td><td>11А</td><td><b class="text-amber-700">3.9</b></td></tr>
+                  <tr><td>08.05</td><td>Химия</td><td>10Ә</td><td><b class="text-indigo-700">4.7</b></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== VICE-DISCIPLINE ===== -->
+        <section class="panel-section" data-section="vice-discipline">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Тәрбие ісі жөніндегі орынбасары</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Тәрбие жұмысын автоматтандыру</h1>
+          <p class="text-sm text-slate-500 mb-4">Тәрбие жоспары, іс-шаралар, сынып жетекшілер, ата-аналармен жұмыс.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Іс-шара</div><div class="val">24</div><div class="delta">жоспарда</div></div>
+            <div class="stat-card"><div class="lbl">Жүзеге асты</div><div class="val">17</div><div class="delta">71%</div></div>
+            <div class="stat-card"><div class="lbl">Ата-ана жин.</div><div class="val">8</div><div class="delta">келесі апта</div></div>
+            <div class="stat-card"><div class="lbl">Волонтер</div><div class="val">142</div><div class="delta">оқушы</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🎯 Жоспардағы іс-шаралар</h3>
+              <div class="space-y-2">
+                <div class="border-l-4 border-indigo-500 bg-indigo-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">«Менің Қазақстаным» концерті</div>
+                  <div class="text-xs text-slate-500 mt-0.5">📆 18.05 · 14:00 · акт залы</div>
+                </div>
+                <div class="border-l-4 border-violet-500 bg-violet-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">Ата-аналар жиналысы — 10-11 сыныптар</div>
+                  <div class="text-xs text-slate-500 mt-0.5">📆 16.05 · 18:00</div>
+                </div>
+                <div class="border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">Психолог семинары: «Жасөспірім дағдарысы»</div>
+                  <div class="text-xs text-slate-500 mt-0.5">📆 22.05 · 15:00</div>
+                </div>
+                <div class="border-l-4 border-sky-500 bg-sky-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">Волонтер күні «Тазарт қалаңды»</div>
+                  <div class="text-xs text-slate-500 mt-0.5">📆 25.05 · 09:00</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">👥 Сынып жетекшілер есебі</h3>
+              <table class="a-table">
+                <thead><tr><th>Сынып</th><th>Жетекші</th><th>Қатысу</th><th>Сағ.</th></tr></thead>
+                <tbody>
+                  <tr><td>10 «Б»</td><td>Мунасаева Р.Н.</td><td><b class="text-indigo-700">98%</b></td><td>12</td></tr>
+                  <tr><td>9 «А»</td><td>Алимбекова Х.</td><td><b class="text-indigo-700">96%</b></td><td>11</td></tr>
+                  <tr><td>11 «А»</td><td>Қайратұлы А.</td><td><b class="text-indigo-700">97%</b></td><td>13</td></tr>
+                  <tr><td>8 «Б»</td><td>Мунасаева Р.</td><td><b class="text-amber-700">91%</b></td><td>10</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📞 Ата-аналармен жұмыс</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between border-b pb-1.5"><span class="text-slate-500">Жалпы хабарламалар:</span><span class="font-semibold">387</span></div>
+                <div class="flex justify-between border-b pb-1.5"><span class="text-slate-500">Жеке кеңестер:</span><span class="font-semibold">42</span></div>
+                <div class="flex justify-between border-b pb-1.5"><span class="text-slate-500">Шағымдар:</span><span class="font-semibold text-amber-700">3</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Алғыс:</span><span class="font-semibold text-indigo-700">28</span></div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📊 Тәрбие KPI</h3>
+              <div class="space-y-3">
+                <div><div class="flex justify-between text-xs mb-1"><span>Іс-шара жоспарын орындау</span><span class="font-bold">71%</span></div><div class="pbar"><div style="width:71%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Ата-аналармен жұмыс</span><span class="font-bold">88%</span></div><div class="pbar"><div style="width:88%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Әлеуметтік қолдау</span><span class="font-bold">94%</span></div><div class="pbar"><div style="width:94%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Волонтерлік</span><span class="font-bold">67%</span></div><div class="pbar"><div style="width:67%; background:#f59e0b;"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== VICE-ECONOMY (NEW) ===== -->
+        <section class="panel-section" data-section="vice-economy">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Шаруашылық жөніндегі орынбасары</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Шаруашылық бөлімі</h1>
+          <p class="text-sm text-slate-500 mb-4">Жөндеу, инвентарь, материалдық-техникалық база, тазалық, коммуналдық қызметтер.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Кабинет саны</div><div class="val">42</div><div class="delta">барлығы</div></div>
+            <div class="stat-card"><div class="lbl">Жөндеу</div><div class="val">5</div><div class="delta text-amber-700">сұраныс күтуде</div></div>
+            <div class="stat-card"><div class="lbl">Қызметшілер</div><div class="val">18</div><div class="delta">тех. персонал</div></div>
+            <div class="stat-card"><div class="lbl">Бюджет</div><div class="val">4.2М</div><div class="delta">тенге / жыл</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4 mb-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🔧 Жөндеу сұраныстары</h3>
+              <div class="space-y-2">
+                <div class="border-l-4 border-rose-500 bg-rose-50 px-3 py-2 rounded-xl">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-semibold text-sm">204 каб. — терезе сынды</div>
+                      <div class="text-xs text-rose-700">Шұғыл · 14.05 · Алимбекова Х.</div>
+                    </div>
+                    <button class="a-btn a-btn-primary !py-1 text-xs">Қабылдау</button>
+                  </div>
+                </div>
+                <div class="border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-semibold text-sm">312 каб. — проектор істемейді</div>
+                      <div class="text-xs text-amber-700">Орташа · 13.05</div>
+                    </div>
+                    <button class="a-btn a-btn-primary !py-1 text-xs">Қабылдау</button>
+                  </div>
+                </div>
+                <div class="border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="font-semibold text-sm">Кітапхана — стол шайқалады</div>
+                      <div class="text-xs text-amber-700">Орташа · 12.05</div>
+                    </div>
+                    <button class="a-btn a-btn-primary !py-1 text-xs">Қабылдау</button>
+                  </div>
+                </div>
+                <div class="border-l-4 border-indigo-500 bg-indigo-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">Дәретхана — кран жөнделді ✓</div>
+                  <div class="text-xs text-indigo-700">11.05 · аяқталды</div>
+                </div>
+              </div>
+              <button class="a-btn a-btn-soft mt-3">+ Жаңа сұраныс</button>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📦 Инвентарь қоры</h3>
+              <table class="a-table">
+                <thead><tr><th>Зат</th><th>Қор</th><th>Қажет</th><th>Статус</th></tr></thead>
+                <tbody>
+                  <tr><td>Парта (жұп)</td><td>284</td><td>10</td><td><span class="doc-status ds-ok">Қолжетімді</span></td></tr>
+                  <tr><td>Орындық</td><td>612</td><td>30</td><td><span class="doc-status ds-wait">Тапсырыс беру</span></td></tr>
+                  <tr><td>Проектор</td><td>26</td><td>4</td><td><span class="doc-status ds-back">Тапшы</span></td></tr>
+                  <tr><td>Ноутбук</td><td>48</td><td>0</td><td><span class="doc-status ds-ok">Жеткілікті</span></td></tr>
+                  <tr><td>Тазалық құрал.</td><td>140</td><td>50</td><td><span class="doc-status ds-wait">Тапсырыс беру</span></td></tr>
+                </tbody>
+              </table>
+              <button class="a-btn a-btn-primary mt-3">📥 Excel экспорт</button>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">⚡ Коммуналдық қызметтер (бұл ай)</h3>
+              <div class="space-y-3">
+                <div><div class="flex justify-between text-xs mb-1"><span>Электр энергиясы</span><span class="font-bold">82 400 кВт</span></div><div class="pbar"><div style="width:78%; background:#f59e0b;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Жылу</span><span class="font-bold">— (мамыр)</span></div><div class="pbar"><div style="width:0%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Су</span><span class="font-bold">1 240 м³</span></div><div class="pbar"><div style="width:62%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Интернет</span><span class="font-bold">500 Mbps</span></div><div class="pbar"><div style="width:100%; background:#6d5bd0;"></div></div></div>
+              </div>
+              <p class="text-xs text-slate-500 mt-3">Жалпы коммуналдық шығын: <b>820 000 ₸</b> · айлық</p>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🧹 Тазалық кесте</h3>
+              <table class="a-table">
+                <thead><tr><th>Аумақ</th><th>Жауапты</th><th>Жиілік</th></tr></thead>
+                <tbody>
+                  <tr><td>Дәліздер 1-қабат</td><td>Сатыбалдиева А.</td><td>2 рет / күн</td></tr>
+                  <tr><td>Дәліздер 2-қабат</td><td>Әміров Б.</td><td>2 рет / күн</td></tr>
+                  <tr><td>Асхана</td><td>Қалиева Г.</td><td>3 рет / күн</td></tr>
+                  <tr><td>Спорт зал</td><td>Әбілқасымов Е.</td><td>сабақ соңында</td></tr>
+                  <tr><td>Дәретханалар</td><td>2 қызметкер</td><td>4 рет / күн</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== PSYCHOLOGIST (NEW) ===== -->
+        <section class="panel-section" data-section="psychologist">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Психологтар кабинеті</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Психологиялық қызмет</h1>
+          <p class="text-sm text-slate-500 mb-4">Жеке кеңестер, топтық тренингтер, сауалнама нәтижелері, тәуекелдегі оқушылармен жұмыс.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Психологтар</div><div class="val">2</div><div class="delta">штатта</div></div>
+            <div class="stat-card"><div class="lbl">Кеңес (ай)</div><div class="val">87</div><div class="delta">+12% / ай</div></div>
+            <div class="stat-card"><div class="lbl">Тренингтер</div><div class="val">14</div><div class="delta">бұл айда</div></div>
+            <div class="stat-card"><div class="lbl">Кезек</div><div class="val">8</div><div class="delta text-amber-700">оқушы күтуде</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4 mb-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">👤 Психологтар құрамы</h3>
+              <div class="space-y-2">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-pink-50 border border-pink-200">
+                  <div class="h-12 w-12 rounded-full bg-pink-100 grid place-content-center text-pink-700 text-xl">👩</div>
+                  <div class="flex-1">
+                    <div class="font-bold text-sm">Сапарова Айнұр Қалиқызы</div>
+                    <div class="text-xs text-slate-600">Бас психолог · жасөспірім психологиясы</div>
+                    <div class="text-xs text-pink-700 mt-0.5">📅 Дс-Жм 09:00-17:00 · 5-11 сыныптар</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-pink-50 border border-pink-200">
+                  <div class="h-12 w-12 rounded-full bg-pink-100 grid place-content-center text-pink-700 text-xl">👨</div>
+                  <div class="flex-1">
+                    <div class="font-bold text-sm">Бектұров Дамир Ержанұлы</div>
+                    <div class="text-xs text-slate-600">Психолог · кіші мектеп</div>
+                    <div class="text-xs text-pink-700 mt-0.5">📅 Дс-Жм 08:30-16:00 · 1-4 сыныптар</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📅 Бүгінгі жеке кеңестер</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-3 p-2 rounded-xl bg-amber-50 border border-amber-200">
+                  <div class="font-bold text-amber-700 text-xs">10:00</div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Бекмұратов Алмас (10Б)</div>
+                    <div class="text-xs text-slate-500">Үлгерім төмендеуі — мотивация</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-xl bg-rose-50 border border-rose-200">
+                  <div class="font-bold text-rose-700 text-xs">11:00</div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Сейітов Дамир (8Б)</div>
+                    <div class="text-xs text-slate-500">⚠ Шұғыл · мінез-құлық</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-xl bg-amber-50 border border-amber-200">
+                  <div class="font-bold text-amber-700 text-xs">14:00</div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Мақсат Айдана (9А)</div>
+                    <div class="text-xs text-slate-500">Отбасылық жағдай</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-xl bg-sky-50 border border-sky-200">
+                  <div class="font-bold text-sky-700 text-xs">15:30</div>
+                  <div class="flex-1">
+                    <div class="font-semibold">10А сынып · топтық сессия</div>
+                    <div class="text-xs text-slate-500">ҰБТ алдындағы күйзеліс</div>
+                  </div>
+                </div>
+              </div>
+              <button class="a-btn a-btn-primary mt-3 w-full">+ Жаңа кеңес тіркеу</button>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📊 Жыл бойы сауалнама нәтижелері</h3>
+              <div class="space-y-3 text-sm">
+                <div>
+                  <div class="flex justify-between mb-1"><span>«Менің мектебімде өзімді қауіпсіз сезінемін»</span><span class="font-bold text-indigo-700">87%</span></div>
+                  <div class="pbar"><div style="width:87%; background:#6d5bd0;"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-1"><span>«Мұғаліммен қарым-қатынас жақсы»</span><span class="font-bold text-indigo-700">92%</span></div>
+                  <div class="pbar"><div style="width:92%; background:#6d5bd0;"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-1"><span>«ҰБТ дайындық дәрежесі жеткілікті»</span><span class="font-bold text-amber-700">68%</span></div>
+                  <div class="pbar"><div style="width:68%; background:#f59e0b;"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-1"><span>«Сыныпта буллинг жағдайы»</span><span class="font-bold text-rose-700">14%</span></div>
+                  <div class="pbar"><div style="width:14%; background:#dc2626;"></div></div>
+                </div>
+              </div>
+              <button class="a-btn a-btn-soft mt-3">+ Жаңа сауалнама жасау</button>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🎯 Топтық тренинг жоспары</h3>
+              <div class="space-y-2 text-sm">
+                <div class="border-l-4 border-indigo-500 bg-indigo-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">«ҰБТ алдындағы күйзелісті жеңу»</div>
+                  <div class="text-xs text-slate-500">11 сыныптар · 22.05</div>
+                </div>
+                <div class="border-l-4 border-pink-500 bg-pink-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">«Жасөспірімдер психологиясы»</div>
+                  <div class="text-xs text-slate-500">Ата-аналарға арналған · 25.05</div>
+                </div>
+                <div class="border-l-4 border-violet-500 bg-violet-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">«Кіші мектеп оқушыларының бейімделуі»</div>
+                  <div class="text-xs text-slate-500">1-сыныптар · қыркүйек</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== MEDICAL (NEW) ===== -->
+        <section class="panel-section" data-section="medical">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Медициналық пункт</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Мектеп медицинасы</h1>
+          <p class="text-sm text-slate-500 mb-4">Вакцинация, медициналық тексеру, шұғыл жағдайлар, оқушылар денсаулығының картасы.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Вакцинацияланды</div><div class="val">594</div><div class="delta">/ 612 (97%)</div></div>
+            <div class="stat-card"><div class="lbl">Бүгін келді</div><div class="val">14</div><div class="delta">оқушы</div></div>
+            <div class="stat-card"><div class="lbl">Созылмалы</div><div class="val">42</div><div class="delta">диспансерлік есеп</div></div>
+            <div class="stat-card"><div class="lbl">Кеше ауру</div><div class="val">8</div><div class="delta text-amber-700">мектепке келмеді</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4 mb-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">💉 Вакцинация мониторингі</h3>
+              <table class="a-table">
+                <thead><tr><th>Вакцина</th><th>Сынып</th><th>Жоспар</th><th>Орындалды</th></tr></thead>
+                <tbody>
+                  <tr><td>БЦЖ кітелуі</td><td>6-7 сын.</td><td>108</td><td><b class="text-indigo-700">108 ✓</b></td></tr>
+                  <tr><td>ВПЧ</td><td>9 сын. қыздар</td><td>32</td><td><b class="text-indigo-700">30 ✓</b></td></tr>
+                  <tr><td>Маусымдық флю</td><td>1-11 сын.</td><td>612</td><td><b class="text-indigo-700">594 ✓</b></td></tr>
+                  <tr><td>Манту сынамасы</td><td>1-11 сын.</td><td>612</td><td><b class="text-amber-700">540 ⏳</b></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🩺 Бүгінгі келулер</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-amber-50">
+                  <span class="text-xs font-bold text-amber-700">09:15</span>
+                  <span class="flex-1">Бекмұратов А. (10Б) · бас ауруы</span>
+                  <span class="text-xs text-indigo-700">✓ Аспирин</span>
+                </div>
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-amber-50">
+                  <span class="text-xs font-bold text-amber-700">10:30</span>
+                  <span class="flex-1">Қалиева А. (10Б) · қызуы 37.5°</span>
+                  <span class="text-xs text-rose-700">🏠 Үйге</span>
+                </div>
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-rose-50">
+                  <span class="text-xs font-bold text-rose-700">11:45</span>
+                  <span class="flex-1">Сейітов Д. (8Б) · жарақат</span>
+                  <span class="text-xs text-rose-700">📞 Жедел жәрдем</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📋 Созылмалы аурулар (диспансерлік)</h3>
+              <table class="a-table">
+                <thead><tr><th>Топ</th><th>Саны</th><th>Ескерту</th></tr></thead>
+                <tbody>
+                  <tr><td>Көру қабілеті төмен</td><td>28</td><td>5 ескерту/жыл</td></tr>
+                  <tr><td>Демікпе</td><td>6</td><td>Ауа сапасы</td></tr>
+                  <tr><td>Диабет</td><td>2</td><td>Тамақтану режимі</td></tr>
+                  <tr><td>Жүрек ауырулары</td><td>3</td><td>Физкультура шектеу</td></tr>
+                  <tr><td>Сколиоз</td><td>14</td><td>Спец. парта</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🚨 Шұғыл жағдайлар журналы</h3>
+              <div class="space-y-2 text-sm">
+                <div class="border-l-4 border-rose-500 bg-rose-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">Сейітов Д. — қол жарақаты</div>
+                  <div class="text-xs text-rose-700">15.05 · Жедел жәрдем шақырылды · Ата-анаға SMS</div>
+                </div>
+                <div class="border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">Қалиева А. — жоғары қызуы</div>
+                  <div class="text-xs text-amber-700">15.05 · Үйге жіберілді</div>
+                </div>
+                <div class="border-l-4 border-indigo-500 bg-indigo-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">Аманкелдиева А. — әлсіздік</div>
+                  <div class="text-xs text-indigo-700">14.05 · Демалды, сабаққа қайта оралды</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== BOOKKEEPER ===== -->
+        <section class="panel-section" data-section="bookkeeper">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Бухгалтерия</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Қаржы жұмысын автоматтандыру</h1>
+          <p class="text-sm text-slate-500 mb-4">Мұғалім жүктемесі, қосымша сағат, төлемдер, Excel есептері.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Жалпы жүктеме</div><div class="val">1248</div><div class="delta">сағ / айда</div></div>
+            <div class="stat-card"><div class="lbl">Жалпы жалақы</div><div class="val">28.4М</div><div class="delta">тенге / айда</div></div>
+            <div class="stat-card"><div class="lbl">Қосымша сағат</div><div class="val">86</div><div class="delta">үстеме</div></div>
+            <div class="stat-card"><div class="lbl">Үстемақы</div><div class="val">4.2М</div><div class="delta">тенге</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-2 a-card">
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-slate-800">💰 Мұғалім жүктемесі мен жалақысы</h3>
+                <button class="a-btn a-btn-primary" onclick="exportPayrollExcel()">📥 Excel жүктеу</button>
+              </div>
+              <table class="a-table" id="payrollTable">
+                <thead><tr><th>Мұғалім</th><th>Пән</th><th>Сағат</th><th>Үстеме</th><th>Жалпы</th></tr></thead>
+                <tbody>
+                  <tr><td>Мунасаева Р.Н.</td><td>Қазақ тілі</td><td>20</td><td>2 (әдістеме)</td><td><b>520 000 ₸</b></td></tr>
+                  <tr><td>Каумбаев С.А.</td><td>Информатика</td><td>22</td><td>4 (үйірме)</td><td><b>635 000 ₸</b></td></tr>
+                  <tr><td>Алимбекова Х.</td><td>Ағылшын</td><td>24</td><td>2 (КПИ)</td><td><b>580 000 ₸</b></td></tr>
+                  <tr><td>Мунасаева Р.</td><td>Қазақ тілі</td><td>22</td><td>3 (сын. жет.)</td><td><b>595 000 ₸</b></td></tr>
+                  <tr><td>Қайратұлы А.</td><td>Физика</td><td>20</td><td>2 (зертхана)</td><td><b>520 000 ₸</b></td></tr>
+                  <tr><td>Рамазанова А.</td><td>Биология</td><td>18</td><td>1 (КПИ)</td><td><b>462 000 ₸</b></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📊 Айлық дайындық</h3>
+              <div class="text-center mb-4">
+                <div class="text-3xl font-extrabold text-indigo-700">63%</div>
+                <div class="text-xs text-slate-500">июнь айының жалақысы есептелді</div>
+              </div>
+              <div class="pbar mb-4"><div style="width:63%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between"><span class="text-slate-500">Сағат есептелді:</span><span class="font-semibold text-indigo-700">✓</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Үстеме төлемдер:</span><span class="font-semibold text-indigo-700">✓</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Салық есебі:</span><span class="font-semibold text-amber-700">⏳</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Банкке жіберілді:</span><span class="font-semibold text-slate-400">○</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== METHODICAL VICE ===== -->
+        <section class="panel-section" data-section="vice-method">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Әдістемелік жөніндегі орынбасары</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Мұғалімдермен жұмыс және әдістемелік басқару</h1>
+          <p class="text-sm text-slate-500 mb-4">Мұғалімдерге жауап беретін бөлім: кадрлық сұраныс, біліктілік арттыру, аттестация, портфолио және әдістемелік қолдау.</p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Мұғалімдер</div><div class="val">73</div><div class="delta">барлығы</div></div>
+            <div class="stat-card"><div class="lbl">Педагог-шебер</div><div class="val">7</div><div class="delta">жоғарғы санат</div></div>
+            <div class="stat-card"><div class="lbl">Аттестация</div><div class="val">12</div><div class="delta">бұл жылы</div></div>
+            <div class="stat-card"><div class="lbl">Курстар</div><div class="val">8</div><div class="delta">белсенді</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📋 Мұғалімдер бойынша сұраныстар</h3>
+              <div class="space-y-2">
+                <div class="border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">Математика мұғалімі (1 ставка)</div>
+                  <div class="text-xs text-slate-500">3 кандидат · сұхбат күтуде</div>
+                </div>
+                <div class="border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">Әдістемелік семинар жетекшісі</div>
+                  <div class="text-xs text-slate-500">1 кандидат · портфолио тексеру</div>
+                </div>
+                <div class="border-l-4 border-indigo-500 bg-indigo-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold text-sm">Жас маман тәлімгері</div>
+                  <div class="text-xs text-indigo-700">✓ Қабылданды (12.05)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🎓 Біліктілік курстары</h3>
+              <table class="a-table">
+                <thead><tr><th>Курс</th><th>Кафедра</th><th>Қатысушы</th></tr></thead>
+                <tbody>
+                  <tr><td>«ЖИ-ні сабақта қолдану»</td><td>Барлығы</td><td>34</td></tr>
+                  <tr><td>«ҰБТ-ға дайындау әдістемесі»</td><td>11 сын. мұғ.</td><td>18</td></tr>
+                  <tr><td>«Кембридж тіл мектебі»</td><td>Ағылшын</td><td>4</td></tr>
+                  <tr><td>«SMART тақтада сабақ»</td><td>Барлығы</td><td>22</td></tr>
+                  <tr><td>«Цифрлық сауаттылық»</td><td>Бастауыш</td><td>10</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📅 Аттестация кестесі</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between p-2 rounded-xl bg-indigo-50 border border-indigo-200">
+                  <div>
+                    <div class="font-semibold">Мунасаева Р.Н. — педагог-шебер</div>
+                    <div class="text-xs text-indigo-700">28.05 · ашық сабақ + портфолио</div>
+                  </div>
+                  <span class="doc-status ds-ok">Жоспарланды</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-xl bg-amber-50 border border-amber-200">
+                  <div>
+                    <div class="font-semibold">Каумбаев С.А. — педагог-зерттеуші</div>
+                    <div class="text-xs text-amber-700">15.06 · ғылыми жоба</div>
+                  </div>
+                  <span class="doc-status ds-wait">Дайындық</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-xl bg-amber-50 border border-amber-200">
+                  <div>
+                    <div class="font-semibold">Алимбекова Х. — педагог-сарапшы</div>
+                    <div class="text-xs text-amber-700">10.06 · ашық сабақ</div>
+                  </div>
+                  <span class="doc-status ds-wait">Дайындық</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🗂️ Мұғалімдер портфолиосы және жүктеме</h3>
+              <table class="a-table">
+                <thead><tr><th>Мұғалім</th><th>Жауапты жұмыс</th></tr></thead>
+                <tbody>
+                  <tr><td>Мунасаева Р.Н.</td><td>Ашық сабақ / әдістемелік портфолио</td></tr>
+                  <tr><td>Каумбаев С.А.</td><td>Ғылыми жоба / пәндік олимпиада</td></tr>
+                  <tr><td>Алимбекова Х.</td><td>Коучинг / біліктілік курсы</td></tr>
+                  <tr><td>Мунасаева Р.</td><td>Авторлық бағдарлама / әдістеме</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== AI WARNING (kept from v3) ===== -->
+        <section class="panel-section" data-section="ai-warning">
+          <div class="rounded-2xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #dc2626, #ea580c);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-4xl">🚨</div>
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90">SPAI92 ЖИ модулі</div>
+                <h1 class="text-2xl font-bold">ЖИ ерте ескерту жүйесі</h1>
+              </div>
+            </div>
+            <p class="text-sm opacity-95 max-w-3xl">
+              Платформа автоматты түрде үлгерім, қатысу, мінез-құлық, әлеуметтік паспорт деректерін талдап, тәуекелдегі оқушыларды анықтайды. AI ұсыныстар береді.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 mb-5">
+            <div class="risk-card risk-high">
+              <p class="text-xs text-rose-700 font-semibold mb-1">🔴 ЖОҒАРЫ тәуекел</p>
+              <div class="text-3xl font-extrabold text-rose-700">4</div>
+              <p class="text-xs text-rose-600">оқушы · шұғыл назар</p>
+            </div>
+            <div class="risk-card risk-mid">
+              <p class="text-xs text-amber-700 font-semibold mb-1">🟡 ОРТА тәуекел</p>
+              <div class="text-3xl font-extrabold text-amber-700">12</div>
+              <p class="text-xs text-amber-600">оқушы · қадағалау</p>
+            </div>
+            <div class="risk-card risk-low">
+              <p class="text-xs text-indigo-700 font-semibold mb-1">🟢 ТӨМЕН тәуекел</p>
+              <div class="text-3xl font-extrabold text-indigo-700">596</div>
+              <p class="text-xs text-indigo-600">оқушы · қалыпты</p>
+            </div>
+          </div>
+
+          <div class="a-card mb-4">
+            <h3 class="font-bold text-slate-800 mb-3">🚨 Назар аудару керек оқушылар</h3>
+            <div class="space-y-3">
+              <div class="border-l-4 border-rose-500 bg-rose-50 rounded-xl p-3">
+                <div class="flex items-start justify-between gap-3 flex-wrap">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <span class="font-bold">Сейітов Дамир</span>
+                      <span class="risk-pill rp-high">Жоғары</span>
+                      <span class="text-xs text-slate-500">8 «Б»</span>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-2 mt-2 text-xs">
+                      <div class="bg-white rounded-lg px-2 py-1 border border-rose-200"><b>Қатысу:</b> <span class="text-rose-700">78%</span></div>
+                      <div class="bg-white rounded-lg px-2 py-1 border border-rose-200"><b>Орт. балл:</b> <span class="text-rose-700">3.1</span></div>
+                      <div class="bg-white rounded-lg px-2 py-1 border border-rose-200"><b>Тәртіп:</b> <span class="text-rose-700">3 ескерту</span></div>
+                    </div>
+                    <div class="mt-2 text-xs bg-indigo-50 rounded-lg p-2 border border-indigo-200">
+                      <b class="text-indigo-700">🤖 ЖИ ұсынысы:</b> Сынып жетекшіге және психологқа жолықтыру. Ата-анамен жеке әңгіме. Аптасына 2 рет жеке кеңес.
+                    </div>
+                  </div>
+                  <button class="a-btn a-btn-primary text-xs">Іс-әрекет</button>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-rose-500 bg-rose-50 rounded-xl p-3">
+                <div class="flex items-start justify-between gap-3 flex-wrap">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <span class="font-bold">Мақсат Айдана</span>
+                      <span class="risk-pill rp-high">Жоғары</span>
+                      <span class="text-xs text-slate-500">9 «А»</span>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-2 mt-2 text-xs">
+                      <div class="bg-white rounded-lg px-2 py-1 border border-rose-200"><b>Қатысу:</b> <span class="text-rose-700">71%</span></div>
+                      <div class="bg-white rounded-lg px-2 py-1 border border-rose-200"><b>Орт. балл:</b> <span class="text-rose-700">2.9</span></div>
+                      <div class="bg-white rounded-lg px-2 py-1 border border-amber-200"><b>Тапсырма:</b> <span class="text-amber-700">53%</span></div>
+                    </div>
+                    <div class="mt-2 text-xs bg-indigo-50 rounded-lg p-2 border border-indigo-200">
+                      <b class="text-indigo-700">🤖 ЖИ ұсынысы:</b> Отбасылық жағдайды зерттеу. Ата-ана жиналысында жеке кездесу. Қосымша математика және физика бойынша көмек.
+                    </div>
+                  </div>
+                  <button class="a-btn a-btn-primary text-xs">Іс-әрекет</button>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-amber-500 bg-amber-50 rounded-xl p-3">
+                <div class="flex items-start justify-between gap-3 flex-wrap">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <span class="font-bold">Бекмұратов Алмас</span>
+                      <span class="risk-pill rp-mid">Орта</span>
+                      <span class="text-xs text-slate-500">10 «Б»</span>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-2 mt-2 text-xs">
+                      <div class="bg-white rounded-lg px-2 py-1 border border-amber-200"><b>Қатысу:</b> <span class="text-amber-700">88%</span></div>
+                      <div class="bg-white rounded-lg px-2 py-1 border border-amber-200"><b>Орт. балл:</b> <span class="text-amber-700">3.6</span></div>
+                      <div class="bg-white rounded-lg px-2 py-1 border border-indigo-200"><b>Тәртіп:</b> <span class="text-indigo-700">OK</span></div>
+                    </div>
+                    <div class="mt-2 text-xs bg-indigo-50 rounded-lg p-2 border border-indigo-200">
+                      <b class="text-indigo-700">🤖 ЖИ ұсынысы:</b> Үлгерім төмендеп бара жатыр (соңғы 2 ай). Мотивацияны қалпына келтіру. Менторинг бағдарламасы.
+                    </div>
+                  </div>
+                  <button class="a-btn a-btn-primary text-xs">Іс-әрекет</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📉 Әлсіз сабақтар</h3>
+              <table class="a-table">
+                <thead><tr><th>Сабақ</th><th>Сынып</th><th>Орт. балл</th></tr></thead>
+                <tbody>
+                  <tr><td>Алгебра</td><td>9</td><td><b class="text-amber-700">3.6</b></td></tr>
+                  <tr><td>Физика</td><td>8</td><td><b class="text-amber-700">3.7</b></td></tr>
+                  <tr><td>Қазақ әдеб.</td><td>10</td><td><b class="text-amber-700">3.8</b></td></tr>
+                  <tr><td>Геометрия</td><td>11</td><td><b class="text-amber-700">3.9</b></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🤖 ЖИ жалпы ұсыныстары</h3>
+              <ul class="text-sm space-y-2">
+                <li class="flex gap-2"><span class="text-indigo-600 font-bold">→</span><span><b>Алгебра 9-сыныбы үшін</b> қосымша 2 сағат / апта</span></li>
+                <li class="flex gap-2"><span class="text-indigo-600 font-bold">→</span><span><b>8 «Б»</b> сыныбымен жұмысты күшейту — тәуекел оқушы 1</span></li>
+                <li class="flex gap-2"><span class="text-indigo-600 font-bold">→</span><span><b>Психолог</b> айналмалы графигін енгізу — 9-11 сыныптар</span></li>
+                <li class="flex gap-2"><span class="text-indigo-600 font-bold">→</span><span><b>Ата-аналар жиналысында</b> «жасөспірім дағдарысы» тақырыбын талқылау</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== DOCUMENTS ===== -->
+        <section class="panel-section" data-section="documents">
+          <div class="rounded-2xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #0d9488, #4f65d8);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-4xl">📄</div>
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90">SPAI92 ЖИ модулі</div>
+                <h1 class="text-2xl font-bold">Цифрлық құжат айналымы</h1>
+              </div>
+            </div>
+            <p class="text-sm opacity-95 max-w-3xl">
+              Бұйрықтар, КМЖ, есептер, шығармашылық жұмыстар — бәрі бір тізімде. Электронды қол қою, статус мониторингі, тарих сақталады.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Жалпы құжаттар</div><div class="val">284</div><div class="delta">бұл жылы</div></div>
+            <div class="stat-card"><div class="lbl">Бекітілді</div><div class="val">211</div><div class="delta text-indigo-700">74%</div></div>
+            <div class="stat-card"><div class="lbl">Күтілуде</div><div class="val">58</div><div class="delta text-amber-700">20%</div></div>
+            <div class="stat-card"><div class="lbl">Қайтарылды</div><div class="val">15</div><div class="delta text-rose-700">6%</div></div>
+          </div>
+
+          <div class="a-card mb-4">
+            <div class="flex items-center justify-between mb-3 gap-3 flex-wrap">
+              <h3 class="font-bold text-slate-800">📋 Барлық құжаттар</h3>
+              <div class="flex gap-2 flex-wrap">
+                <select class="border border-indigo-200 rounded-xl px-3 py-1.5 text-sm">
+                  <option>Барлығы</option>
+                  <option>Бұйрықтар</option>
+                  <option>КМЖ</option>
+                  <option>Есептер</option>
+                  <option>Жобалар</option>
+                </select>
+                <button class="a-btn a-btn-primary">+ Жаңа құжат</button>
+              </div>
+            </div>
+            <table class="a-table">
+              <thead><tr><th>№</th><th>Атауы</th><th>Түрі</th><th>Авторы</th><th>Күні</th><th>Статус</th></tr></thead>
+              <tbody>
+                <tr><td>284</td><td>«Жыл қорытындысы 10Ә» есебі</td><td>Есеп</td><td>Мунасаева Р.Н.</td><td>14.05</td><td><span class="doc-status ds-wait">Күтілуде</span></td></tr>
+                <tr><td>283</td><td>КМЖ Құрмалас сөйлем 10Ә</td><td>КМЖ</td><td>Мунасаева Р.Н.</td><td>14.05</td><td><span class="doc-status ds-wait">Күтілуде</span></td></tr>
+                <tr><td>282</td><td>Бұйрық №47 — олимпиадашыларды марапаттау</td><td>Бұйрық</td><td>Директор</td><td>13.05</td><td><span class="doc-status ds-ok">Бекітілді</span></td></tr>
+                <tr><td>281</td><td>«Менің Қазақстаным» концерт сценарийі</td><td>Жоба</td><td>Алимбекова Х.</td><td>13.05</td><td><span class="doc-status ds-ok">Бекітілді</span></td></tr>
+                <tr><td>280</td><td>КМЖ Информатика — Алгоритм</td><td>КМЖ</td><td>Каумбаев С.А.</td><td>12.05</td><td><span class="doc-status ds-rev">Тексеруде</span></td></tr>
+                <tr><td>279</td><td>9«А» әлеуметтік паспорт</td><td>Есеп</td><td>Алимбекова Х.</td><td>11.05</td><td><span class="doc-status ds-ok">Бекітілді</span></td></tr>
+                <tr><td>278</td><td>КМЖ Физика — Толқындар</td><td>КМЖ</td><td>Қайратұлы А.</td><td>10.05</td><td><span class="doc-status ds-back">Қайтарылды</span></td></tr>
+                <tr><td>277</td><td>Бұйрық №46 — оқу жоспары</td><td>Бұйрық</td><td>Директор</td><td>09.05</td><td><span class="doc-status ds-ok">Бекітілді</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">✍️ Электронды қол қою кезегі</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50 border border-amber-200">
+                  <div><div class="font-semibold">КМЖ Құрмалас сөйлем 10Ә</div><div class="text-xs text-slate-500">Күтілуде · бүгін</div></div>
+                  <button class="a-btn a-btn-primary !py-1 text-xs">Қол қою</button>
+                </div>
+                <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50 border border-amber-200">
+                  <div><div class="font-semibold">КМЖ Информатика 11А</div><div class="text-xs text-slate-500">Күтілуде · бүгін</div></div>
+                  <button class="a-btn a-btn-primary !py-1 text-xs">Қол қою</button>
+                </div>
+                <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50 border border-amber-200">
+                  <div><div class="font-semibold">Жыл қорытындысы есебі</div><div class="text-xs text-slate-500">Күтілуде · бүгін</div></div>
+                  <button class="a-btn a-btn-primary !py-1 text-xs">Қол қою</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📊 Кафедралар бойынша белсенділік</h3>
+              <div class="space-y-3">
+                <div><div class="flex justify-between text-xs mb-1"><span>Физика-информатика</span><span class="font-bold">94%</span></div><div class="pbar"><div style="width:94%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Қазақ тілі-әдебиет</span><span class="font-bold">91%</span></div><div class="pbar"><div style="width:91%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Математика</span><span class="font-bold">87%</span></div><div class="pbar"><div style="width:87%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Ағылшын тілі</span><span class="font-bold">82%</span></div><div class="pbar"><div style="width:82%; background:linear-gradient(90deg,#6d5bd0,#4f65d8);"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Жаратылыстану</span><span class="font-bold">76%</span></div><div class="pbar"><div style="width:76%; background:#f59e0b;"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== CAFETERIA ===== -->
+        <section class="panel-section" data-section="cafeteria">
+          <div class="rounded-2xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #f59e0b, #ec4899);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-4xl">🍽️</div>
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90">SPAI92 ЖИ модулі</div>
+                <h1 class="text-2xl font-bold">Smart Асхана</h1>
+              </div>
+            </div>
+            <p class="text-sm opacity-95 max-w-3xl">
+              Цифрлық асхана: оқушы QR-картасымен тамақ алады, ата-ана балансты онлайн толтырады, аллергиялар автоматты ескеріледі, бухгалтерия Excel есепті бір кликпен алады.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Бүгін тамақтанды</div><div class="val">487</div><div class="delta">/ 612 (80%)</div></div>
+            <div class="stat-card"><div class="lbl">Тегін тамақ</div><div class="val">42</div><div class="delta">әл. қолдау</div></div>
+            <div class="stat-card"><div class="lbl">Аллергия</div><div class="val">18</div><div class="delta">оқушы</div></div>
+            <div class="stat-card"><div class="lbl">Айналым</div><div class="val">3.8М</div><div class="delta">тенге / айда</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-[1.4fr,1fr] gap-4 mb-4">
+            <div class="a-card">
+              <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <h3 class="font-bold text-slate-800">📋 Бүгінгі меню</h3>
+                <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">📅 15.05 · Бейсенбі</span>
+              </div>
+              <table class="a-table">
+                <thead><tr><th>Тағам</th><th>Калория</th><th>Аллергендер</th><th>Баға</th></tr></thead>
+                <tbody>
+                  <tr><td>🍜 Лагман</td><td>420 ккал</td><td><span class="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">бидай</span></td><td><b>650 ₸</b></td></tr>
+                  <tr><td>🥗 Цезарь салаты</td><td>280 ккал</td><td><span class="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">жұмыртқа</span></td><td><b>450 ₸</b></td></tr>
+                  <tr><td>🍗 Тауық куырдақ</td><td>510 ккал</td><td><span class="text-xs px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700">жоқ</span></td><td><b>720 ₸</b></td></tr>
+                  <tr><td>🍞 Самса (3 дана)</td><td>340 ккал</td><td><span class="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">бидай, ет</span></td><td><b>540 ₸</b></td></tr>
+                  <tr><td>🥛 Айран</td><td>120 ккал</td><td><span class="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">сүт</span></td><td><b>220 ₸</b></td></tr>
+                  <tr><td>🍵 Шай / кофе</td><td>30 ккал</td><td><span class="text-xs px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700">жоқ</span></td><td><b>150 ₸</b></td></tr>
+                </tbody>
+              </table>
+              <button class="a-btn a-btn-primary mt-3">+ Меню өңдеу</button>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">⚠️ Аллергия мониторингі</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between border-l-4 border-rose-500 bg-rose-50 px-3 py-2 rounded-xl">
+                  <div><div class="font-semibold">Жаңғақ аллергиясы</div><div class="text-xs text-rose-700">3 оқушы — қауіпті</div></div>
+                  <span class="text-xs px-2 py-0.5 bg-rose-600 text-white rounded-full font-bold">3</span>
+                </div>
+                <div class="flex items-center justify-between border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div><div class="font-semibold">Лактоза төзімсіздігі</div><div class="text-xs text-amber-700">7 оқушы</div></div>
+                  <span class="text-xs px-2 py-0.5 bg-amber-500 text-white rounded-full font-bold">7</span>
+                </div>
+                <div class="flex items-center justify-between border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div><div class="font-semibold">Глютенге сезімталдық</div><div class="text-xs text-amber-700">4 оқушы</div></div>
+                  <span class="text-xs px-2 py-0.5 bg-amber-500 text-white rounded-full font-bold">4</span>
+                </div>
+                <div class="flex items-center justify-between border-l-4 border-amber-500 bg-amber-50 px-3 py-2 rounded-xl">
+                  <div><div class="font-semibold">Вегетариан</div><div class="text-xs text-amber-700">4 оқушы</div></div>
+                  <span class="text-xs px-2 py-0.5 bg-amber-500 text-white rounded-full font-bold">4</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-500 mt-3">🤖 ЖИ автоматты түрде аллергендер бар тағамдарды ұсынбайды.</p>
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">💳 QR-карта төлемдері (бүгін)</h3>
+              <table class="a-table">
+                <thead><tr><th>Уақыт</th><th>Оқушы</th><th>Сома</th><th>Қалдық</th></tr></thead>
+                <tbody>
+                  <tr><td>12:34</td><td>Қабдол Аслан</td><td>720 ₸</td><td>5 280 ₸</td></tr>
+                  <tr><td>12:32</td><td>Аманкелдиева А.</td><td>450 ₸</td><td>3 100 ₸</td></tr>
+                  <tr><td>12:30</td><td>Темірбек Назым</td><td>650 ₸</td><td>2 850 ₸</td></tr>
+                  <tr><td>12:28</td><td>Бекмұратов А.</td><td>0 ₸ <span class="text-xs px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700">тегін</span></td><td>—</td></tr>
+                  <tr><td>12:25</td><td>Қалиева Ажар</td><td>540 ₸</td><td>1 460 ₸ <span class="text-xs text-rose-700">↓</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📊 Бухгалтерияға есеп</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between border-b pb-1.5"><span class="text-slate-500">Айлық қаражат түсімі:</span><b>3 826 540 ₸</b></div>
+                <div class="flex justify-between border-b pb-1.5"><span class="text-slate-500">Тегін тамақ:</span><b>520 000 ₸</b></div>
+                <div class="flex justify-between border-b pb-1.5"><span class="text-slate-500">Азық-түлік шығыны:</span><b>2 410 000 ₸</b></div>
+                <div class="flex justify-between border-b pb-1.5"><span class="text-slate-500">Қызметкер жалақысы:</span><b>820 000 ₸</b></div>
+                <div class="flex justify-between"><span class="text-slate-500">Таза табыс:</span><b class="text-indigo-700">596 540 ₸</b></div>
+              </div>
+              <button class="a-btn a-btn-primary mt-3" onclick="exportCafeteriaExcel()">📥 Excel есеп</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== LIBRARY ===== -->
+        <section class="panel-section" data-section="library">
+          <div class="rounded-2xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #06b6d4, #0d9488);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-4xl">📖</div>
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90">SPAI92 ЖИ модулі</div>
+                <h1 class="text-2xl font-bold">Smart Кітапхана</h1>
+              </div>
+            </div>
+            <p class="text-sm opacity-95 max-w-3xl">
+              QR-кодты кітаптар, автоматты қайтару ескертулері, AI кітап ұсыныс, цифрлық оқу журналы. Кітапханашыға бір кликпен айлық / жылдық есеп.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Кітап қоры</div><div class="val">8240</div><div class="delta">данада</div></div>
+            <div class="stat-card"><div class="lbl">Алынды</div><div class="val">348</div><div class="delta">қазір</div></div>
+            <div class="stat-card"><div class="lbl">Кешіктірілген</div><div class="val">12</div><div class="delta text-rose-700">SMS жіберілді</div></div>
+            <div class="stat-card"><div class="lbl">Цифрлық оқу</div><div class="val">412</div><div class="delta">оқушы / ай</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-[1.4fr,1fr] gap-4 mb-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🔥 Ең көп оқылатын кітаптар (бұл ай)</h3>
+              <table class="a-table">
+                <thead><tr><th>№</th><th>Кітап</th><th>Автор</th><th>Сұраныс</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>«Абай жолы»</td><td>М. Әуезов</td><td><b>34</b> 📚</td></tr>
+                  <tr><td>2</td><td>«Көшпенділер»</td><td>І. Есенберлин</td><td><b>28</b> 📚</td></tr>
+                  <tr><td>3</td><td>«Гарри Поттер 1-7»</td><td>Дж. К. Роулинг</td><td><b>26</b> 📚</td></tr>
+                  <tr><td>4</td><td>«Менің атым — Қожа»</td><td>Б. Соқпақбаев</td><td><b>22</b> 📚</td></tr>
+                  <tr><td>5</td><td>«Война и мир»</td><td>Л. Толстой</td><td><b>18</b> 📚</td></tr>
+                  <tr><td>6</td><td>«1984»</td><td>Дж. Орвелл</td><td><b>16</b> 📚</td></tr>
+                  <tr><td>7</td><td>«Sapiens»</td><td>Ю. Н. Харари</td><td><b>14</b> 📚</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🤖 AI ұсыныстары</h3>
+              <p class="text-xs text-slate-500 mb-3">Оқушының оқу тарихына негізделген кітап ұсыныстары.</p>
+              <div class="space-y-2">
+                <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-200">
+                  <div class="font-semibold text-sm text-indigo-900">Қабдол Аслан (10А)</div>
+                  <div class="text-xs text-slate-600 mt-1">Соңғы 5 ғылыми кітап оқыған.</div>
+                  <div class="text-xs mt-1.5"><b>Ұсыныс:</b> «Cosmos» (Карл Саган), «A Brief History of Time» (Hawking)</div>
+                </div>
+                <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-200">
+                  <div class="font-semibold text-sm text-indigo-900">Темірбек Назым (10Б)</div>
+                  <div class="text-xs text-slate-600 mt-1">Көркем әдебиет жанрын ұнатады.</div>
+                  <div class="text-xs mt-1.5"><b>Ұсыныс:</b> «Тар жол, тайғақ кешу» (С. Сейфуллин)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">⏰ Кешіктірілгендер — автоматты ескерту</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between bg-rose-50 border-l-4 border-rose-500 px-3 py-2 rounded-xl">
+                  <div><div class="font-semibold">Сейітов Дамир — «Абай жолы»</div><div class="text-xs text-rose-700">12 күн кешікті</div></div>
+                  <button class="a-btn a-btn-primary !py-1 text-xs">SMS жіберу</button>
+                </div>
+                <div class="flex items-center justify-between bg-amber-50 border-l-4 border-amber-500 px-3 py-2 rounded-xl">
+                  <div><div class="font-semibold">Мақсат Айдана — «Көшпенділер»</div><div class="text-xs text-amber-700">5 күн кешікті</div></div>
+                  <button class="a-btn a-btn-primary !py-1 text-xs">SMS жіберу</button>
+                </div>
+                <div class="flex items-center justify-between bg-amber-50 border-l-4 border-amber-500 px-3 py-2 rounded-xl">
+                  <div><div class="font-semibold">Бекмұратов А. — «1984»</div><div class="text-xs text-amber-700">3 күн кешікті</div></div>
+                  <button class="a-btn a-btn-primary !py-1 text-xs">SMS жіберу</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📊 Сыныптар бойынша оқу белсенділігі</h3>
+              <div class="space-y-3">
+                <div><div class="flex justify-between text-xs mb-1"><span>10 «А»</span><span class="font-bold">8.2 кітап/оқ.</span></div><div class="pbar"><div style="width:82%; background:linear-gradient(90deg,#06b6d4,#0d9488);"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>10 «Б»</span><span class="font-bold">7.5 кітап/оқ.</span></div><div class="pbar"><div style="width:75%; background:linear-gradient(90deg,#06b6d4,#0d9488);"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>11 «А»</span><span class="font-bold">9.1 кітап/оқ.</span></div><div class="pbar"><div style="width:91%; background:linear-gradient(90deg,#06b6d4,#0d9488);"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>9 «А»</span><span class="font-bold">6.2 кітап/оқ.</span></div><div class="pbar"><div style="width:62%; background:#f59e0b;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>8 «Б»</span><span class="font-bold">4.8 кітап/оқ.</span></div><div class="pbar"><div style="width:48%; background:#f59e0b;"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== SECURITY ===== -->
+        <section class="panel-section" data-section="security">
+          <div class="rounded-2xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #1e40af, #0d9488);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-4xl">🛡️</div>
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90">SPAI92 ЖИ модулі</div>
+                <h1 class="text-2xl font-bold">Қауіпсіздік және кіру-шығу мониторингі</h1>
+              </div>
+            </div>
+            <p class="text-sm opacity-95 max-w-3xl">
+              Әр оқушының мектепке кіруі/шығуы QR-картаға автоматты тіркеледі. Ата-анаға SMS жіберіледі. Бөтен адам кірсе — әкімшілікке хабар. Камералардан кіру есебі.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Бүгін кірді</div><div class="val">587</div><div class="delta">/ 612 оқушы</div></div>
+            <div class="stat-card"><div class="lbl">Кешіккен</div><div class="val">23</div><div class="delta text-amber-700">08:00+</div></div>
+            <div class="stat-card"><div class="lbl">Кірмеген</div><div class="val">25</div><div class="delta text-rose-700">себептері</div></div>
+            <div class="stat-card"><div class="lbl">Қонақтар</div><div class="val">8</div><div class="delta">тіркелді</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4 mb-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🚪 Соңғы кіру/шығулар</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between bg-indigo-50 border-l-4 border-indigo-500 px-3 py-2 rounded-xl">
+                  <div>
+                    <div class="font-semibold">→ Қабдол Аслан (10А)</div>
+                    <div class="text-xs text-indigo-700">Кірді · 08:12 · SMS ✓</div>
+                  </div>
+                  <span class="text-indigo-700 text-lg">↓</span>
+                </div>
+                <div class="flex items-center justify-between bg-indigo-50 border-l-4 border-indigo-500 px-3 py-2 rounded-xl">
+                  <div>
+                    <div class="font-semibold">→ Аманкелдиева Аяулым (10Б)</div>
+                    <div class="text-xs text-indigo-700">Кірді · 08:10 · SMS ✓</div>
+                  </div>
+                  <span class="text-indigo-700 text-lg">↓</span>
+                </div>
+                <div class="flex items-center justify-between bg-amber-50 border-l-4 border-amber-500 px-3 py-2 rounded-xl">
+                  <div>
+                    <div class="font-semibold">→ Бекмұратов Алмас (10Б)</div>
+                    <div class="text-xs text-amber-700">КЕШІКТІ · 08:38</div>
+                  </div>
+                  <span class="text-amber-700 text-lg">⏰</span>
+                </div>
+                <div class="flex items-center justify-between bg-rose-50 border-l-4 border-rose-500 px-3 py-2 rounded-xl">
+                  <div>
+                    <div class="font-semibold">← Сейітов Дамир (8Б)</div>
+                    <div class="text-xs text-rose-700">ШЫҚТЫ · 11:24 · сабақ кезінде!</div>
+                  </div>
+                  <span class="text-rose-700 text-lg">⚠</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">👤 Бүгінгі қонақтар</h3>
+              <table class="a-table">
+                <thead><tr><th>Уақыт</th><th>Аты</th><th>Мақсат</th></tr></thead>
+                <tbody>
+                  <tr><td>09:15</td><td>Алимова Г.Б.</td><td>Ата-ана (8А)</td></tr>
+                  <tr><td>10:00</td><td>Қалекеев Б.А.</td><td>Білім бөлімі</td></tr>
+                  <tr><td>11:30</td><td>Сапанов Е.К.</td><td>Жөндеу</td></tr>
+                  <tr><td>13:00</td><td>Турсынов Т.Қ.</td><td>Ата-ана (10Б)</td></tr>
+                </tbody>
+              </table>
+              <button class="a-btn a-btn-primary mt-3">+ Қонақ тіркеу</button>
+            </div>
+          </div>
+
+          <div class="a-card">
+            <h3 class="font-bold text-slate-800 mb-3">📹 Камера / қауіпсіздік ескертулері</h3>
+            <div class="space-y-2 text-sm">
+              <div class="bg-indigo-50 border-l-4 border-indigo-500 px-3 py-2 rounded-xl">
+                <div class="font-semibold">✓ Барлық камералар жұмыс істеуде</div>
+                <div class="text-xs text-indigo-700">24 камера белсенді · 0 ескерту</div>
+              </div>
+              <div class="bg-sky-50 border-l-4 border-sky-500 px-3 py-2 rounded-xl">
+                <div class="font-semibold">ℹ️ Бүгін фиксацияланды</div>
+                <div class="text-xs text-slate-600 mt-1">25 оқушы кіруі тіркелмеді (ауырған/еркін кесте). Сынып жетекшіге автоматты есеп жіберілді.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== TRANSPORT (NEW) ===== -->
+        <section class="panel-section" data-section="transport">
+          <div class="rounded-2xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #f59e0b, #dc2626);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-4xl">🚌</div>
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90">SPAI92 ЖИ модулі</div>
+                <h1 class="text-2xl font-bold">Көлік / автобус трекинг</h1>
+              </div>
+            </div>
+            <p class="text-sm opacity-95 max-w-3xl">
+              Мектеп автобустарының GPS-трекингі, оқушылардың отырғызу/түсіру тіркеуі, ата-анаға автоматты SMS, жанармай есебі.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Автобустар</div><div class="val">4</div><div class="delta">жолда</div></div>
+            <div class="stat-card"><div class="lbl">Маршруттар</div><div class="val">6</div><div class="delta">бағыт</div></div>
+            <div class="stat-card"><div class="lbl">Оқушы</div><div class="val">148</div><div class="delta">автобус қолд.</div></div>
+            <div class="stat-card"><div class="lbl">Жанармай / ай</div><div class="val">420К</div><div class="delta">тенге</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🚌 Автобустар (онлайн)</h3>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                  <div>
+                    <div class="font-bold">Маршрут №1 — «Алмалы»</div>
+                    <div class="text-xs text-slate-600">№123 ABC · Жүргізуші: Кенжебеков А.</div>
+                    <div class="text-xs text-indigo-700 mt-0.5">📍 Қазір: Абай көш. · 7:42 келеді</div>
+                  </div>
+                  <div class="text-indigo-700 font-bold">●</div>
+                </div>
+                <div class="flex items-center justify-between p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                  <div>
+                    <div class="font-bold">Маршрут №2 — «Самал»</div>
+                    <div class="text-xs text-slate-600">№456 DEF · Жүргізуші: Сапаров М.</div>
+                    <div class="text-xs text-indigo-700 mt-0.5">📍 Қазір: Аль-Фараби · 7:48 келеді</div>
+                  </div>
+                  <div class="text-indigo-700 font-bold">●</div>
+                </div>
+                <div class="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200">
+                  <div>
+                    <div class="font-bold">Маршрут №3 — «Орбита»</div>
+                    <div class="text-xs text-slate-600">№789 GHI · Жүргізуші: Темірбаев Қ.</div>
+                    <div class="text-xs text-amber-700 mt-0.5">⏰ 5 мин кешіктіруде</div>
+                  </div>
+                  <div class="text-amber-700 font-bold">●</div>
+                </div>
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <div>
+                    <div class="font-bold">Маршрут №4 — «Көк-төбе»</div>
+                    <div class="text-xs text-slate-600">№012 JKL · Жүргізуші: Дауренов Е.</div>
+                    <div class="text-xs text-slate-600 mt-0.5">🏁 Мектепке жетті</div>
+                  </div>
+                  <div class="text-slate-500 font-bold">●</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📍 Оқушылар отырғызу журналы</h3>
+              <div class="space-y-2 text-sm">
+                <div class="p-2 rounded-xl bg-indigo-50 border-l-4 border-indigo-500">
+                  <div class="font-semibold">→ Қалиева Ажар (10Б)</div>
+                  <div class="text-xs text-indigo-700">Аялдама 3 · 07:32 · ата-анаға SMS ✓</div>
+                </div>
+                <div class="p-2 rounded-xl bg-indigo-50 border-l-4 border-indigo-500">
+                  <div class="font-semibold">→ Сейітов Дамир (8Б)</div>
+                  <div class="text-xs text-indigo-700">Аялдама 5 · 07:41 · SMS ✓</div>
+                </div>
+                <div class="p-2 rounded-xl bg-amber-50 border-l-4 border-amber-500">
+                  <div class="font-semibold">⏰ Бекмұратов Алмас (10Б)</div>
+                  <div class="text-xs text-amber-700">Аялдама 4 — отырмады! Ата-анаға қоңырау</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== OLYMPIAD (NEW) ===== -->
+        <section class="panel-section" data-section="olympiad">
+          <div class="rounded-2xl p-5 mb-5 text-white" style="background: linear-gradient(135deg, #ca8a04, #ea580c);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-4xl">🏆</div>
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-90">SPAI92 ЖИ модулі</div>
+                <h1 class="text-2xl font-bold">Олимпиада басқару жүйесі</h1>
+              </div>
+            </div>
+            <p class="text-sm opacity-95 max-w-3xl">
+              Барлық пәндік олимпиадалар, шахмат, спорт жарыстары, ғылыми жобалар — бір тізімде. Қатысушылар, нәтижелер, дайындық кестесі.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="stat-card"><div class="lbl">Жүлделер (жыл)</div><div class="val">42</div><div class="delta text-indigo-700">+18%</div></div>
+            <div class="stat-card"><div class="lbl">Республикалық</div><div class="val">12</div><div class="delta">1-3 орын</div></div>
+            <div class="stat-card"><div class="lbl">Қалалық</div><div class="val">23</div><div class="delta">Алматы</div></div>
+            <div class="stat-card"><div class="lbl">Халықаралық</div><div class="val">7</div><div class="delta text-amber-700">SCO, IZHO</div></div>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-4 mb-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🏆 Соңғы жетістіктер</h3>
+              <div class="space-y-2 text-sm">
+                <div class="border-l-4 border-yellow-500 bg-yellow-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">🥇 Сапенов Даниял — SCO Chess 2025</div>
+                  <div class="text-xs text-yellow-700">Командалық 3-орын · Шанхай · ноябрь</div>
+                </div>
+                <div class="border-l-4 border-yellow-500 bg-yellow-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">🥇 Қабдол Аслан — Республикалық химия</div>
+                  <div class="text-xs text-yellow-700">1-орын · март</div>
+                </div>
+                <div class="border-l-4 border-slate-400 bg-slate-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">🥈 Жасанды интеллект жобасы</div>
+                  <div class="text-xs text-slate-600">Қалалық · 2-орын · ақпан</div>
+                </div>
+                <div class="border-l-4 border-orange-500 bg-orange-50 px-3 py-2 rounded-xl">
+                  <div class="font-semibold">🥉 Каумбаев С.А. оқушылары — программалау</div>
+                  <div class="text-xs text-orange-700">Облыс · 3-орын</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📅 Алдағы олимпиадалар</h3>
+              <table class="a-table">
+                <thead><tr><th>Олимпиада</th><th>Деңгей</th><th>Күні</th></tr></thead>
+                <tbody>
+                  <tr><td>Математика — Назарбаев</td><td>Респ.</td><td>22.05</td></tr>
+                  <tr><td>Шахмат — қалалық</td><td>Қала</td><td>25.05</td></tr>
+                  <tr><td>«IT планета»</td><td>Респ.</td><td>01.06</td></tr>
+                  <tr><td>«Ұлы дала»</td><td>Респ.</td><td>05.06</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">📊 Пәндер бойынша жетістік</h3>
+              <div class="space-y-3">
+                <div><div class="flex justify-between text-xs mb-1"><span>Математика</span><span class="font-bold">12 жүлде</span></div><div class="pbar"><div style="width:100%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Информатика</span><span class="font-bold">9 жүлде</span></div><div class="pbar"><div style="width:75%; background:#6d5bd0;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Химия</span><span class="font-bold">7 жүлде</span></div><div class="pbar"><div style="width:58%; background:#f59e0b;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Шахмат</span><span class="font-bold">6 жүлде</span></div><div class="pbar"><div style="width:50%; background:#f59e0b;"></div></div></div>
+                <div><div class="flex justify-between text-xs mb-1"><span>Физика</span><span class="font-bold">5 жүлде</span></div><div class="pbar"><div style="width:42%; background:#f59e0b;"></div></div></div>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">🎯 Дайындық топтары</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between p-2 rounded-xl bg-indigo-50">
+                  <span>Математика — 10-11 сын.</span>
+                  <span class="font-bold text-indigo-700">14 оқушы</span>
+                </div>
+                <div class="flex justify-between p-2 rounded-xl bg-indigo-50">
+                  <span>Шахмат — 5-11 сын.</span>
+                  <span class="font-bold text-indigo-700">22 оқушы</span>
+                </div>
+                <div class="flex justify-between p-2 rounded-xl bg-indigo-50">
+                  <span>Информатика — 8-11 сын.</span>
+                  <span class="font-bold text-indigo-700">18 оқушы</span>
+                </div>
+                <div class="flex justify-between p-2 rounded-xl bg-indigo-50">
+                  <span>Химия — 10-11 сын.</span>
+                  <span class="font-bold text-indigo-700">12 оқушы</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== KPI ===== -->
+        <section class="panel-section" data-section="kpi">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Мұғалім KPI шолуы</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Жалпы KPI мониторингі</h1>
+          <p class="text-sm text-slate-500 mb-4">Барлық мұғалімдердің KPI есептері. Толық деректер мұғалім кабинетінде.</p>
+
+          <div class="a-card">
+            <table class="a-table">
+              <thead><tr><th>Мұғалім</th><th>Кафедра</th><th>I б. (Оқу)</th><th>II б. (Ғылыми)</th><th>III б. (Тәрбие)</th><th>Жалпы</th><th>Орны</th></tr></thead>
+              <tbody>
+                <tr><td>Каумбаев С.А.</td><td>Физика-инф.</td><td>248</td><td>7510</td><td>84</td><td><b>7842</b></td><td>🥇 1</td></tr>
+                <tr><td>Алимбекова Х.</td><td>Ағылшын</td><td>252</td><td>6580</td><td>92</td><td><b>6924</b></td><td>🥈 2</td></tr>
+                <tr><td>Мунасаева Р.Н.</td><td>Гуманитарлық бағыт</td><td>261</td><td>5380</td><td>82</td><td><b>5723</b></td><td>🥉 3</td></tr>
+                <tr><td>Қайратұлы А.</td><td>Физика-инф.</td><td>241</td><td>4794</td><td>69</td><td><b>5104</b></td><td>4</td></tr>
+                <tr><td>Мунасаева Р.</td><td>Қазақ тілі</td><td>238</td><td>4612</td><td>75</td><td><b>4925</b></td><td>5</td></tr>
+                <tr><td>Рамазанова А.</td><td>Жаратылыс.</td><td>234</td><td>3820</td><td>71</td><td><b>4125</b></td><td>6</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== ORDERS ===== -->
+        <section class="panel-section" data-section="orders">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Бұйрықтар</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Мектеп бұйрықтары</h1>
+          <p class="text-sm text-slate-500 mb-4">Барлық ресми бұйрықтар, директордың шешімдері.</p>
+
+          <div class="grid lg:grid-cols-[1fr,1.4fr] gap-4">
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">+ Жаңа бұйрық</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Бұйрық №</label>
+                  <input id="orderNo" value="48" class="w-full border rounded-xl px-3 py-2 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Тақырыбы</label>
+                  <input id="orderTitle" placeholder="Мысалы: «Оқушыларды марапаттау туралы»" class="w-full border rounded-xl px-3 py-2 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold mb-1">Мәтін</label>
+                  <textarea id="orderText" rows="4" class="w-full border rounded-xl px-3 py-2 text-sm"></textarea>
+                </div>
+                <button class="a-btn a-btn-primary w-full" id="orderAdd">Бұйрық жасау</button>
+              </div>
+            </div>
+
+            <div class="a-card">
+              <h3 class="font-bold text-slate-800 mb-3">Барлық бұйрықтар</h3>
+              <div id="ordersList" class="space-y-2 max-h-96 overflow-auto"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== NEWS ===== -->
+        <section class="panel-section" data-section="news-feed">
+          <div class="text-xs uppercase tracking-wider text-indigo-700 font-semibold mb-1">Жаңалықтар</div>
+          <h1 class="text-2xl font-bold text-slate-800 mb-2">Мектеп жаңалықтарын басқару</h1>
+          <p class="text-sm text-slate-500 mb-4">Басты бетке шығатын жаңалықтарды қосу/өңдеу.</p>
+
+          <div class="a-card mb-4">
+            <h3 class="font-bold text-slate-800 mb-3">+ Жаңа жаңалық</h3>
+            <div class="grid md:grid-cols-2 gap-3 mb-2">
+              <div>
+                <label class="block text-xs font-semibold mb-1">Тақырыбы</label>
+                <input id="newsTitle" placeholder="Мысалы: «Жыл қорытындысы бойынша марапаттау»" class="w-full border rounded-xl px-3 py-2 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold mb-1">Күні</label>
+                <input id="newsDate" type="date" class="w-full border rounded-xl px-3 py-2 text-sm">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="block text-xs font-semibold mb-1">Мәтін</label>
+              <textarea id="newsText" rows="3" class="w-full border rounded-xl px-3 py-2 text-sm"></textarea>
+            </div>
+            <button class="a-btn a-btn-primary" id="newsAdd">Жаңалық жариялау</button>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-3" id="newsList"></div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t bg-slate-50/60 mt-8">
+    <div class="max-w-7xl mx-auto px-4 py-6 text-xs md:text-sm grid md:grid-cols-3 gap-4">
+      <div>
+        <div class="font-semibold">SCHOOL PORTAL AI92</div>
+        <p class="text-slate-500">Махатма Ганди атындағы №92 мамандандырылған лицей</p>
+      </div>
+      <div>
+        <div class="font-semibold">Байланыс</div>
+        <p class="text-slate-500">+7 (727) XXX-XX-XX</p>
+        <p class="text-slate-500">info@ai92.edu.kz</p>
+      </div>
+      <div>
+        <div class="font-semibold">© 2025–2026</div>
+        <p class="text-slate-500">SPAI92 · Әкімшілік панелі</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+
+// Auth
+const user = JSON.parse(localStorage.getItem('ai92_user') || 'null') || {name:'Сейітов А.Б.',role:'admin'};
+$('#userBadge').textContent = user.name + ' · ' + (user.role||'admin');
+if (user.name) $('#adminTitle').textContent = user.name;
+$('#logoutBtn').addEventListener('click', () => { localStorage.removeItem('ai92_user'); location.href='login.html'; });
+
+// Section switcher
+window.openSection = function(id) {
+  $$('.side-link').forEach(li => li.classList.toggle('active', li.dataset.section === id));
+  $$('.panel-section').forEach(s => s.classList.toggle('active', s.dataset.section === id));
+  window.scrollTo({top:0, behavior:'smooth'});
+};
+$$('.side-link').forEach(li => li.addEventListener('click', () => openSection(li.dataset.section)));
+if (location.hash) {
+  const target = location.hash.replace('#','');
+  if ($('.side-link[data-section="'+target+'"]')) openSection(target);
+}
+
+// Orders
+function loadOrders() {
+  let o = JSON.parse(localStorage.getItem('spai92_orders') || 'null');
+  if (!o) {
+    o = [
+      {no:47,title:'Олимпиадашыларды марапаттау туралы',text:'Республикалық олимпиадада жүлделі орын алған оқушыларды құрмет грамоталарымен марапаттау туралы',date:'13.05.2025'},
+      {no:46,title:'Оқу жоспарын бекіту туралы',text:'2025-2026 оқу жылының күнтізбелік оқу жоспарын бекіту туралы',date:'09.05.2025'},
+      {no:45,title:'«Менің Қазақстаным» концертіне дайындық',text:'Республика күніне арналған концерт ұйымдастырушы топ құру',date:'05.05.2025'},
+    ];
+    localStorage.setItem('spai92_orders', JSON.stringify(o));
+  }
+  $('#ordersList').innerHTML = o.map(it => `
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+      <div class="flex items-center justify-between mb-1">
+        <span class="font-bold text-sm text-indigo-700">Бұйрық №${it.no}</span>
+        <span class="text-xs text-slate-500">${it.date}</span>
+      </div>
+      <div class="font-semibold text-sm">${it.title}</div>
+      <div class="text-xs text-slate-600 mt-1">${it.text}</div>
+    </div>
+  `).join('');
+}
+$('#orderAdd').addEventListener('click', () => {
+  const t = $('#orderTitle').value.trim();
+  if (!t) { toast('Тақырыбы бос'); return; }
+  const o = JSON.parse(localStorage.getItem('spai92_orders') || '[]');
+  o.unshift({no:+$('#orderNo').value, title:t, text:$('#orderText').value, date:new Date().toLocaleDateString('kk-KZ')});
+  localStorage.setItem('spai92_orders', JSON.stringify(o));
+  $('#orderTitle').value=''; $('#orderText').value='';
+  $('#orderNo').value = +$('#orderNo').value + 1;
+  loadOrders();
+  toast('Бұйрық сақталды');
+});
+loadOrders();
+
+// News
+function loadNews() {
+  let n = JSON.parse(localStorage.getItem('spai92_news') || 'null');
+  if (!n) {
+    n = [
+      {title:'SCO Chess Tournament — 3-орын',date:'16.11.2025',text:'Лицейіміздің оқушысы Сапенов Даниял Қазақстан құрамасы сапында Шанхайда өткен турнирде 3-орын алды.'},
+      {title:'Қалалық семинар: «Цифрлық дәуір педагогикасы»',date:'11.11.2025',text:'STEM, AI, робототехника бағыттары таныстырылды.'},
+      {title:'Көрме: «Қыран елім-Қазақстан»',date:'21.10.2025',text:'Республика күніне орай мектеп кітапханасында көрме ұйымдастырылды.'},
+    ];
+    localStorage.setItem('spai92_news', JSON.stringify(n));
+  }
+  $('#newsList').innerHTML = n.map(it => `
+    <div class="bg-white border border-slate-200 rounded-xl p-4">
+      <div class="text-xs text-slate-500 mb-1">${it.date}</div>
+      <div class="font-bold text-sm mb-1">${it.title}</div>
+      <div class="text-xs text-slate-600">${it.text}</div>
+    </div>
+  `).join('');
+}
+$('#newsAdd').addEventListener('click', () => {
+  const t = $('#newsTitle').value.trim();
+  if (!t) { toast('Тақырыбы бос'); return; }
+  const n = JSON.parse(localStorage.getItem('spai92_news') || '[]');
+  n.unshift({title:t, text:$('#newsText').value, date:$('#newsDate').value || new Date().toLocaleDateString('kk-KZ')});
+  localStorage.setItem('spai92_news', JSON.stringify(n));
+  $('#newsTitle').value=''; $('#newsText').value='';
+  loadNews();
+  toast('Жаңалық жарияланды');
+});
+loadNews();
+
+// Excel exports
+window.exportPayrollExcel = function() {
+  let html = '<html><head><meta charset="utf-8"></head><body><table border="1" style="border-collapse:collapse">';
+  html += '<tr><td colspan="6" style="background:#6d5bd0;color:#fff;padding:10px;font-size:16px;font-weight:bold;">№92 МЛ — Бухгалтерлік есеп: Мұғалім жалақысы — Май 2025</td></tr>';
+  html += '<tr><th>№</th><th>Мұғалім</th><th>Пән</th><th>Сағат</th><th>Үстеме</th><th>Жалпы</th></tr>';
+  $$('#payrollTable tbody tr').forEach((tr, i) => {
+    const c = tr.querySelectorAll('td');
+    html += '<tr>';
+    html += `<td style="padding:6px 10px;">${i+1}</td>`;
+    c.forEach(cell => html += `<td style="padding:6px 10px;">${cell.textContent.trim()}</td>`);
+    html += '</tr>';
+  });
+  html += '<tr><td colspan="5" style="padding:8px;font-weight:bold;background:#e0e7ff;">БАРЛЫҒЫ:</td><td style="padding:8px;font-weight:bold;background:#e0e7ff;">28 400 000 ₸</td></tr>';
+  html += '</table></body></html>';
+  const blob = new Blob(['\ufeff'+html], {type:'application/vnd.ms-excel;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SPAI92_Bukhgalteriya_zhalaqy_may2025.xls';
+  a.click();
+  toast('Excel есебі жүктелді');
+};
+
+window.exportCafeteriaExcel = function() {
+  let html = '<html><head><meta charset="utf-8"></head><body><table border="1" style="border-collapse:collapse">';
+  html += '<tr><td colspan="2" style="background:#f59e0b;color:#fff;padding:10px;font-size:16px;font-weight:bold;">№92 МЛ — Smart Асхана айлық есебі — Май 2025</td></tr>';
+  html += '<tr><th style="background:#fef3c7;padding:8px;">Көрсеткіш</th><th style="background:#fef3c7;padding:8px;">Тенге</th></tr>';
+  const rows = [
+    ['Айлық қаражат түсімі','3 826 540'],
+    ['Тегін тамақ (қала бюджеті)','520 000'],
+    ['Азық-түлік шығыны','2 410 000'],
+    ['Қызметкер жалақысы','820 000'],
+    ['Таза табыс','596 540'],
+    ['',''],
+    ['Тамақтанған оқушылар (айлық орт.)','487 / 612 (80%)'],
+    ['Тегін тамақ (әл. қолдау)','42 оқушы'],
+    ['Аллергия есебі','18 оқушы'],
+  ];
+  rows.forEach(r => html += `<tr><td style="padding:6px 10px;">${r[0]}</td><td style="padding:6px 10px;">${r[1]}</td></tr>`);
+  html += '</table></body></html>';
+  const blob = new Blob(['\ufeff'+html], {type:'application/vnd.ms-excel;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SPAI92_Smart_Asxana_may2025.xls';
+  a.click();
+  toast('Excel есебі жүктелді');
+};
+</script>
+</body>
+</html>

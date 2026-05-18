@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCHOOL PORTAL AI92 — 2025–2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    .hero-bg {
+      background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.13;
+      position: absolute;
+      inset: 0;
+    }
+
+    :root {
+      --spai-primary: #4f65d8;
+      --spai-primary-dark: #31439f;
+      --spai-violet: #6d5bd0;
+      --spai-soft: #eef3ff;
+      --spai-line: #dbe5ff;
+    }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .hero-main {
+      background:
+        radial-gradient(circle at 14% 12%, rgba(255,255,255,.16), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(196,211,255,.22), transparent 34%),
+        linear-gradient(135deg, rgba(76,103,214,.96), rgba(95,82,201,.94) 52%, rgba(50,73,160,.96));
+    }
+    .clean-logo { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+    .glass-panel { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); backdrop-filter: blur(10px); }
+    .soft-blue-card { border-color: var(--spai-line); background: linear-gradient(135deg, #f6f8ff, #ffffff 52%, #eef4ff); }
+    .section-badge { background: var(--spai-primary); color: #fff; }
+  
+  </style>
+</head>
+
+<body class="bg-white text-slate-900">
+
+<!-- ============== HEADER + NAV ============== -->
+<header class="w-full bg-white/80 backdrop-blur border-b sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+    <div class="flex items-center gap-2">
+      <span class="h-14 w-14 md:h-16 md:w-16 clean-logo overflow-visible grid place-content-center"><img src="logo.png" alt="№92 лицей логотипі" class="h-14 w-14 md:h-16 md:w-16 object-contain drop-shadow-md"></span>
+      <div>
+        <div class="font-bold text-sm md:text-base">SCHOOL PORTAL AI92</div>
+        <div class="text-[10px] md:text-xs text-slate-500">
+          Махатма Ганди атындағы №92 мамандандырылған лицей
+        </div>
+      </div>
+    </div>
+
+    <nav class="ml-auto flex flex-wrap items-center justify-end gap-4 text-xs md:text-sm">
+      <a href="#home" class="hover:text-indigo-600">Басты бет</a>
+      <a href="#teachers" class="hover:text-indigo-600">Үздік мұғалімдер</a>
+      <a href="#students" class="hover:text-indigo-600">Үздік оқушылар</a>
+      <a href="#courses" class="hover:text-indigo-600">Курстар</a>
+      <a href="#digital" class="hover:text-indigo-600">Өз өнімдеріміз</a>
+      <a href="#tour" class="hover:text-indigo-600">Виртуалды тур</a>
+      <a href="#news" class="hover:text-indigo-600">Жаңалықтар</a>
+      <a href="login.html"
+         class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white hover:opacity-90">
+        Кіру
+      </a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- ============== HERO (БАСТЫ БЕТ) ============== -->
+<section id="home" class="relative overflow-hidden">
+  <div class="hero-bg"></div>
+
+  <div class="relative hero-main text-white py-16 md:py-20">
+    <!-- ЛОГОТИПКЕ ОРЫН -->
+    <div class="absolute left-10 top-10 md:left-[14rem] md:top-[7rem]">
+      <div class="h-28 w-28 md:h-32 md:w-32 clean-logo overflow-visible grid place-content-center">
+        <img src="logo.png" alt="№92 лицей логотипі" class="h-full w-full object-contain drop-shadow-xl" />
+      </div>
+    </div>
+    <!-- /ЛОГОТИПКЕ ОРЫН -->
+
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">
+        Мектеп менеджментіндегі ЖИ: уақыт, сапа, нәтиже SPAI92 платформасы
+      </h1>
+      <p class="opacity-90 mb-6 text-sm md:text-base">
+        2025–2026 оқу жылына арналған смарт мектеп экожүйесі
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="#courses" class="inline-flex px-6 py-3 rounded-2xl bg-rose-600 hover:scale-105 transition shadow-lg text-sm md:text-base">Оқуды бастау</a>
+        <a href="tools.html" class="inline-flex px-6 py-3 rounded-2xl bg-white text-indigo-700 hover:scale-105 transition shadow-lg text-sm md:text-base font-semibold">Цифрлық құралдар</a>
+        <a href="login.html" class="inline-flex px-6 py-3 rounded-2xl bg-indigo-950/80 text-white hover:scale-105 transition shadow-lg text-sm md:text-base">Жеке кабинет</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============== ҮЗДІК 5 МҰҒАЛІМ ============== -->
+<section id="teachers" class="max-w-7xl mx-auto px-4 py-14">
+  <h2 class="text-3xl font-bold mb-2">2025–2026 · Үздік 5 мұғалім</h2>
+  <p class="text-slate-600 mb-8 text-sm md:text-base">
+    Лицейдің педагогикалық құрамының кәсіби жетістіктері мен авторлық жобалары.
+  </p>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+
+    <!-- TEACHER 1 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="st1.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: TOP 1 мұғалім. Өз суретіңізді қою үшін осындағы src сілтемесін өз файл атауыңызға ауыстырыңыз (мысалы: img/teacher1.jpg). -->
+      <div class="p-4">
+        <span class="inline-block px-3 py-1 bg-indigo-600 text-white rounded-xl text-xs mb-2">
+          TOP 1
+        </span>
+        <h3 class="font-bold text-lg mb-2">Каумбаев Сунатулла</h3>
+        <p class="text-sm text-slate-700">
+          • «Үздік авторлық бағдарлама» – I дәрежелі диплом<br>
+          • Цифрлық педагогика бойынша көшбасшы<br>
+          • Инновациялық білім беру жобаларының жетекшісі
+        </p>
+      </div>
+    </div>
+
+    <!-- TEACHER 2 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="ht1.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: TOP 2 мұғалім. Мұнда да тек src-дегі сілтемені өз фотоларыңызға ауыстырасыз (мысалы: img/teacher2.jpg). -->
+      <div class="p-4">
+        <span class="inline-block px-3 py-1 bg-indigo-500 text-white rounded-xl text-xs mb-2">
+          TOP 2
+        </span>
+        <h3 class="font-bold text-lg mb-2">Алимбекова Халима</h3>
+        <p class="text-sm text-slate-700">
+          • 2024 ж. «Қазақстан мұғалімі – Noble Prize» TOP-50 финалисі.<br>
+          • 2025 жылдан бері қалалық ағылшын тілі мұғалімдері үшін «Өрлеу» біліктілікті арттыру орталығының тренері.<br>
+          • Авторлық әдістеме және коучинг сабақтардың авторы
+        </p>
+      </div>
+    </div>
+
+    <!-- TEACHER 3 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="rt1.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: TOP 3 мұғалім. Өз файлыңызды қою үшін осы жердегі URL-ды ауыстырыңыз (мысалы: img/teacher3.jpg). -->
+      <div class="p-4">
+        <span class="inline-block px-3 py-1 bg-indigo-400 text-white rounded-xl text-xs mb-2">
+          TOP 3
+        </span>
+        <h3 class="font-bold text-lg mb-2">Мунасаева Рая Нуровна </h3>
+        <p class="text-sm text-slate-700">
+          •  5–11-сыныптарға арналған «Қазақ тілі» оқу-әдістемелік кешенінің (Арман-ПВ) авторларының бірі<br>
+          • «Құрмалас сөйлем синтаксисі» элективті курсының авторы, қалалық «Педолимп» байқауының Бас жүлде иегері<br>
+          • Жоғары санатты қазақ тілі мен әдебиеті пәні мұғалімі, педагог-шебер
+        </p>
+      </div>
+    </div>
+
+    <!-- TEACHER 4 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="att.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: TOP 4 мұғалім. Керек суретті жүктеп, осы src орнына өз файл атауын жазыңыз. -->
+      <div class="p-4">
+        <span class="inline-block px-3 py-1 bg-indigo-300 text-white rounded-xl text-xs mb-2">
+          TOP 4
+        </span>
+        <h3 class="font-bold text-lg mb-2">Қайратұлы Ақылжан</h3>
+        <p class="text-sm text-slate-700">
+          • «Almaty Ustazy» конкурсының аудандық кезеңінің І орын<br>
+          •  «Almaty Ustazy» конкурсының қалалық кезеңінің ІІІ дәрежелі диплом иегері<br>
+          • Физика пәнінің мұғалімі, педагог-модератор
+        </p>
+      </div>
+    </div>
+
+    <!-- TEACHER 5 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="at.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: TOP 5 мұғалім. Мысалы, img/teacher5.jpg деп өз суретіңізге ауыстыруға болады. -->
+      <div class="p-4">
+        <span class="inline-block px-3 py-1 bg-indigo-200 text-indigo-900 rounded-xl text-xs mb-2">
+          TOP 5
+        </span>
+        <h3 class="font-bold text-lg mb-2">Рамазанова Ақбаян Азаматқызы.</h3>
+        <p class="text-sm text-slate-700">
+          • «Жаңа мектепке-жаңашыл ұстаз» жас мамандар байқауының аудандық кезеңінің 3-ші орын жеңімпазы<br>
+          • «Дарынды балаларға - талантты ұстаз” республикалық кезеңінің 3-ші орын жеңімпазы<br>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+<!-- ============ ҮЗДІК 5 ОҚУШЫ ============ -->
+<section id="students" class="max-w-7xl mx-auto px-4 py-14">
+  <h2 class="text-3xl font-bold mb-2">2025–2026 · Үздік 5 оқушы</h2>
+  <p class="text-slate-600 mb-8 text-sm md:text-base">
+    Дарынды оқушылардың пәндік олимпиадалар мен ғылыми жобалардағы жетістіктері.
+  </p>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+
+    <!-- STUDENT 1 — Қабдолов Аслан -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="student1.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: Үздік оқушы TOP 1. Өз оқушыңыздың фотосын қою үшін src-дегі сілтемені өзгерту жеткілікті. -->
+      <div class="p-4">
+        <span class="px-3 py-1 bg-indigo-600 text-white rounded-xl text-xs font-bold">TOP 1</span>
+        <h3 class="font-bold text-lg mt-3 mb-2">Қабдолов Аслан</h3>
+        <p class="text-sm text-slate-600 mb-1">Сыныбы: 10 «А»</p>
+        <p class="text-sm text-slate-700">
+          Республикалық Президенттік олимпиадасына қатысушысы<b>I орын</b> жеңімпазы.<br>
+          Ғылыми жобалар байқауының жеіңмпазы.<br>
+          Робототехника және химия бағытында үздік нәтиже.
+        </p>
+      </div>
+    </div>
+
+    <!-- STUDENT 2 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="student2.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: Үздік оқушы TOP 2. Мысалы: img/student2.jpg деп өз суретіңізге ауыстырасыз. -->
+      <div class="p-4">
+        <span class="px-3 py-1 bg-amber-500 text-white rounded-xl text-xs font-bold">TOP 2</span>
+        <h3 class="font-bold text-lg mt-3 mb-2">Есқалиева Айару</h3>
+        <p class="text-sm text-slate-600 mb-1">Сыныбы: 9 «Б»</p>
+        <p class="text-sm text-slate-700">
+          Қалалық математика олимпиадасы — <b>I орын</b>.<br>
+          Лицейдің үздік жас зерттеушісі, ғылыми жоба авторы.<br>
+          Пәндік конференциялар мен форумдар қатысушысы.
+        </p>
+      </div>
+    </div>
+
+    <!-- STUDENT 3 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="student3.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: Үздік оқушы TOP 3. Өз суретіңізді қою үшін src мәнін ауыстырыңыз. -->
+      <div class="p-4">
+        <span class="px-3 py-1 bg-amber-400 text-white rounded-xl text-xs font-bold">TOP 3</span>
+        <h3 class="font-bold text-lg mt-3 mb-2">Нұрсұлтан Әли</h3>
+        <p class="text-sm text-slate-600 mb-1">Сыныбы: 8 «А»</p>
+        <p class="text-sm text-slate-700">
+          Робототехника чемпионаты — <b>II орын</b>.<br>
+          Инженерлік жобалар авторы, мектеп IT-клубының мүшесі.<br>
+          Алгоритмдеу және бағдарламалау бойынша белсенді.
+        </p>
+      </div>
+    </div>
+
+    <!-- STUDENT 4 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="student4.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: Үздік оқушы TOP 4. Мысалы: img/student4.jpg файлын жазып қоюға болады. -->
+      <div class="p-4">
+        <span class="px-3 py-1 bg-yellow-400 text-white rounded-xl text-xs font-bold">TOP 4</span>
+        <h3 class="font-bold text-lg mt-3 mb-2">Мадина Қайсар</h3>
+        <p class="text-sm text-slate-600 mb-1">Сыныбы: 9 «А»</p>
+        <p class="text-sm text-slate-700">
+          Қазақ тілі пәні бойынша облыстық олимпиада жүлдегері.<br>
+          Әдеби шығармалар байқауы — I орын.<br>
+          Мектептің шығармашылық клубының белсенді мүшесі.
+        </p>
+      </div>
+    </div>
+
+    <!-- STUDENT 5 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="student5.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: Үздік оқушы TOP 5. Өз файл атауын осы жерге жазыңыз (мысалы: img/student5.jpg). -->
+      <div class="p-4">
+        <span class="px-3 py-1 bg-yellow-500 text-white rounded-xl text-xs font-bold">TOP 5</span>
+        <h3 class="font-bold text-lg mt-3 mb-2">Әмірлан Дос</h3>
+        <p class="text-sm text-slate-600 mb-1">Сыныбы: 7 «Б»</p>
+        <p class="text-sm text-slate-700">
+          Информатика пәні бойынша қалалық жарыс — II орын.<br>
+          Программалау курсының үздік түлегі.<br>
+          Лицейдегі цифрлық жобаларға белсенді қатысады.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<!-- ============ КУРСТАР · ҮЙІРМЕЛЕР (ЕРЕКШЕ БЛОК) ============ -->
+<section id="courses" class="max-w-7xl mx-auto px-4 py-14">
+  <h2 class="text-3xl font-bold mb-2">Курстар мен үйірмелер</h2>
+  <p class="text-slate-600 mb-8 text-sm md:text-base">
+    Лицей базасындағы қосымша білім беру бағыттары: олимпиадалық дайындық, робототехника,
+    тілдік курстар және шығармашылық студиялар.
+  </p>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+    <!-- CARD 1 -->
+    <div class="bg-gradient-to-br from-indigo-50 to-sky-50 border border-indigo-100 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-indigo-600 text-white grid place-content-center text-xl">
+          🤖
+        </div>
+        <div>
+          <h3 class="font-semibold mb-1">Robotics · FTC & FGC</h3>
+          <p class="text-xs uppercase tracking-wide text-indigo-700 mb-1">Үйірме · Инженерлік ойлау</p>
+          <p class="text-sm text-slate-700">
+            Робототехника, CAD, бағдарламалау, жарыс стратегиясы.
+            URAN 92 командасының тәжірибесі негізінде практикалық дайындық.
+          </p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Аптасына 3 рет · 8–11 сынып</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-indigo-100">20 орын</span>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="bg-gradient-to-br from-indigo-50 to-slate-50 border border-indigo-100 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-indigo-600 text-white grid place-content-center text-xl">
+          📘
+        </div>
+        <div>
+          <h3 class="font-semibold mb-1">IELTS Booster</h3>
+          <p class="text-xs uppercase tracking-wide text-indigo-700 mb-1">Курс · Ағылшын</p>
+          <p class="text-sm text-slate-700">
+            Listening, Reading, Writing, Speaking модульдері бойынша
+            жүйелі дайындық. Мақсатты деңгей: 6.0–6.5+.
+          </p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Аптасына 2 рет · 9–11 сынып</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-indigo-100">15 орын</span>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="bg-gradient-to-br from-amber-50 to-rose-50 border border-amber-100 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-amber-500 text-white grid place-content-center text-xl">
+          💻
+        </div>
+        <div>
+          <h3 class="font-semibold mb-1">Web Dev · SPAI92</h3>
+          <p class="text-xs uppercase tracking-wide text-amber-700 mb-1">Курс · IT</p>
+          <p class="text-sm text-slate-700">
+            HTML, CSS, JS және Tailwind арқылы мектеп порталдары
+            мен мини-сайттар жасауға үйретеді.
+          </p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Аптасына 2 рет · 8–11 сынып</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-amber-100">18 орын</span>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="bg-gradient-to-br from-rose-50 to-indigo-50 border border-rose-100 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-rose-500 text-white grid place-content-center text-xl">
+          🎤
+        </div>
+        <div>
+          <h3 class="font-semibold mb-1">Debate & Public Speaking</h3>
+          <p class="text-xs uppercase tracking-wide text-rose-700 mb-1">Үйірме · Soft skills</p>
+          <p class="text-sm text-slate-700">
+            Қазақ, орыс және ағылшын тілдерінде пікірсайыс,
+            шешендік өнер және критикалық ойлау дағдыларын дамытады.
+          </p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Аптасына 2 рет · 7–11 сынып</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-rose-100">25 орын</span>
+      </div>
+    </div>
+
+
+    <!-- CARD 5 -->
+    <div class="bg-gradient-to-br from-sky-50 to-indigo-50 border border-sky-100 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-sky-600 text-white grid place-content-center text-xl">🧪</div>
+        <div>
+          <h3 class="font-semibold mb-1">ChemLab Junior</h3>
+          <p class="text-xs uppercase tracking-wide text-sky-700 mb-1">Үйірме · Химия</p>
+          <p class="text-sm text-slate-700">Тәжірибе мәдениеті, қауіпсіз зертхана, олимпиадалық есептер және шағын зерттеу жобалары.</p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Сейсенбі/бейсенбі · 14:30–15:30</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-sky-100">16 орын</span>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="bg-gradient-to-br from-violet-50 to-indigo-50 border border-violet-100 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-violet-600 text-white grid place-content-center text-xl">🧠</div>
+        <div>
+          <h3 class="font-semibold mb-1">Olympiad Math</h3>
+          <p class="text-xs uppercase tracking-wide text-violet-700 mb-1">Курс · Математика</p>
+          <p class="text-sm text-slate-700">Логикалық есептер, комбинаторика, геометрия және олимпиадалық дайындық тренажері.</p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Дүйсенбі/сәрсенбі · 15:10–16:10</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-violet-100">20 орын</span>
+      </div>
+    </div>
+
+    <!-- CARD 7 -->
+    <div class="bg-gradient-to-br from-blue-50 to-slate-50 border border-blue-100 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-blue-600 text-white grid place-content-center text-xl">📊</div>
+        <div>
+          <h3 class="font-semibold mb-1">Data & AI Basics</h3>
+          <p class="text-xs uppercase tracking-wide text-blue-700 mb-1">Курс · ЖИ сауаттылық</p>
+          <p class="text-sm text-slate-700">Деректермен жұмыс, диаграмма құру, prompt engineering және ЖИ құралдарын қауіпсіз қолдану.</p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Жұма · 14:30–15:30</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-blue-100">18 орын</span>
+      </div>
+    </div>
+
+    <!-- CARD 8 -->
+    <div class="bg-gradient-to-br from-slate-50 to-indigo-50 border border-slate-200 rounded-2xl p-5 shadow-lg hover:-translate-y-1 hover:shadow-xl transition flex flex-col justify-between">
+      <div class="flex items-start gap-3">
+        <div class="h-10 w-10 rounded-2xl bg-slate-700 text-white grid place-content-center text-xl">🎨</div>
+        <div>
+          <h3 class="font-semibold mb-1">Media Design Studio</h3>
+          <p class="text-xs uppercase tracking-wide text-slate-600 mb-1">Үйірме · Дизайн</p>
+          <p class="text-sm text-slate-700">Постер, презентация, видеомонтаж және мектеп жаңалықтарына арналған визуал контент.</p>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Сейсенбі · 15:30–16:30</span>
+        <span class="px-2 py-1 rounded-xl bg-white/70 border border-slate-200">14 орын</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+<!-- ============ ЦИФРЛЫҚ ҚҰРАЛДАР / ӨЗ ӨНІМДЕРІМІЗ ============ -->
+<section id="digital" class="max-w-7xl mx-auto px-4 py-14">
+  <div class="rounded-[2rem] border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-sky-50 shadow-xl p-5 md:p-8 overflow-hidden relative">
+    <div class="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-indigo-200/40 blur-2xl"></div>
+    <div class="absolute -left-20 bottom-0 w-64 h-64 rounded-full bg-sky-200/30 blur-2xl"></div>
+    <div class="relative flex flex-wrap items-end justify-between gap-4 mb-8">
+      <div>
+        <div class="inline-flex px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-semibold mb-3">Өз өнімдеріміз</div>
+        <h2 class="text-3xl font-bold mb-2">Цифрлық құралдар және ойындар</h2>
+        <p class="text-slate-600 text-sm md:text-base max-w-3xl">
+          Лицейдің интерактивті ойындары, цифрлық ресурстары және мектеп жұмысына арналған пайдалы құралдары.
+        </p>
+      </div>
+      <a href="tools.html" class="px-5 py-3 rounded-2xl bg-indigo-600 text-white font-semibold shadow-lg hover:bg-indigo-700 transition">Барлық құралды ашу</a>
+    </div>
+
+    <div class="relative grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <a href="digital-tools/game.html" class="group bg-white rounded-3xl border border-indigo-100 p-5 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition">
+        <div class="h-12 w-12 rounded-2xl bg-indigo-100 text-indigo-700 grid place-content-center text-2xl mb-4">🧮</div>
+        <h3 class="font-bold text-lg mb-2">Математикалық арқан тарту</h3>
+        <p class="text-sm text-slate-600 mb-4">Екі топқа арналған жылдам есеп шығару ойыны. Сабақтағы сергіту сәтіне ыңғайлы.</p>
+        <span class="text-indigo-700 text-sm font-semibold">Ойынды ашу →</span>
+      </a>
+      <a href="class-teacher.html" class="group bg-white rounded-3xl border border-indigo-100 p-5 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition">
+        <div class="h-12 w-12 rounded-2xl bg-sky-100 text-sky-700 grid place-content-center text-2xl mb-4">👩‍🏫</div>
+        <h3 class="font-bold text-lg mb-2">Сынып жетекші кабинеті</h3>
+        <p class="text-sm text-slate-600 mb-4">Қатысу, рейтинг, әлеуметтік паспорт, оқулық, тәрбие жоспары және есептер.</p>
+        <span class="text-indigo-700 text-sm font-semibold">Кабинетке кіру →</span>
+      </a>
+      <a href="tup-sana.html" class="group bg-white rounded-3xl border border-pink-100 p-5 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition relative overflow-hidden">
+        <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-pink-200/50 blur-xl"></div>
+        <div class="relative h-12 w-12 rounded-2xl bg-pink-100 text-pink-700 grid place-content-center text-2xl mb-4">🌸</div>
+        <h3 class="relative font-bold text-lg mb-2">Түп сана</h3>
+        <p class="relative text-sm text-slate-600 mb-4">Қиялдағы бейнені AI-суретке айналдырып, астына жұмсақ шығармашылық сипаттама береді.</p>
+        <span class="relative text-pink-700 text-sm font-semibold">Түп сананы ашу →</span>
+      </a>
+      <a href="feedback-reactions.html" class="group bg-white rounded-3xl border border-indigo-100 p-5 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition">
+        <div class="h-12 w-12 rounded-2xl bg-rose-100 text-rose-700 grid place-content-center text-2xl mb-4">🤩</div>
+        <h3 class="font-bold text-lg mb-2">Әсер Толқыны</h3>
+        <p class="text-sm text-slate-600 mb-4">Mentimeter пікірлерін emoji-реакцияларға айналдырып, толық экранға WOW эффектімен шығарады.</p>
+        <span class="text-indigo-700 text-sm font-semibold">Реакция экранын ашу →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ВИРТУАЛДЫ ТУР ============ -->
+<section id="tour" class="max-w-7xl mx-auto px-4 py-14">
+  <div class="rounded-[2rem] overflow-hidden shadow-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/60">
+
+    <div class="p-6 md:p-8 pb-0">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-2">
+        <div>
+          <div class="inline-flex px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-semibold mb-3">
+            🎥 360° Виртуалды саяхат
+          </div>
+          <h2 class="text-3xl font-bold mb-2 text-indigo-900">Мектепке виртуалды тур</h2>
+          <p class="text-slate-600 text-sm md:text-base max-w-3xl">
+            №92 мамандандырылған лицейге келмей-ақ, кабинеттер, асхана, кітапхана,
+            спорт залы, акт залымен 360° режимінде танысыңыз.
+          </p>
+        </div>
+        <a href="https://pano.cool/@din_bul_27PzUXwUvT/92" target="_blank" rel="noopener"
+           class="px-5 py-3 rounded-2xl bg-indigo-600 text-white font-semibold shadow-lg hover:bg-indigo-700 transition">
+          Толық режимде ашу ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="p-3 md:p-6 pt-4">
+      <div class="rounded-2xl overflow-hidden shadow-xl bg-slate-900 relative" style="aspect-ratio: 16/9; min-height: 360px;">
+        <iframe
+          src="https://pano.cool/@din_bul_27PzUXwUvT/92"
+          class="w-full h-full border-0"
+          loading="lazy"
+          allow="fullscreen; accelerometer; gyroscope; magnetometer"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+
+    <div class="px-6 md:px-8 pb-6 grid md:grid-cols-3 gap-4 text-sm">
+      <div class="flex items-start gap-3 bg-white/70 rounded-xl p-3 border border-indigo-100">
+        <div class="text-2xl">🏛️</div>
+        <div>
+          <div class="font-semibold text-indigo-900">Кабинеттер</div>
+          <div class="text-xs text-slate-600">Заманауи кабинеттер, интерактив тақталар</div>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 bg-white/70 rounded-xl p-3 border border-indigo-100">
+        <div class="text-2xl">🧪</div>
+        <div>
+          <div class="font-semibold text-indigo-900">Зертханалар</div>
+          <div class="text-xs text-slate-600">Физика, химия, биология зертханалары</div>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 bg-white/70 rounded-xl p-3 border border-indigo-100">
+        <div class="text-2xl">📚</div>
+        <div>
+          <div class="font-semibold text-indigo-900">Кітапхана + асхана</div>
+          <div class="text-xs text-slate-600">Цифрлық кітапхана, спорт зал, асхана</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ЖАҢАЛЫҚТАР ============ -->
+<section id="news" class="max-w-7xl mx-auto px-4 py-14">
+  <h2 class="text-3xl font-bold mb-8">Жаңалықтар</h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <!-- NEW NEWS: SCO CHESS TOURNAMENT -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="ches1.jfif" class="w-full h-48 object-cover">
+      <!-- ФОТО: Шахмат жаңалығы. Өзіңіз түсірген турнир фотосын қою үшін src-дегі сілтемені, мысалы, img/chess-sco2025.jpg деп ауыстырыңыз. -->
+      <div class="p-4">
+        <h3 class="font-bold text-lg mb-1">The 7th SCO International Team Chess Tournament 2025</h3>
+        <p class="text-xs text-slate-500 mb-2">16.11.2025</p>
+        <p class="text-sm text-slate-700">
+          Шанхайда өткен The 7th SCO International Team Chess Tournament 2025 командалық турнирінде
+          Қазақстан ұлттық құрамасы <b>3-орын</b> иеленді. Қазақстан ұлттық құрамасы сапында
+          лицейіміздің 11 «Б» сынып оқушысы <b>Сапенов Даниял</b> мен 2021 жылғы түлегіміз
+          <b>Жалмаханов Рамазан</b> өнер көрсетті. Құттықтаймыз!!!
+        </p>
+      </div>
+    </div>
+
+    <!-- NEWS 1 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="seminar.jpg" class="w-full h-48 object-cover">
+      <!-- ФОТО: Цифрлық дәуір педагогикасы семинары. Өз фотосын қою үшін src мәнін өз файл атауына ауыстырыңыз. -->
+      <div class="p-4">
+        <h3 class="font-bold text-lg mb-1">Қалалық семинар: "Цифрлық дәуір педагогикасы"</h3>
+        <p class="text-xs text-slate-500 mb-2">11.11.2025</p>
+        <p class="text-sm text-slate-700">
+          «Цифрлық дәуір педагогикасы» семинарында STEM, AI, робототехника бағыттары
+          таныстырылып, педагогтарға инновациялық құралдарды қолдану жолдары көрсетілді.
+        </p>
+      </div>
+    </div>
+
+    <!-- NEWS 2 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="korme.jpeg" class="w-full h-48 object-cover">
+      <!-- ФОТО: «Қыран елім-Қазақстан» көрмесі. Өз фотосын қою үшін осы URL-ды img/news2.jpg сияқты файлға ауыстырыңыз. -->
+      <div class="p-4">
+        <h3 class="font-bold text-lg mb-1">Көрме: «Қыран елім-Қазақстан»</h3>
+        <p class="text-xs text-slate-500 mb-2">21.10.2025</p>
+        <p class="text-sm text-slate-700">
+          Республика күніне орай мектеп кітапханасында «Қыран елім-Қазақстан»
+          атты көрме ұйымдастырылды. Мақсаты — оқушылардың ұлттық рухын арттыру.
+        </p>
+      </div>
+    </div>
+
+    <!-- NEWS 3 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="zhylandy.jpeg" class="w-full h-48 object-cover">
+      <!-- ФОТО: Жыланды лицейімен серіктестік меморандумы. Өз суретіңізді қою үшін src-дегі сілтемені ауыстырыңыз. -->
+      <div class="p-4">
+        <h3 class="font-bold text-lg mb-1">Меморандум: Жыланды лицейімен серіктестік</h3>
+        <p class="text-xs text-slate-500 mb-2">14.10.2025</p>
+        <p class="text-sm text-slate-700">
+          №92 лицейі мен «Жыланды» мамандандырылған лицейі арасында ынтымақтастық
+          меморандумы жасалды. Мақсаты — тәжірибе алмасу және бірлескен жобалар.
+        </p>
+      </div>
+    </div>
+
+    <!-- NEWS 4 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="shara.jpeg" class="w-full h-48 object-cover">
+      <!-- ФОТО: «Еспаев Әбілахат Смағұлұлы 100 жыл» іс-шарасы. Өз фотосыңыздың атын осында жазыңыз. -->
+      <div class="p-4">
+        <h3 class="font-bold text-lg mb-1">Іс-шара: "Еспаев Әбілахат Смағұлұлы 100 жыл"</h3>
+        <p class="text-xs text-slate-500 mb-2">14.10.2025</p>
+        <p class="text-sm text-slate-700">
+          Қазақ музыкасының тұлғасы Ә. Еспаевтың 100 жылдығына арналған ән кеші өтті.
+          8 «А» сынып оқушылары орындауымен шығармашылық кеш ұйымдастырылды.
+        </p>
+      </div>
+    </div>
+
+    <!-- NEWS 5 -->
+    <div class="bg-white border rounded-2xl shadow-xl overflow-hidden">
+      <img src="ulttyn.jpeg" class="w-full h-48 object-cover">
+      <!-- ФОТО: «Ұлттың рухын оятқан...» әдеби кеші. Өз фотосын қою үшін src мәнін өзіңізге қажет файлға ауыстырыңыз. -->
+      <div class="p-4">
+        <h3 class="font-bold text-lg mb-1">Іс-шара: «Ұлттың рухын оятқан...»</h3>
+        <p class="text-xs text-slate-500 mb-2">14.10.2025</p>
+        <p class="text-sm text-slate-700">
+          М.Дулатовтың 140 жылдығына арналған әдебиеттік кеш өтті.
+          «Бақытсыз Жамал» шығармасы талданып, оқушылар пікір алмасты.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<!-- ============ АДРЕС + КАРТА (ПОДВАЛДЫҢ ЖОҒАРЫ) ============ -->
+<section class="max-w-7xl mx-auto px-4 pb-14">
+  <h2 class="text-2xl font-bold mb-2">📍 Мектеп мекенжайы</h2>
+  <p class="text-slate-700 mb-4 text-sm md:text-base">
+    Алматы қаласы, Бостандық ауданы, Панфилова 205
+  </p>
+
+  <div class="rounded-2xl overflow-hidden shadow-xl border h-64">
+    <iframe
+      src="https://maps.google.com/maps?q=Алматы%20Панфилова%20205&z=15&output=embed"
+      class="w-full h-full border-0"
+      loading="lazy">
+    </iframe>
+  </div>
+</section>
+
+
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t bg-slate-50/40">
+  <div class="max-w-7xl mx-auto px-4 py-10 text-sm grid md:grid-cols-3 gap-6">
+
+    <div>
+      <div class="font-semibold text-lg">SCHOOL PORTAL AI92</div>
+      <p>Махатма Ганди атындағы №92 мамандандырылған лицей</p>
+    </div>
+
+    <div>
+      <div class="font-semibold text-lg mb-1">Байланыс</div>
+      <p>+7 (727) 123-45-67</p>
+      <p>info@ai92.edu.kz</p>
+      <p>Алматы, Панфилова 205</p>
+    </div>
+
+    <div>
+      <div class="font-semibold text-lg mb-1">Әлеуметтік желілер</div>
+      <p>Instagram · Telegram · YouTube</p>
+    </div>
+
+  </div>
+</footer>
+
+
+
+<!-- ============ AI ASSISTENT ============ -->
+<div class="fixed right-4 bottom-4 z-50">
+  <div id="aiDock"
+       class="hidden w-96 max-w-sm bg-white border rounded-2xl shadow-2xl p-4 mb-2">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="h-12 w-12 rounded-2xl bg-indigo-100 grid place-content-center text-2xl">
+        🤖
+      </div>
+      <div>
+        <div class="font-semibold text-sm">Робот ассистент AI92</div>
+        <div class="text-xs text-slate-500">Онлайн · мектеп порталы бойынша көмек</div>
+      </div>
+    </div>
+
+    <div id="aiAnswer"
+         class="text-sm bg-slate-50 border rounded-2xl p-3 h-40 overflow-auto">
+      Сәлем! Сұрақ қойыңыз — жаңалық, оқушы, мұғалім, курс, кесте, т.б.
+    </div>
+
+    <div class="mt-3 flex gap-2">
+      <input id="aiInput" class="flex-1 border rounded-xl px-3 py-2 text-sm"
+             placeholder="Хатыңызды осы жерге жазыңыз">
+      <button id="aiAsk"
+              class="px-3 py-2 rounded-xl bg-indigo-600 text-white text-sm">Жіберу</button>
+    </div>
+  </div>
+
+  <button id="aiToggle"
+          class="px-5 py-4 rounded-2xl shadow-2xl bg-indigo-600 text-white hover:scale-105 transition font-semibold flex items-center gap-2">
+    <span class="text-2xl">🤖</span><span>AI ассистент</span>
+  </button>
+</div>
+
+
+
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+  const qs = s => document.querySelector(s);
+
+  // Мектеп контактілері (тіпті кейін оңай ауыстыру үшін)
+  const AI_ADDRESS = 'Алматы қ., Панфилова 205, Махатма Ганди атындағы №92 мамандандырылған лицей';
+  const AI_PHONE   = '+7 (727) 123-45-67';
+
+  // AI toggle
+  qs('#aiToggle').addEventListener('click', () => {
+    qs('#aiDock').classList.toggle('hidden');
+  });
+
+  // AI ask
+  qs('#aiAsk').addEventListener('click', () => {
+    const inputEl  = qs('#aiInput');
+    const answerEl = qs('#aiAnswer');
+    const question = (inputEl.value || "").trim();
+    if (!question) return;
+
+    const lower = question.toLowerCase();
+    let answer  = '';
+
+    // Сәлемдесу
+    if (lower === 'салем' || lower === 'сәлем' || lower === 'привет') {
+      answer =
+        'Сәлем! Мен SPAI92 порталының ассистентімін. ' +
+        'Мектеп туралы қысқа сұрақтарыңызды қойыңыз.';
+    }
+    // НЕШЕ АУЫСЫМ?
+    else if (
+      lower.includes('неше ауысым') ||
+      lower.includes('канша ауысым') ||
+      lower.includes('сколько смен')
+    ) {
+      answer =
+        'Лицей 1 ауысыммен жұмыс істейді.\n\n' +
+        'Ауысым кестесіне байланысты нақты ақпарат алу үшін ' +
+        AI_ADDRESS + ' Панфилова 205 мекенжайына келуіңізді немесе ' + AI_PHONE +
+        ' телефонына хабарласуыңызды сұраймыз.';
+    }
+    // ҚАШАН ҚАБЫЛДАУ БОЛАДЫ?
+    else if (
+      lower.includes('қабылдау') ||
+      lower.includes('кабылдау') ||
+      lower.includes('прием') ||
+      lower.includes('документ') ||
+      lower.includes('құжат')
+    ) {
+      answer =
+        'Оқушыларды қабылдау әдетте жаңа оқу жылының алдында өткізіледі. ' +
+        'Қабылдау мерзімі мен құжаттар тізімі жыл сайын мектеп бұйрығымен бекітіледі.\n\n' +
+        'Нақты күндер мен талаптарды білу үшін қабылдау комиссиясына ' +
+        AI_PHONE + ' телефоны арқылы хабарласыңыз немесе ' +
+        AI_ADDRESS + ' мекенжайына келіңіз.';
+    }
+    // МЕКТЕП МЕКЕНЖАЙЫ / ҚАЛАЙ КЕЛУ
+    else if (
+      lower.includes('мекенжай') ||
+      lower.includes('мекен жай') ||
+      lower.includes('адрес') ||
+      lower.includes('қалай келу') ||
+      lower.includes('как добраться')
+    ) {
+      answer =
+        'Мектеп мекенжайы:\n' +
+        AI_ADDRESS + '.\n\n' +
+        'Қосымша сұрақтарыңыз болса, ' + AI_PHONE +
+        ' телефонына хабарласа аласыз.';
+    }
+    // ӘДЕПКІ (fallback) ЖАУАП
+    else {
+      answer =
+        '(Оператор AI92): Сұрағыңыз қабылданды: "' + question + '".\n\n' +
+        'Жалпы ақпарат бере аламын, бірақ ресми және нақты жауап үшін ' +
+        AI_ADDRESS + 'Панфилова 205 мекенжайына келуіңізді немесе ' + AI_PHONE +
+        '8778 123 45 67 телефонына хабарласуыңызды өтінеміз.';
+    }
+
+    answerEl.textContent = answer;
+    inputEl.value = "";
+  });
+</script>
+
+
+</body>
+</html>

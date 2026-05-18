@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Әсер Толқыны — SPAI92</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --primary:#4f65d8;
+      --primary-dark:#31439f;
+      --violet:#6d5bd0;
+      --cyan:#38bdf8;
+      --pink:#fb7185;
+      --gold:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%,rgba(79,101,216,.24),transparent 28%),
+        radial-gradient(circle at 85% 18%,rgba(109,91,208,.20),transparent 32%),
+        radial-gradient(circle at 60% 92%,rgba(56,189,248,.18),transparent 30%),
+        linear-gradient(135deg,#f8fbff 0%,#ffffff 42%,#eef3ff 100%);
+      color:#0f172a;
+      overflow-x:hidden;
+    }
+    .glass{
+      background:rgba(255,255,255,.76);
+      border:1px solid rgba(148,163,184,.28);
+      box-shadow:0 24px 80px rgba(49,67,159,.16);
+      backdrop-filter:blur(18px);
+    }
+    .hero{
+      background:
+        radial-gradient(circle at 12% 18%,rgba(255,255,255,.22),transparent 27%),
+        radial-gradient(circle at 88% 18%,rgba(196,211,255,.27),transparent 32%),
+        linear-gradient(135deg,rgba(79,101,216,.98),rgba(109,91,208,.96) 52%,rgba(49,67,159,.98));
+    }
+    .orb{position:absolute;border-radius:999px;filter:blur(2px);opacity:.42;pointer-events:none;animation:orbFloat 8s ease-in-out infinite alternate}
+    .orb:nth-child(1){width:120px;height:120px;left:6%;top:12%;background:#c7d2fe;animation-delay:.2s}
+    .orb:nth-child(2){width:92px;height:92px;right:9%;top:19%;background:#bae6fd;animation-delay:.8s}
+    .orb:nth-child(3){width:150px;height:150px;right:24%;bottom:-40px;background:#ddd6fe;animation-delay:1.5s}
+    @keyframes orbFloat{from{transform:translateY(0) scale(1)}to{transform:translateY(-22px) scale(1.06)}}
+    .reaction-layer{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+    .reaction{
+      position:absolute;
+      display:flex;
+      align-items:center;
+      gap:.55rem;
+      max-width:min(420px,80vw);
+      padding:.72rem 1rem;
+      border-radius:999px;
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(255,255,255,.72);
+      box-shadow:0 18px 48px rgba(15,23,42,.18);
+      backdrop-filter:blur(12px);
+      will-change:transform,opacity;
+      animation:rise var(--dur,4.8s) cubic-bezier(.18,.8,.22,1) forwards;
+      transform:translate3d(0,0,0) scale(var(--scale,1));
+    }
+    .reaction .emo{font-size:var(--emojiSize,2.2rem);line-height:1;filter:drop-shadow(0 10px 16px rgba(15,23,42,.18))}
+    .reaction .word{font-weight:800;color:#263369;font-size:var(--textSize,1rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+    @keyframes rise{
+      0%{opacity:0;transform:translate3d(0,26px,0) scale(.72) rotate(var(--rotStart,-7deg))}
+      9%{opacity:1}
+      72%{opacity:1}
+      100%{opacity:0;transform:translate3d(var(--drift,20px),-105vh,0) scale(var(--scaleEnd,1.28)) rotate(var(--rotEnd,8deg))}
+    }
+    .spark{
+      position:fixed;width:7px;height:7px;border-radius:999px;pointer-events:none;z-index:79;
+      background:linear-gradient(135deg,#fde68a,#818cf8);
+      animation:spark .95s ease-out forwards;
+    }
+    @keyframes spark{to{opacity:0;transform:translate(var(--sx),var(--sy)) scale(.15)}}
+    .pulse-ring{position:absolute;inset:-2px;border-radius:2rem;border:2px solid rgba(255,255,255,.32);animation:pulse 2.2s infinite}
+    @keyframes pulse{0%{transform:scale(.98);opacity:.8}100%{transform:scale(1.04);opacity:0}}
+    .stage{
+      position:relative;
+      min-height:520px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 25% 20%,rgba(255,255,255,.55),transparent 22%),
+        radial-gradient(circle at 75% 25%,rgba(199,210,254,.62),transparent 28%),
+        linear-gradient(135deg,#172554,#312e81 54%,#4c1d95);
+    }
+    .stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.75),transparent)}
+    .screen-mode{position:fixed!important;inset:0!important;z-index:70!important;border-radius:0!important;min-height:100vh!important}
+    .screen-mode .stage-content{min-height:100vh!important;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem}
+    .screen-mode .stage-title{font-size:clamp(2.6rem,6vw,6.8rem)!important;line-height:1.02!important}
+    .screen-mode .stage-subtitle{font-size:clamp(1rem,2vw,2rem)!important}
+    .screen-mode .hide-in-screen{display:none!important}
+    .tiny-dot{width:.55rem;height:.55rem;border-radius:50%;background:#22c55e;box-shadow:0 0 0 7px rgba(34,197,94,.13)}
+    button,a{transition:.22s ease}
+  </style>
+</head>
+<body>
+  <div class="reaction-layer" id="reactionLayer"></div>
+
+  <header class="sticky top-0 z-50 bg-white/82 backdrop-blur border-b border-indigo-100">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="h-12 w-12 rounded-2xl bg-white overflow-hidden grid place-content-center shadow-sm"><img src="logo.png" class="h-11 w-11 object-contain" alt="logo"></span>
+        <div>
+          <div class="font-black tracking-tight">Әсер Толқыны</div>
+          <div class="text-xs text-slate-500">SPAI92 · feedback reaction wall</div>
+        </div>
+      </a>
+      <nav class="ml-auto flex flex-wrap justify-end gap-2 text-sm">
+        <a href="index.html" class="px-3 py-2 rounded-xl hover:bg-indigo-50">Басты бет</a>
+        <a href="tools.html" class="px-3 py-2 rounded-xl hover:bg-indigo-50">Цифрлық құралдар</a>
+        <button id="screenBtnTop" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700">Толық экран</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    <section class="hero text-white rounded-[2.4rem] p-6 md:p-10 shadow-2xl relative overflow-hidden">
+      <div class="orb"></div><div class="orb"></div><div class="orb"></div>
+      <div class="relative grid lg:grid-cols-[1.05fr_.95fr] gap-8 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/14 border border-white/20 text-sm mb-5">
+            <span class="tiny-dot"></span>
+            Mentimeter пікірлеріне арналған WOW-реакция экраны
+          </div>
+          <h1 class="text-4xl md:text-6xl font-black leading-tight mb-5">Пікірлерді эмоцияға айналдыратын интерактивті экран</h1>
+          <p class="text-indigo-50 text-base md:text-lg max-w-2xl mb-7">Қатысушылардың “түсінікті”, “өте жоғары деңгейде өтті”, “керемет” сияқты пікірлерін қойыңыз — сайт оларды emoji, қысқа сөз және қозғалыс эффектісімен толық экранға шығарады.</p>
+          <div class="flex flex-wrap gap-3">
+            <button id="demoBtn" class="px-6 py-3 rounded-2xl bg-white text-indigo-700 font-black shadow-xl hover:scale-[1.03]">Демо реакция</button>
+            <button id="autoBtn" class="px-6 py-3 rounded-2xl bg-indigo-950/55 text-white border border-white/20 font-bold hover:bg-indigo-950/75">Авто толқын қосу</button>
+            <button id="screenBtn" class="px-6 py-3 rounded-2xl bg-rose-500 text-white font-black shadow-xl hover:bg-rose-600">Үлкен экран режимі</button>
+          </div>
+        </div>
+        <div class="glass rounded-[2rem] p-5 md:p-6 text-slate-900">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-2xl font-black text-indigo-950">Пікір енгізу</h2>
+              <p class="text-sm text-slate-600">Mentimeter-ден көшірілген жауаптарды осы жерге қойыңыз.</p>
+            </div>
+            <div class="h-12 w-12 rounded-2xl bg-indigo-100 text-indigo-700 grid place-content-center text-2xl">💬</div>
+          </div>
+          <textarea id="feedbackInput" class="w-full min-h-40 rounded-3xl border border-indigo-100 bg-white/90 p-4 outline-none focus:ring-4 focus:ring-indigo-100 text-sm" placeholder="Мысалы:\nӨте түсінікті өтті\nСабақ жоғары деңгейде болды\nКеремет, рақмет\nВау, өте пайдалы болды"></textarea>
+          <div class="grid sm:grid-cols-3 gap-3 mt-4">
+            <button id="launchBtn" class="px-4 py-3 rounded-2xl bg-indigo-600 text-white font-black hover:bg-indigo-700">Реакцияға айналдыру</button>
+            <button id="sampleBtn" class="px-4 py-3 rounded-2xl bg-sky-100 text-sky-800 font-bold hover:bg-sky-200">Дайын мысал</button>
+            <button id="clearBtn" class="px-4 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200">Тазалау</button>
+          </div>
+          <div class="mt-4 rounded-2xl bg-indigo-50 border border-indigo-100 p-4 text-sm text-slate-700">
+            <b class="text-indigo-900">Қолдану жолы:</b> пікірлерді жол-жолымен қойыңыз, “Реакцияға айналдыру” басыңыз. Үлкен экранда проекторға шығаруға ыңғайлы.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stageBox" class="stage rounded-[2.4rem] shadow-2xl border border-indigo-200 text-white">
+      <div class="pulse-ring"></div>
+      <div class="stage-content relative z-10 min-h-[520px] p-6 md:p-10 flex flex-col justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 backdrop-blur text-sm">
+            <span>✨</span> Реакция алаңы
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="burstBtn" class="px-4 py-2 rounded-xl bg-white/12 border border-white/15 hover:bg-white/20 font-semibold">Көп реакция шашу</button>
+            <button id="closeScreenBtn" class="px-4 py-2 rounded-xl bg-white text-indigo-800 font-black hidden">Экраннан шығу</button>
+          </div>
+        </div>
+        <div class="max-w-4xl mx-auto py-10">
+          <div class="text-6xl md:text-8xl mb-6 drop-shadow-2xl">🤩 🚀 ✨</div>
+          <h2 class="stage-title text-4xl md:text-6xl font-black leading-tight mb-5">Сіздің пікіріңіз — біздің шабытымыз!</h2>
+          <p class="stage-subtitle text-indigo-100 text-base md:text-xl">Пікір жазылған сайын экранда эмоция, қуаныш және “вау” эффект пайда болады.</p>
+        </div>
+        <div class="hide-in-screen grid md:grid-cols-4 gap-3 text-sm">
+          <div class="rounded-2xl bg-white/10 border border-white/15 p-4 backdrop-blur"><b>Түсінікті</b><br><span class="text-indigo-100">😊 👏 ✨</span></div>
+          <div class="rounded-2xl bg-white/10 border border-white/15 p-4 backdrop-blur"><b>Жоғары деңгей</b><br><span class="text-indigo-100">🏆 🔥 🤩</span></div>
+          <div class="rounded-2xl bg-white/10 border border-white/15 p-4 backdrop-blur"><b>Пайдалы</b><br><span class="text-indigo-100">💡 ✅ 🚀</span></div>
+          <div class="rounded-2xl bg-white/10 border border-white/15 p-4 backdrop-blur"><b>Вау эффект</b><br><span class="text-indigo-100">😍 🌟 🎉</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const layer = document.getElementById('reactionLayer');
+    const input = document.getElementById('feedbackInput');
+    const stageBox = document.getElementById('stageBox');
+    const closeScreenBtn = document.getElementById('closeScreenBtn');
+    const sampleTexts = [
+      'Өте түсінікті өтті', 'Жоғары деңгейде болды', 'Керемет сабақ', 'Вау, өте пайдалы болды',
+      'Маған қатты ұнады', 'Рақмет, шабыт алдым', 'Барлығы анық түсіндірілді', 'Күшті атмосфера',
+      'Тамаша ұйымдастырылған', 'Өте жоғары деңгейде өтті', 'Жаңа идея көп болды', 'Қызықты әрі пайдалы'
+    ];
+    const fallbackEmojis = ['🤩','😍','👏','🔥','✨','🚀','💯','🎉','🌟','😊','🏆','💡','🙌','✅','🥳','⭐'];
+    const keywordMap = [
+      {keys:['түсінікті','анық','ұқтым','түсіндім'], emojis:['😊','👏','✅','✨'], label:'Түсінікті'},
+      {keys:['жоғары','деңгей','сапалы','керемет деңгей'], emojis:['🏆','🔥','💯','🤩'], label:'Жоғары деңгей'},
+      {keys:['керемет','тамаша','күшті','супер'], emojis:['🤩','🌟','🎉','👏'], label:'Керемет'},
+      {keys:['вау','wow'], emojis:['😍','🚀','✨','🥳'], label:'WOW'},
+      {keys:['пайдалы','идея','үйрендім','шабыт'], emojis:['💡','🚀','✅','🌟'], label:'Пайдалы'},
+      {keys:['рақмет','рахмет','алғыс'], emojis:['🙏','😊','👏','🌟'], label:'Рақмет'},
+      {keys:['ұнады','қызықты','атмосфера'], emojis:['😍','😊','🎉','✨'], label:'Ұнады'}
+    ];
+    let autoTimer = null;
+
+    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
+    function normalize(text){ return (text || '').toLowerCase().replace(/\s+/g,' ').trim() }
+    function analyze(text){
+      const n = normalize(text);
+      for(const item of keywordMap){
+        if(item.keys.some(k => n.includes(k))) return {emoji: pick(item.emojis), label: item.label};
+      }
+      return {emoji: pick(fallbackEmojis), label: text && text.length < 22 ? text : 'Пікір'};
+    }
+    function shortText(text, label){
+      const clean = (text || '').replace(/\s+/g,' ').trim();
+      if(!clean) return label;
+      if(clean.length <= 34) return clean;
+      return clean.slice(0, 31) + '...';
+    }
+    function createSpark(x,y){
+      for(let i=0;i<10;i++){
+        const s = document.createElement('span');
+        s.className = 'spark';
+        s.style.left = x + 'px';
+        s.style.top = y + 'px';
+        const a = Math.random()*Math.PI*2;
+        const d = 30 + Math.random()*95;
+        s.style.setProperty('--sx', Math.cos(a)*d + 'px');
+        s.style.setProperty('--sy', Math.sin(a)*d + 'px');
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(), 1000);
+      }
+    }
+    function spawnReaction(text='', forceBig=false){
+      const data = analyze(text);
+      const el = document.createElement('div');
+      el.className = 'reaction';
+      const x = Math.random() * (window.innerWidth - 230) + 20;
+      const y = window.innerHeight - (70 + Math.random()*130);
+      const scale = forceBig ? (1.08 + Math.random()*0.44) : (.86 + Math.random()*0.58);
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.setProperty('--dur', (4.2 + Math.random()*2.2) + 's');
+      el.style.setProperty('--scale', scale);
+      el.style.setProperty('--scaleEnd', scale + .18 + Math.random()*.32);
+      el.style.setProperty('--drift', (-120 + Math.random()*240) + 'px');
+      el.style.setProperty('--rotStart', (-12 + Math.random()*24) + 'deg');
+      el.style.setProperty('--rotEnd', (-16 + Math.random()*32) + 'deg');
+      el.style.setProperty('--emojiSize', (forceBig ? 3.1 : 2.05 + Math.random()*1.1) + 'rem');
+      el.style.setProperty('--textSize', (forceBig ? 1.22 : .9 + Math.random()*.28) + 'rem');
+      el.innerHTML = `<span class="emo">${data.emoji}</span><span class="word">${shortText(text, data.label)}</span>`;
+      layer.appendChild(el);
+      if(Math.random() > .48) createSpark(x + 45, y + 20);
+      setTimeout(()=>el.remove(), 7200);
+    }
+    function launchFromInput(){
+      const lines = input.value.split(/\n|•|;/).map(s=>s.trim()).filter(Boolean);
+      const source = lines.length ? lines : sampleTexts;
+      const count = Math.max(18, Math.min(90, source.length * 5));
+      for(let i=0;i<count;i++){
+        setTimeout(()=> spawnReaction(pick(source), i % 7 === 0), i * 85);
+      }
+    }
+    function burst(){
+      const source = input.value.trim() ? input.value.split(/\n|•|;/).map(s=>s.trim()).filter(Boolean) : sampleTexts;
+      for(let i=0;i<70;i++) setTimeout(()=>spawnReaction(pick(source), i%5===0), i*45);
+    }
+    function toggleAuto(){
+      const btn = document.getElementById('autoBtn');
+      if(autoTimer){ clearInterval(autoTimer); autoTimer=null; btn.textContent='Авто толқын қосу'; btn.classList.remove('bg-rose-500'); return; }
+      const source = input.value.trim() ? input.value.split(/\n|•|;/).map(s=>s.trim()).filter(Boolean) : sampleTexts;
+      btn.textContent='Авто толқын тоқтату'; btn.classList.add('bg-rose-500');
+      autoTimer = setInterval(()=>{
+        for(let i=0;i<4;i++) setTimeout(()=>spawnReaction(pick(source), Math.random()>.72), i*140);
+      }, 950);
+    }
+    function toggleScreen(force){
+      const isOn = stageBox.classList.contains('screen-mode');
+      const next = typeof force === 'boolean' ? force : !isOn;
+      stageBox.classList.toggle('screen-mode', next);
+      closeScreenBtn.classList.toggle('hidden', !next);
+      if(next){
+        if(document.documentElement.requestFullscreen && !document.fullscreenElement){
+          document.documentElement.requestFullscreen().catch(()=>{});
+        }
+        burst();
+      }else if(document.exitFullscreen && document.fullscreenElement){
+        document.exitFullscreen().catch(()=>{});
+      }
+    }
+
+    document.getElementById('launchBtn').addEventListener('click', launchFromInput);
+    document.getElementById('demoBtn').addEventListener('click', burst);
+    document.getElementById('burstBtn').addEventListener('click', burst);
+    document.getElementById('autoBtn').addEventListener('click', toggleAuto);
+    document.getElementById('screenBtn').addEventListener('click', ()=>toggleScreen(true));
+    document.getElementById('screenBtnTop').addEventListener('click', ()=>toggleScreen(true));
+    closeScreenBtn.addEventListener('click', ()=>toggleScreen(false));
+    document.getElementById('sampleBtn').addEventListener('click', ()=>{ input.value = sampleTexts.join('\n'); launchFromInput(); });
+    document.getElementById('clearBtn').addEventListener('click', ()=>{ input.value=''; layer.innerHTML=''; });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') toggleScreen(false); });
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && !e.shiftKey){
+        const lines = input.value.split(/\n/).map(s=>s.trim()).filter(Boolean);
+        if(lines.length) spawnReaction(lines[lines.length-1], true);
+      }
+    });
+    setTimeout(()=>{ for(let i=0;i<24;i++) setTimeout(()=>spawnReaction(pick(sampleTexts), i%8===0), i*90); }, 650);
+  </script>
+</body>
+</html>
