@@ -58,9 +58,9 @@ async function callOpenAI(path, payload) {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${key}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
 
   const data = await response.json().catch(() => ({}));
@@ -78,17 +78,25 @@ async function callOpenAI(path, payload) {
 }
 
 module.exports = async function handler(req, res) {
+  if (req.method === 'OPTIONS') {
+    res.statusCode = 200;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return res.end();
+  }
+
   if (req.method === 'GET') {
     return send(res, 200, {
       ok: true,
-      message: 'Tup Sana API жұмыс істеп тұр. Сурет жасау үшін POST сұраныс керек.',
+      message: 'Tup Sana API жұмыс істеп тұр. Сурет жасау үшін POST сұраныс керек.'
     });
   }
 
   if (req.method !== 'POST') {
     return send(res, 405, {
       ok: false,
-      message: 'POST әдісі қажет',
+      message: `POST әдісі қажет. Қазір келген method: ${req.method}`
     });
   }
 
@@ -108,7 +116,7 @@ module.exports = async function handler(req, res) {
     if (!imagination || imagination.length < 8) {
       return send(res, 400, {
         ok: false,
-        message: 'Қиялдағы бейнені толығырақ жазыңыз',
+        message: 'Қиялдағы бейнені толығырақ жазыңыз'
       });
     }
 
@@ -120,7 +128,7 @@ module.exports = async function handler(req, res) {
     const imagePrompt = `
 Create a highly aesthetic dreamy fantasy illustration.
 
-Main idea:
+Main imagination:
 ${imagination}
 
 Mood:
@@ -138,18 +146,10 @@ ${character}
 Extra details:
 ${details}
 
-Style requirements:
-- school-safe visual
-- no text
-- no letters
-- no logo
-- no watermark
-- soft light
-- dreamy atmosphere
-- gentle composition
-- pastel colors
-- fantasy concept art
-- beautiful, emotional, high quality
+Style:
+school-safe fantasy concept art, no text, no letters, no logo, no watermark,
+soft pink clouds, pastel atmosphere, cinematic soft light, gentle composition,
+beautiful emotional visual, high quality, dreamy glow.
 `;
 
     const imageData = await callOpenAI('/images/generations', {
@@ -159,7 +159,7 @@ Style requirements:
       quality: imageQuality,
       output_format: 'webp',
       output_compression: 70,
-      n: 1,
+      n: 1
     });
 
     const b64 = imageData?.data?.[0]?.b64_json;
@@ -169,11 +169,12 @@ Style requirements:
     }
 
     let description =
-      'Бұл бейне адамның қиялындағы жұмсақ, арманшыл және шығармашылық ішкі көріністі сипаттайды. Түстер мен образдар көңіл күйді көркем түрде жеткізеді.';
+      'Сурет сәтті жасалды. Бұл бейне адамның қиялындағы жұмсақ, арманшыл және шығармашылық ішкі көріністі сипаттайды.';
 
     try {
       const textPrompt = `
-Пайдаланушы қиялындағы бейнені сипаттады. 
+Пайдаланушы қиялындағы бейнені сипаттады.
+
 Қазақ тілінде қысқа, жылы, шығармашылық сипаттама жаз.
 
 Маңызды:
@@ -199,7 +200,7 @@ Style requirements:
       const textData = await callOpenAI('/responses', {
         model: textModel,
         input: textPrompt,
-        max_output_tokens: 650,
+        max_output_tokens: 650
       });
 
       const generatedText = extractText(textData);
@@ -215,12 +216,12 @@ Style requirements:
     return send(res, 200, {
       ok: true,
       imageDataUrl: `data:image/webp;base64,${b64}`,
-      description: description.replace(/\n/g, '<br>'),
+      description: description.replace(/\n/g, '<br>')
     });
   } catch (error) {
     return send(res, 500, {
       ok: false,
-      message: error.message || 'Қате пайда болды',
+      message: error.message || 'Қате пайда болды'
     });
   }
 };
