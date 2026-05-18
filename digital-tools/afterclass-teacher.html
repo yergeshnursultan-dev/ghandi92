@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>Мұғалім кабинеті — AfterClass Qadam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- БАРЛЫҚ CSS ОСЫ ЖЕРДЕ -->
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-main: #e5f0ff;
+            --bg-card: #ffffff;
+            --bg-card-soft: #f3f7ff;
+            --accent: #2563eb;
+            --accent-soft: #dbeafe;
+            --accent-strong: #1d4ed8;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-soft: #d1d5db;
+            --shadow-soft: 0 16px 40px rgba(15, 23, 42, 0.18);
+            --radius-xl: 20px;
+            --transition-fast: 0.18s ease-out;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(135deg, #e5f0ff, #eff6ff);
+        }
+
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .gradient-bg {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.18) 0, transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.14) 0, transparent 55%);
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        /* HEADER */
+
+        .dashboard-header {
+            width: 100%;
+            padding: 12px clamp(14px, 5vw, 32px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(14px);
+            background: rgba(229, 240, 255, 0.95);
+            border-bottom: 1px solid rgba(191, 219, 254, 0.9);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 0%, #bfdbfe 0, #60a5fa 40%, #1d4ed8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0b1120;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.6);
+        }
+
+        .logo-text {
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            font-size: 17px;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .nav-btn:hover {
+            background: #eff6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        /* LAYOUT */
+
+        .dashboard-layout {
+            max-width: 1240px;
+            margin: 14px auto 32px;
+            padding: 0 clamp(10px, 4vw, 24px) 18px;
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            gap: 18px;
+        }
+
+        .sidebar {
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid var(--accent-soft);
+            padding: 16px 14px;
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: 80px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+
+        .sidebar-section h3 {
+            font-size: 18px;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-size: 11px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 12px;
+        }
+
+        .sidebar-menu li {
+            font-size: 13px;
+            padding: 7px 9px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+        }
+
+        .sidebar-menu li span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sidebar-menu li:hover {
+            background: #e0edff;
+            color: #1d4ed8;
+            transform: translateX(1px);
+        }
+
+        .sidebar-menu li.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-weight: 500;
+        }
+
+        .dashboard-main {
+            border-radius: var(--radius-xl);
+            background: var(--bg-card);
+            border: 1px solid var(--accent-soft);
+            padding: 16px 16px 18px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .dashboard-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .dashboard-top h1 {
+            font-size: 19px;
+            margin-bottom: 4px;
+        }
+
+        .dashboard-top p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .info-badge {
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            font-size: 11px;
+            color: #1d4ed8;
+            white-space: nowrap;
+        }
+
+        /* CARDS */
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .stat-card {
+            border-radius: 16px;
+            padding: 12px 12px 10px;
+            background: linear-gradient(135deg, #eff6ff, #ffffff);
+            border: 1px solid #dbeafe;
+        }
+
+        .stat-card h2 {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .stat-number {
+            font-size: 21px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #1d4ed8;
+        }
+
+        .stat-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* PANELS */
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 13px;
+        }
+
+        .panel {
+            border-radius: 16px;
+            padding: 12px 12px 12px;
+            background: var(--bg-card-soft);
+            border: 1px solid var(--accent-soft);
+        }
+
+        .panel h2 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .panel-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .simple-list {
+            list-style: none;
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .simple-list strong {
+            color: var(--text-main);
+        }
+
+        .note-area {
+            width: 100%;
+            min-height: 90px;
+            margin-top: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            padding: 8px 9px;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text-main);
+            resize: vertical;
+        }
+
+        .note-area:focus {
+            outline: none;
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.6);
+        }
+
+        .primary-btn {
+            margin-top: 7px;
+            border-radius: 999px;
+            border: none;
+            padding: 7px 13px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            color: #f9fafb;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px rgba(37, 99, 235, 0.4);
+            filter: brightness(1.03);
+        }
+
+        .small-text {
+            margin-top: 3px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .inline-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 12px;
+        }
+
+        .inline-form input,
+        .inline-form select {
+            padding: 5px 7px;
+            border-radius: 9px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .inline-form input:focus,
+        .inline-form select:focus {
+            outline: none;
+            border-color: #93c5fd;
+        }
+
+        .teacher-section {
+            display: none;
+            margin-top: 6px;
+        }
+
+        .teacher-section.is-active {
+            display: block;
+        }
+
+        .table-wrapper {
+            margin-top: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
+            overflow: auto;
+            background: #ffffff;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 600px;
+        }
+
+        .data-table thead {
+            background: #eff6ff;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .attendance-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0 6px;
+            font-size: 12px;
+        }
+
+        .attendance-controls input[type="date"] {
+            padding: 4px 6px;
+            border-radius: 9px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .attendance-select {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        .rating-input {
+            padding: 3px 4px;
+            border-radius: 7px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 12px;
+            width: 55px;
+            text-align: center;
+        }
+
+        .message-list {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .message-item {
+            border-radius: 12px;
+            padding: 7px 9px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            font-size: 12px;
+        }
+
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .message-text {
+            white-space: pre-wrap;
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        .tag-chip {
+            border-radius: 999px;
+            padding: 2px 7px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .books-table {
+            min-width: 800px;
+        }
+
+        .books-table th,
+        .books-table td {
+            text-align: center;
+        }
+
+        .books-table td:first-child,
+        .books-table td:nth-child(2),
+        .books-table th:first-child,
+        .books-table th:nth-child(2) {
+            text-align: left;
+        }
+
+        .book-checkbox {
+            transform: scale(1.05);
+        }
+
+        .table-btn {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: #eff6ff;
+            cursor: pointer;
+        }
+
+        .table-btn.danger {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        .top-rating-box {
+            border-radius: 14px;
+            padding: 8px 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            margin-bottom: 8px;
+        }
+
+        .top-rating-box h3 {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .top-rating-box ol {
+            padding-left: 16px;
+            font-size: 12px;
+            color: var(--text-main);
+        }
+
+        .top-rating-box li span {
+            color: #1d4ed8;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin: 6px 0 8px;
+        }
+
+        .ai-card {
+            border-radius: 12px;
+            padding: 7px 8px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            font-size: 11px;
+        }
+
+        .ai-card-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+            font-size: 12px;
+        }
+
+        .ai-card-desc {
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .ai-card a {
+            text-decoration: none;
+            font-size: 11px;
+            color: #1d4ed8;
+        }
+
+        .ai-card a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .sidebar {
+                position: static;
+                max-height: none;
+                order: -1;
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .panel-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .ai-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .cards-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .ai-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="gradient-bg"></div>
+
+<header class="dashboard-header">
+    <div class="logo">
+        <span class="logo-icon">AC</span>
+        <span class="logo-text">AfterClass Qadam</span>
+    </div>
+    <nav class="dashboard-nav">
+        <a class="nav-btn" href="https://bilimland.kz" target="_blank" rel="noopener noreferrer">
+            📚 BilimClass
+        </a>
+    </nav>
+</header>
+
+<div class="dashboard-layout">
+    <aside class="sidebar" id="teacherSidebar">
+        <div class="sidebar-section">
+            <h3 id="teacherNameSidebar">Аяпбергенқызы Балжан</h3>
+            <p class="sidebar-subtitle">Сынып жетекші · 10 «Б»</p>
+            <span class="badge-pill">Электронды сынып журналы</span>
+        </div>
+        <ul class="sidebar-menu" id="teacherMenu">
+            <li class="active" data-section="section-dashboard"><span>🏠 Басты бет</span></li>
+            <li data-section="section-students"><span>👩‍🎓 Оқушылар тізімі</span></li>
+            <li data-section="section-attendance"><span>📅 Күнделікті қатысу</span></li>
+            <li data-section="section-rating"><span>⭐ Оқушы рейтингі</span></li>
+            <li data-section="section-social"><span>📋 Әлеуметтік паспорт</span></li>
+            <li data-section="section-books"><span>📚 Оқулықпен қамту</span></li>
+            <li data-section="section-movement"><span>📊 Қозғалыс есебі</span></li>
+            <li data-section="section-plan"><span>✅ Тәрбие жоспары</span></li>
+            <li data-section="section-meetings"><span>👨‍👩‍👧‍👦 Ата-ана жиналысы</span></li>
+            <li data-section="section-extra"><span>🎯 Сыныптан тыс жұмыс</span></li>
+            <li data-section="section-ai"><span>🤖 ЖИ көмекші</span></li>
+        </ul>
+    </aside>
+
+    <main class="dashboard-main">
+        <!-- TOP -->
+        <section class="dashboard-top">
+            <div>
+                <h1>10 «Б» сыныбының электронды журналы</h1>
+                <p>
+                    Сынып жетекшіге арналған барлық негізгі құралдар: оқушылар тізімі,
+                    қатысу журналы, рейтинг, тәрбие жоспары және есептер.
+                </p>
+            </div>
+            <div class="info-badge">
+                <span id="teacherTime"></span>
+            </div>
+        </section>
+
+        <!-- SECTION 1: DASHBOARD -->
+        <section id="section-dashboard" class="teacher-section is-active">
+            <section class="cards-grid">
+                <article class="stat-card">
+                    <h2>Оқушылар саны</h2>
+                    <p class="stat-number" id="statStudents">0</p>
+                    <p class="stat-desc">Сыныптағы тіркелген оқушылар.</p>
+                </article>
+
+                <article class="stat-card">
+                    <h2>Әлеуметтік қолдаудағы оқушылар</h2>
+                    <p class="stat-number" id="statSocial">0</p>
+                    <p class="stat-desc">Көпбалалы, аз қамтылған, қамқоршылықтағы т.б.</p>
+                </article>
+
+                <article class="stat-card">
+                    <h2>Апталық іс-шаралар</h2>
+                    <p class="stat-number" id="statEvents">0</p>
+                    <p class="stat-desc">Сыныптан тыс жоспарланған жұмыстар.</p>
+                </article>
+            </section>
+
+            <section class="panel-grid">
+                <div class="panel">
+                    <h2>Келесі маңызды күндер</h2>
+                    <ul class="simple-list" id="teacherEvents">
+                        <li><strong>Дүйсенбі:</strong> Ата-аналармен онлайн кездесу (20:00, Zoom)</li>
+                        <li><strong>Сәрсенбі:</strong> Тәрбие сағаты «Цифрлық қауіпсіздік»</li>
+                        <li><strong>Жұма:</strong> Сынып сағаты «Мамандық таңдауы»</li>
+                    </ul>
+                </div>
+
+                <div class="panel">
+                    <h2>Жылдам жазба</h2>
+                    <p class="panel-desc">
+                        Қысқаша хабарламаны кімге арналғанын таңдап жазыңыз
+                        (барлық сынып / ата-аналар / жекелеген оқушы).
+                    </p>
+
+                    <div class="inline-form">
+                        <select id="quickTargetType">
+                            <option value="all">Барлық сынып</option>
+                            <option value="parents">Ата-аналар</option>
+                            <option value="student">Жекелеген оқушы</option>
+                        </select>
+                        <select id="quickTargetStudent">
+                            <option value="">Оқушыны таңдаңыз</option>
+                        </select>
+                    </div>
+
+                    <textarea id="quickNote" class="note-area"
+                              placeholder="Мысалы: 10 «Б» ата-аналарымен бейсенбі күні офлайн жиналыс..."></textarea>
+                    <button class="primary-btn" id="saveNoteBtn">Сақтау</button>
+                    <p class="small-text" id="noteStatus"></p>
+                </div>
+            </section>
+        </section>
+
+        <!-- SECTION 2: STUDENTS -->
+        <section id="section-students" class="teacher-section">
+            <div class="panel">
+                <h2>Оқушылар тізімі</h2>
+                <p class="panel-desc">
+                    Қарапайым тізім: аты-жөні және алфавиттік индексі. Жаңа оқушы қосуға және
+                    тізімнен өшіруге болады. Бұл тізім қатысу журналына, рейтингке және есептерге байланған.
+                </p>
+
+                <form id="addStudentForm" class="inline-form">
+                    <input type="text" id="newStudentName" placeholder="Жаңа оқушының аты-жөні">
+                    <input type="text" id="newStudentAlpha" placeholder="Алф./№ (мысалы, А/)" style="width:80px">
+                    <button type="submit" class="primary-btn">+ Оқушы қосу</button>
+                </form>
+                <p class="small-text">
+                    Тізімді өзгерткен кезде барлық басқа блоктар (қатысу, рейтинг, оқулық, қозғалыс есебі) автоматты түрде жаңартылады.
+                </p>
+
+                <div class="table-wrapper">
+                    <table class="data-table" id="studentTable">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Алф./№</th>
+                            <th>Аты-жөні</th>
+                            <th>Әрекет</th>
+                        </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                        <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ATTENDANCE -->
+        <section id="section-attendance" class="teacher-section">
+            <div class="panel">
+                <h2>Күнделікті қатысу (календарь)</h2>
+                <p class="panel-desc">
+                    Алдымен күнді таңдаңыз, сосын әр оқушыға «келді / кешікті / ауырды / келмеді» статусын қойыңыз.
+                    Өзгертулерді сақтап қою үшін «Журналды сақтау» батырмасын басыңыз.
+                </p>
+
+                <div class="attendance-controls">
+                    <label>
+                        Күнді таңдаңыз:
+                        <input type="date" id="attendanceDate">
+                    </label>
+                    <span class="small-text" id="attendanceSelectedText">
+                        Егер күн таңдалмаса, бүгінгі күн қолданылады.
+                    </span>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Аты-жөні</th>
+                            <th>Бүгінгі қатысу</th>
+                        </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                        <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="button" class="primary-btn" id="saveAttendanceBtn">
+                    💾 Журналды сақтау
+                </button>
+                <p class="small-text" id="attendanceStatus"></p>
+
+                <hr style="border:none;border-top:1px solid #e5e7eb;margin:9px 0;">
+
+                <h3 style="font-size:13px;margin-bottom:4px;">Айлық қатысу есебі</h3>
+                <p class="panel-desc">
+                    Ағымдағы оқу жылы бойынша ай таңдап, әр оқушының сол айдағы қатысу статистикасын
+                    Word форматына шығара аласыз.
+                </p>
+                <div class="inline-form">
+                    <select id="attendanceMonth">
+                        <option value="1">Қаңтар</option>
+                        <option value="2">Ақпан</option>
+                        <option value="3">Наурыз</option>
+                        <option value="4">Сәуір</option>
+                        <option value="5">Мамыр</option>
+                        <option value="8">Тамыз</option>
+                        <option value="9" selected>Қыркүйек</option>
+                        <option value="10">Қазан</option>
+                        <option value="11">Қараша</option>
+                        <option value="12">Желтоқсан</option>
+                    </select>
+                    <input type="number" id="attendanceYear" placeholder="Жыл" value="2025" style="width:80px;">
+                    <button type="button" class="primary-btn" id="exportAttendanceMonthBtn">
+                        ⬇ Айлық есеп (Word)
+                    </button>
+                </div>
+                <p class="small-text">
+                    Есепте әр оқушы үшін «келді / кешікті / ауырды / келмеді» саны жеке көрсетіледі.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: RATING -->
+        <section id="section-rating" class="teacher-section">
+            <div class="panel">
+                <h2>Оқушы рейтингі (критерийлер бойынша)</h2>
+                <p class="panel-desc">
+                    Әр критерий 1–10 балл аралығында енгізіледі. Жалпы рейтинг автоматты түрде орташа
+                    мән ретінде есептеледі.
+                </p>
+
+                <div class="top-rating-box">
+                    <h3>Айдың үздік 5 оқушысы</h3>
+                    <ol id="topRatingList">
+                        <!-- JS -->
+                    </ol>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table" id="ratingTable">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Аты-жөні</th>
+                            <th>Қатысуы (1–10)</th>
+                            <th>Орташа оқу үлгерімі (1–10)</th>
+                            <th>Тәртібі (1–10)</th>
+                            <th>Сыныптан тыс / кітап оқу (1–10)</th>
+                            <th>Жалпы рейтинг</th>
+                        </tr>
+                        </thead>
+                        <tbody id="ratingTableBody">
+                        <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="button" class="primary-btn" id="exportRatingBtn">
+                    ⬇ Рейтинг есебі (Word)
+                </button>
+                <p class="small-text">
+                    Бұл есепті тоқсан немесе ай соңында басып шығаруға болады.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 5: SOCIAL PASSPORT -->
+        <section id="section-social" class="teacher-section">
+            <div class="panel">
+                <h2>Әлеуметтік паспорт (сынып бойынша)</h2>
+                <p class="panel-desc">
+                    Оқушылардың әлеуметтік мәртебесіне байланысты қысқаша статистика.
+                    Ата-аналар сауалнамасы негізінде толық Word-есеп жүктеледі.
+                </p>
+
+                <div class="tag-row" id="socialStats">
+                    <!-- JS -->
+                </div>
+
+                <button type="button" class="primary-btn" id="exportSocialPassportBtn">
+                    ⬇ Әлеуметтік паспорт (Word)
+                </button>
+                <p class="small-text">
+                    Есепте әр оқушы әлеуметтік статусымен көрсетіледі, сынып бойынша қорытынды беріледі.
+                </p>
+
+                <hr style="border:none;border-top:1px solid #e5e7eb;margin:9px 0;">
+
+                <h2 style="font-size:14px;margin-bottom:4px;">Ата-анаға сауалнама шаблоны</h2>
+                <p class="panel-desc">
+                    Әр ата-анаға толтыруға арналған Word-форматтағы сауалнама парағын жүктей аласыз.
+                </p>
+
+                <button type="button" class="nav-btn" id="exportSurveyTemplateBtn">
+                    ⬇ «Сауалнама парағы» (Word)
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 6: BOOKS -->
+        <section id="section-books" class="teacher-section">
+            <div class="panel">
+                <h2>Оқулықпен қамтылу (галочка арқылы)</h2>
+                <p class="panel-desc">
+                    Әр оқушы үшін пәндер бойынша оқулықтың бар-жоғын галочка арқылы белгілеңіз.
+                    Жүктелетін Word-есепте сол белгілер «✓» ретінде көрінеді.
+                </p>
+
+                <div class="table-wrapper">
+                    <table class="data-table books-table" id="booksTable">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Оқушының аты-жөні</th>
+                            <th>Қаз. тілі</th>
+                            <th>Қаз. әдебиеті</th>
+                            <th>Р.яз и лит.</th>
+                            <th>Геогр.</th>
+                            <th>Алгебра-1</th>
+                            <th>Алгебра-2</th>
+                            <th>Геометр.</th>
+                            <th>Қаз. тарихы</th>
+                            <th>ДТ-1</th>
+                            <th>ДТ-2</th>
+                            <th>Физика</th>
+                            <th>Информ.</th>
+                            <th>Химия-1</th>
+                            <th>Химия-2</th>
+                            <th>Био-1</th>
+                            <th>Био-2</th>
+                            <th>Ағылш.</th>
+                        </tr>
+                        </thead>
+                        <tbody id="booksTableBody">
+                        <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="button" class="primary-btn" id="exportBooksBtn">
+                    ⬇ Оқулықпен қамту есебі (Word)
+                </button>
+                <p class="small-text">
+                    Есеп форматы «Оқушылардың пәндер бойынша оқу әдебиеттерімен қамтылуы туралы статистикалық есеп»
+                    үлгісіне негізделген.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 7: MOVEMENT -->
+        <section id="section-movement" class="teacher-section">
+            <div class="panel">
+                <h2>Қозғалыс есебі (тоқсан бойынша)</h2>
+                <p class="panel-desc">
+                    Тоқсанды таңдап, 10 «Б» сыныбының қозғалыс есебін Word форматына шығара аласыз.
+                    Есеп әрқашан ең соңғы оқушылар тізіміне байланған.
+                </p>
+
+                <div class="inline-form">
+                    <select id="movementTermSelect">
+                        <option value="1">1-тоқсан</option>
+                        <option value="2">2-тоқсан</option>
+                        <option value="3">3-тоқсан</option>
+                        <option value="4">4-тоқсан</option>
+                    </select>
+                    <input type="text" id="movementYearText" placeholder="Оқу жылы (мысалы, 2025-2026)" value="2025-2026">
+                    <button type="button" class="primary-btn" id="exportMovementBtn">
+                        ⬇ Қозғалыс есебі (Word)
+                    </button>
+                </div>
+                <p class="small-text">
+                    Қажет болса, жай оқушылар тізімін де Word түрінде жүктей аласыз.
+                </p>
+
+                <button type="button" class="nav-btn" id="exportStudentListDocBtn" style="margin-top:6px;">
+                    ⬇ Жай оқушылар тізімі (Word)
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 8: PLAN -->
+        <section id="section-plan" class="teacher-section">
+            <div class="panel">
+                <h2>Тәрбие жоспары (қыркүйек–желтоқсан)</h2>
+                <p class="panel-desc">
+                    Апта сайынғы тәрбие жұмыстарының жоспары. Әр апта бойынша тақырып, форматы және
+                    нәтижеге фото жүктеу мүмкіндігі. Бүкіл жоспарды Word форматына шығара аласыз.
+                </p>
+
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Күні</th>
+                            <th>Апта</th>
+                            <th>Тақырыбы</th>
+                            <th>Форматы</th>
+                            <th>Нәтиже / ескертпе</th>
+                            <th>Фото (нәтиже)</th>
+                        </tr>
+                        </thead>
+                        <tbody id="planTableBody">
+                        <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="button" class="primary-btn" id="exportPlanBtn" style="margin-top:8px;">
+                    ⬇ Тәрбие жоспары (Word)
+                </button>
+                <p class="small-text">
+                    Фото файлдары тек жергілікті түрде көрсетіледі (файл атауы сақталады), Word-есепке
+                    «Фото тіркелген» деген белгі түседі.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 9: MEETINGS -->
+        <section id="section-meetings" class="teacher-section">
+            <div class="panel">
+                <h2>Ата-ана жиналысы жоспары (қыркүйек–желтоқсан)</h2>
+                <p class="panel-desc">
+                    Әр айға алдын ала жоспарланған жиналыстар. Қажет болса, қосымша жиналыстарды
+                    да қосуға болады.
+                </p>
+
+                <form id="meetingForm" class="inline-form">
+                    <input type="date" id="meetingDate">
+                    <input type="text" id="meetingTheme" placeholder="Жиналыс тақырыбы">
+                    <select id="meetingFormat">
+                        <option value="Офлайн">Офлайн</option>
+                        <option value="Онлайн (Zoom)">Онлайн (Zoom)</option>
+                        <option value="Онлайн (Teams)">Онлайн (Teams)</option>
+                    </select>
+                    <input type="text" id="meetingNote" placeholder="Ескерту (уақыты, аудитория, сілтеме)">
+                    <button type="submit" class="primary-btn">+ Қосу</button>
+                </form>
+
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Күні</th>
+                            <th>Тақырыбы</th>
+                            <th>Форматы</th>
+                            <th>Ескертпе</th>
+                        </tr>
+                        </thead>
+                        <tbody id="meetingTableBody">
+                        <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 10: EXTRA -->
+        <section id="section-extra" class="teacher-section">
+            <div class="panel">
+                <h2>Сыныптан тыс жұмыстар</h2>
+                <p class="panel-desc">
+                    Сабақтан тыс іс-шаралар (кітап оқу сайысы, жобалар, экскурсиялар т.б.).
+                    Әр іс-шараға дедлайн қоюға болады.
+                </p>
+
+                <form id="extraForm" class="inline-form">
+                    <input type="date" id="extraDate">
+                    <input type="date" id="extraDeadline" placeholder="Дедлайн">
+                    <input type="text" id="extraTitle" placeholder="Іс-шара атауы (мысалы, «Кітап оқу сайысы»)">
+                    <input type="text" id="extraDesc" placeholder="Қысқаша сипаттама">
+                    <button type="submit" class="primary-btn">+ Қосу</button>
+                </form>
+
+                <div class="message-list" id="extraList">
+                    <!-- Extra карточкалар -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 11: AI HELPER -->
+        <section id="section-ai" class="teacher-section">
+            <div class="panel">
+                <h2>ЖИ көмекші</h2>
+                <p class="panel-desc">
+                    Сынып жетекшіге пайдалы ЖИ құралдары және ата-анамен байланысуға арналған мәтін шаблондары.
+                </p>
+
+                <div class="ai-grid">
+                    <div class="ai-card">
+                        <div class="ai-card-title">ChatGPT</div>
+                        <div class="ai-card-desc">Құжат, хабарлама, сабақ жоспарын тез жазуға.</div>
+                        <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer">Ашу →</a>
+                    </div>
+                    <div class="ai-card">
+                        <div class="ai-card-title">Gemini</div>
+                        <div class="ai-card-desc">Google экожүйесімен жұмыс, мәтін және сурет ЖИ.</div>
+                        <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">Ашу →</a>
+                    </div>
+                    <div class="ai-card">
+                        <div class="ai-card-title">Claude</div>
+                        <div class="ai-card-desc">Ұзын мәтіндерді талдау, есеп әзірлеу.</div>
+                        <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Ашу →</a>
+                    </div>
+                </div>
+
+                <hr style="border:none;border-top:1px solid #e5e7eb;margin:8px 0;">
+
+                <p class="panel-desc" style="margin-bottom:4px;">
+                    Ата-анамен байланысуға арналған шаблон мәтіндерді бір батырмамен шығара аласыз.
+                </p>
+
+                <div class="inline-form">
+                    <button type="button" class="nav-btn ai-template-btn" data-template="parent-meeting">
+                        📨 Ата-ана жиналысына шақыру
+                    </button>
+                    <button type="button" class="nav-btn ai-template-btn" data-template="behavior">
+                        🧒 Тәртіп туралы хабарлама
+                    </button>
+                    <button type="button" class="nav-btn ai-template-btn" data-template="motivation">
+                        🌟 Ынталандыру хабары
+                    </button>
+                </div>
+
+                <textarea id="aiHelperText" class="note-area"
+                          placeholder="Мұнда ЖИ шаблонының мәтіні пайда болады, сіз оны өңдеп пайдалана аласыз."></textarea>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- БАРЛЫҚ JS ОСЫ ЖЕРДЕ -->
+<script>
+    const STORAGE_KEYS = {
+        teacherNote: "acq-teacher-note-v2",
+        students: "acq-students",
+        plan: "acq-plan",
+        meetings: "acq-meetings",
+        messages: "acq-messages",
+        extra: "acq-extra",
+        attendance: "acq-attendance"
+    };
+
+    const BOOK_SUBJECTS = [
+        { key: "kazakh", label: "Қазақ тілі" },
+        { key: "kazlit", label: "Қазақ әдебиеті" },
+        { key: "rus", label: "Р.яз и лит." },
+        { key: "geo", label: "География" },
+        { key: "alg1", label: "Алгебра-1" },
+        { key: "alg2", label: "Алгебра-2" },
+        { key: "geom", label: "Геометрия" },
+        { key: "kazhist", label: "Қаз. тарихы" },
+        { key: "wh1", label: "ДТ-1" },
+        { key: "wh2", label: "ДТ-2" },
+        { key: "phys", label: "Физика" },
+        { key: "inf", label: "Информатика" },
+        { key: "chem1", label: "Химия-1" },
+        { key: "chem2", label: "Химия-2" },
+        { key: "bio1", label: "Био-1" },
+        { key: "bio2", label: "Био-2" },
+        { key: "eng", label: "Ағылшын" }
+    ];
+
+    const DEFAULT_STUDENTS = [
+        { id: "s1",  alpha: "А/", name: "Амантур Әлия",                       socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s2",  alpha: "А/", name: "Анварбек Бақытжан Жанатұлы",         socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s3",  alpha: "А/", name: "Асан Анелья Берікқызы",              socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s4",  alpha: "А/", name: "Аяған Әбілмансұр Самғатұлы",         socialStatus: "Қалыпты",      documentType: "Паспорт",            ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s5",  alpha: "Б/", name: "Байбеков Алдияр",                    socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s6",  alpha: "Б/", name: "Бекболат Қарақат",                   socialStatus: "Қалыпты",      documentType: "Паспорт",            ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s7",  alpha: "Б/", name: "Болатхан Ербұлан Болатханұлы",      socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s8",  alpha: "Г/", name: "Гурленбаев Жанторе Избасарович",     socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s9",  alpha: "Е/", name: "Ерғалым Қызғалдақ",                  socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s10", alpha: "Ж/", name: "Жайлау Дамир Ерланұлы",             socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s11", alpha: "Ж/", name: "Жамбул Ерболат Тлектесұлы",         socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s12", alpha: "Ж/", name: "Жекен Камила Қанатқызы",            socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s13", alpha: "Ж/", name: "Жумагулова Алия Арманқызы",         socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s14", alpha: "Ж/", name: "Жұмабек Абдулазиз Дәулетұлы",       socialStatus: "Аз қамтылған", documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s15", alpha: "Ж/", name: "Жұмахан Әлібек Айдынұлы",           socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s16", alpha: "З/", name: "Зиядан Аяла",                       socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s17", alpha: "И/", name: "Изделиева Жансая Амангельдиевна",  socialStatus: "Қалыпты",      documentType: "Паспорт",            ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s18", alpha: "К/", name: "Көрпебай Кәусар Еруланқызы",        socialStatus: "Қалыпты",      documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s19", alpha: "М/", name: "Майкеев Ерамір Мансурович",         socialStatus: "Қамқоршылықта",documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} },
+        { id: "s20", alpha: "М/", name: "Мамбеталы Бүркіт Бақытұлы",         socialStatus: "Көпбалалы",    documentType: "Туу туралы куәлік", ratingAttendance: "", ratingStudy: "", ratingBehavior: "", ratingExtra: "", books: {} }
+    ];
+
+    const DEFAULT_PLAN = [
+        { date: "2025-09-02", week: "Қыркүйек, 1-апта", topic: "«Мен – 10 сынып оқушысымын» танысу тренингі", form: "Топтық жұмыс, әңгіме", note: "Сынып ережесімен танысу", photoName: "" },
+        { date: "2025-09-09", week: "Қыркүйек, 2-апта", topic: "«Мектеп формасы және этика»", form: "Сынып сағаты", note: "Сыртқы келбет мәдениеті", photoName: "" },
+        { date: "2025-09-16", week: "Қыркүйек, 3-апта", topic: "Цифрлық қауіпсіздік және әлеуметтік желі", form: "Презентация, пікірталас", note: "Киберқауіпсіздік ережелері", photoName: "" },
+        { date: "2025-09-23", week: "Қыркүйек, 4-апта", topic: "«Оқу жылының мақсаттары» SMART-мақсат қою", form: "Практикалық жұмыс", note: "Жеке мақсат картасы", photoName: "" },
+
+        { date: "2025-10-01", week: "Қазан, 1-апта", topic: "«Ұстаздар күні» құттықтау дайындау", form: "Шығармашылық жоба", note: "Мектепішілік іс-шара", photoName: "" },
+        { date: "2025-10-08", week: "Қазан, 2-апта", topic: "Кәсіптік бағдар: мамандықтар әлемі", form: "Сынып сағаты", note: "Кәсіптер туралы бейнероликтер", photoName: "" },
+        { date: "2025-10-15", week: "Қазан, 3-апта", topic: "«Дос болайық» – буллингтің алдын алу", form: "Тренинг", note: "Рөлдік ойындар", photoName: "" },
+        { date: "2025-10-22", week: "Қазан, 4-апта", topic: "Қауіпсіз жол – балалар назарында", form: "Әңгіме, бейнеролик", note: "Жол жүру ережелері", photoName: "" },
+
+        { date: "2025-11-05", week: "Қараша, 1-апта", topic: "«Менің кітап әлемім» оқу сауаттылығы", form: "Кітап көрмесі", note: "Оқушылар кітап ұсынып шықты", photoName: "" },
+        { date: "2025-11-12", week: "Қараша, 2-апта", topic: "Мектептегі өзін-өзі басқару", form: "Сұхбат, пікірталас", note: "Сынып белсенділері анықталды", photoName: "" },
+        { date: "2025-11-19", week: "Қараша, 3-апта", topic: "Денсаулық – зор байлық", form: "Сауықтыру әңгімесі", note: "Спорттық белсенділікке үндеу", photoName: "" },
+        { date: "2025-11-26", week: "Қараша, 4-апта", topic: "«Қауіпсіз интернет»", form: "Презентация", note: "Жеке деректерді қорғау", photoName: "" },
+
+        { date: "2025-12-03", week: "Желтоқсан, 1-апта", topic: "Тәуелсіздік – басты құндылығымыз", form: "Сынып сағаты", note: "Тарихи видеоматериалдар", photoName: "" },
+        { date: "2025-12-10", week: "Желтоқсан, 2-апта", topic: "Жаңа жылдық іс-шараға дайындық", form: "Ұйымдастыру жиналысы", note: "Рөлдер мен жауаптыларды бөлу", photoName: "" },
+        { date: "2025-12-17", week: "Желтоқсан, 3-апта", topic: "Жыл қорытындысы: жетістіктер мен жоспарлар", form: "Рефлексия, сауалнама", note: "Оқушылардың пікірлері", photoName: "" }
+    ];
+
+    const DEFAULT_MEETINGS = [
+        { date: "2025-09-15", theme: "Жаңа оқу жылы. Сынып ережесі және күтілетін нәтижелер", format: "Офлайн", note: "Мектеп акт залында, 19:00" },
+        { date: "2025-10-20", theme: "Оқу үлгерімі және тәртіп. 1-тоқсан аралық қорытынды", format: "Онлайн (Zoom)", note: "Сілтеме WhatsApp арқылы жіберіледі" },
+        { date: "2025-11-18", theme: "Кітап оқу мәдениеті және цифрлық қауіпсіздік", format: "Офлайн", note: "Сынып бөлмесінде, 19:00" },
+        { date: "2025-12-16", theme: "Жыл аяғына дейінгі жоспарлар және ЖББ, БЖБ нәтижелері", format: "Онлайн (Teams)", note: "Сілтеме алдын ала жіберіледі" }
+    ];
+
+    let teacherStudents = [];
+    let teacherPlan = [];
+    let teacherMeetings = [];
+    let teacherMessages = [];
+    let teacherExtra = [];
+    let teacherAttendance = {};
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initTeacherPage();
+    });
+
+    function formatNow() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
+        const d = String(now.getDate()).padStart(2, "0");
+        const mo = String(now.getMonth() + 1).padStart(2, "0");
+        return `${d}.${mo} · ${h}:${m}`;
+    }
+
+    function loadJson(key, fallback) {
+        try {
+            const raw = localStorage.getItem(key);
+            if (!raw) return fallback;
+            const parsed = JSON.parse(raw);
+            return parsed ?? fallback;
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function saveJson(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {
+            console.warn("localStorage сақтауда қате:", e);
+        }
+    }
+
+    function initTeacherPage() {
+        const timeEl = document.getElementById("teacherTime");
+        if (timeEl) timeEl.textContent = "Уақыт: " + formatNow();
+
+        setupSectionSwitcher();
+        setupAIHelper();
+
+        teacherStudents = loadJson(STORAGE_KEYS.students, DEFAULT_STUDENTS);
+        teacherStudents.forEach(s => { if (!s.books) s.books = {}; });
+
+        teacherPlan = loadJson(STORAGE_KEYS.plan, []);
+        if (!teacherPlan || teacherPlan.length === 0) {
+            teacherPlan = DEFAULT_PLAN;
+            saveJson(STORAGE_KEYS.plan, teacherPlan);
+        }
+
+        teacherMeetings = loadJson(STORAGE_KEYS.meetings, []);
+        if (!teacherMeetings || teacherMeetings.length === 0) {
+            teacherMeetings = DEFAULT_MEETINGS;
+            saveJson(STORAGE_KEYS.meetings, teacherMeetings);
+        }
+
+        teacherMessages = loadJson(STORAGE_KEYS.messages, []);
+        teacherExtra = loadJson(STORAGE_KEYS.extra, []);
+        teacherAttendance = loadJson(STORAGE_KEYS.attendance, {});
+
+        renderStudentsTable();
+        renderAttendanceTable();
+        renderRatingTable();
+        renderBooksTable();
+        renderSocialStats();
+        renderPlanTable();
+        renderMeetingTable();
+        renderExtraList();
+        updateStudentStats();
+        populateQuickStudentSelect();
+        setupQuickNote();
+
+        setupStudentForm();
+        setupAttendanceControls();
+        setupExtraForm();
+        setupMeetingForm();
+        setupReports();
+    }
+
+    function setupSectionSwitcher() {
+        const menu = document.getElementById("teacherMenu");
+        const sections = document.querySelectorAll(".teacher-section");
+        if (!menu || !sections.length) return;
+
+        menu.addEventListener("click", (e) => {
+            const li = e.target.closest("li[data-section]");
+            if (!li) return;
+            const targetId = li.dataset.section;
+
+            sections.forEach(sec => {
+                sec.classList.toggle("is-active", sec.id === targetId);
+            });
+
+            menu.querySelectorAll("li").forEach(item => item.classList.remove("active"));
+            li.classList.add("active");
+        });
+    }
+
+    /* === QUICK NOTE === */
+
+    function populateQuickStudentSelect() {
+        const sel = document.getElementById("quickTargetStudent");
+        if (!sel) return;
+        sel.innerHTML = '<option value="">Оқушыны таңдаңыз</option>';
+        teacherStudents.forEach(s => {
+            const opt = document.createElement("option");
+            opt.value = s.id;
+            opt.textContent = s.name;
+            sel.appendChild(opt);
+        });
+    }
+
+    function setupQuickNote() {
+        const noteArea = document.getElementById("quickNote");
+        const saveNoteBtn = document.getElementById("saveNoteBtn");
+        const noteStatus = document.getElementById("noteStatus");
+        const targetType = document.getElementById("quickTargetType");
+        const targetStudent = document.getElementById("quickTargetStudent");
+
+        if (!noteArea || !saveNoteBtn || !noteStatus || !targetType || !targetStudent) return;
+
+        const raw = localStorage.getItem(STORAGE_KEYS.teacherNote);
+        if (raw) {
+            try {
+                const obj = JSON.parse(raw);
+                if (obj && typeof obj === "object") {
+                    noteArea.value = obj.text || "";
+                    targetType.value = obj.targetType || "all";
+                    if (obj.studentId) targetStudent.value = obj.studentId;
+                } else {
+                    noteArea.value = raw;
+                }
+            } catch {
+                noteArea.value = raw;
+            }
+        }
+
+        saveNoteBtn.addEventListener("click", () => {
+            const data = {
+                text: noteArea.value.trim(),
+                targetType: targetType.value,
+                studentId: targetStudent.value || ""
+            };
+            localStorage.setItem(STORAGE_KEYS.teacherNote, JSON.stringify(data));
+            noteStatus.textContent = "Жылдам жазба сақталды.";
+            setTimeout(() => (noteStatus.textContent = ""), 2000);
+        });
+    }
+
+    /* === STUDENTS === */
+
+    function renderStudentsTable() {
+        const tbody = document.getElementById("studentTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        teacherStudents.forEach((st, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${st.alpha ?? ""}</td>
+                <td>${st.name}</td>
+                <td>
+                    <button type="button" class="table-btn danger" data-id="${st.id}">Өшіру</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll(".table-btn.danger").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = btn.getAttribute("data-id");
+                teacherStudents = teacherStudents.filter(s => s.id !== id);
+                saveJson(STORAGE_KEYS.students, teacherStudents);
+                renderStudentsTable();
+                renderAttendanceTable();
+                renderRatingTable();
+                renderBooksTable();
+                renderSocialStats();
+                populateQuickStudentSelect();
+                updateStudentStats();
+            });
+        });
+
+        renderAttendanceTable();
+        renderRatingTable();
+        renderBooksTable();
+        populateQuickStudentSelect();
+    }
+
+    function setupStudentForm() {
+        const form = document.getElementById("addStudentForm");
+        const nameInput = document.getElementById("newStudentName");
+        const alphaInput = document.getElementById("newStudentAlpha");
+        if (!form) return;
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            if (!name) return;
+
+            const newSt = {
+                id: "s" + Date.now(),
+                alpha: alphaInput.value.trim() || "-/",
+                name,
+                socialStatus: "Қалыпты",
+                documentType: "Туу туралы куәлік",
+                ratingAttendance: "",
+                ratingStudy: "",
+                ratingBehavior: "",
+                ratingExtra: "",
+                books: {}
+            };
+
+            teacherStudents.push(newSt);
+            saveJson(STORAGE_KEYS.students, teacherStudents);
+            renderStudentsTable();
+            renderSocialStats();
+            updateStudentStats();
+
+            nameInput.value = "";
+            alphaInput.value = "";
+        });
+    }
+
+    function updateStudentStats() {
+        const statStudents = document.getElementById("statStudents");
+        const statSocial = document.getElementById("statSocial");
+        const statEvents = document.getElementById("statEvents");
+
+        if (statStudents) statStudents.textContent = teacherStudents.length.toString();
+
+        const socialCount = teacherStudents.filter(s =>
+            s.socialStatus && s.socialStatus !== "Қалыпты"
+        ).length;
+        if (statSocial) statSocial.textContent = socialCount.toString();
+
+        if (statEvents) statEvents.textContent = teacherExtra.length || 0;
+    }
+
+    /* === ATTENDANCE === */
+
+    function getTodayIso() {
+        const n = new Date();
+        const y = n.getFullYear();
+        const m = String(n.getMonth() + 1).padStart(2, "0");
+        const d = String(n.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+    }
+
+    function getCurrentAttendanceDateIso() {
+        const input = document.getElementById("attendanceDate");
+        return (input && input.value) ? input.value : getTodayIso();
+    }
+
+    function renderAttendanceTable() {
+        const tbody = document.getElementById("attendanceTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        teacherStudents.forEach((st, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${st.name}</td>
+                <td>
+                    <select class="attendance-select" data-id="${st.id}">
+                        <option value="">—</option>
+                        <option value="келді">Келді</option>
+                        <option value="кешікті">Кешікті</option>
+                        <option value="ауырды">Ауырды (анықтамамен)</option>
+                        <option value="келмеді">Келмеді (себепсіз)</option>
+                    </select>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        applyAttendanceForDate(getCurrentAttendanceDateIso());
+        document.querySelectorAll(".attendance-select").forEach(sel => {
+            sel.addEventListener("change", () => {
+                const id = sel.getAttribute("data-id");
+                handleAttendanceChange(id, sel.value);
+            });
+        });
+    }
+
+    function setupAttendanceControls() {
+        const dateInput = document.getElementById("attendanceDate");
+        const text = document.getElementById("attendanceSelectedText");
+        const saveBtn = document.getElementById("saveAttendanceBtn");
+        const status = document.getElementById("attendanceStatus");
+
+        if (dateInput) {
+            dateInput.addEventListener("change", () => {
+                if (dateInput.value) {
+                    const d = new Date(dateInput.value);
+                    const dd = String(d.getDate()).padStart(2, "0");
+                    const mm = String(d.getMonth() + 1).padStart(2, "0");
+                    text.textContent = `Таңдалған күн: ${dd}.${mm}.${d.getFullYear()}`;
+                } else {
+                    text.textContent = "Егер күн таңдалмаса, бүгінгі күн қолданылады.";
+                }
+                applyAttendanceForDate(getCurrentAttendanceDateIso());
+            });
+        }
+
+        if (saveBtn && status) {
+            saveBtn.addEventListener("click", () => {
+                const iso = getCurrentAttendanceDateIso();
+                const selects = document.querySelectorAll(".attendance-select");
+                if (!teacherAttendance[iso]) teacherAttendance[iso] = {};
+                const day = teacherAttendance[iso];
+
+                selects.forEach(sel => {
+                    const id = sel.getAttribute("data-id");
+                    const val = sel.value;
+                    if (val) day[id] = val;
+                    else delete day[id];
+                });
+
+                saveJson(STORAGE_KEYS.attendance, teacherAttendance);
+                status.textContent = "Күнделікті қатысу журналы сақталды.";
+                setTimeout(() => (status.textContent = ""), 2000);
+            });
+        }
+    }
+
+    function applyAttendanceForDate(iso) {
+        const day = teacherAttendance[iso] || {};
+        const selects = document.querySelectorAll(".attendance-select");
+        selects.forEach(sel => {
+            const id = sel.getAttribute("data-id");
+            sel.value = day[id] || "";
+        });
+    }
+
+    function handleAttendanceChange(studentId, statusValue) {
+        if (!statusValue) return;
+
+        const st = teacherStudents.find(s => s.id === studentId);
+        if (!st) return;
+
+        const iso = getCurrentAttendanceDateIso();
+        const d = new Date(iso);
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        const dateStr = `${dd}.${mm}.${yyyy}`;
+
+        const statusText = {
+            "келді": "сабақта болды",
+            "кешікті": "сабаққа кешігіп келді",
+            "ауырды": "ауруына байланысты келмеді (анықтамамен)",
+            "келмеді": "сабаққа себепсіз келмеді"
+        }[statusValue] ?? statusValue;
+
+        const text = `«${dateStr}» күні ${st.name}: ${statusText}. Ата-анасына хабарлама жіберілді (демо).`;
+        addSystemMessage(text);
+    }
+
+    function addSystemMessage(text) {
+        const msg = {
+            id: "sys" + Date.now(),
+            isSystem: true,
+            targetLabel: "Ата-ана (қатысу бойынша)",
+            text,
+            time: formatNow()
+        };
+        teacherMessages.unshift(msg);
+        saveJson(STORAGE_KEYS.messages, teacherMessages);
+    }
+
+    /* === RATING === */
+
+    function renderRatingTable() {
+        const tbody = document.getElementById("ratingTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        teacherStudents.forEach((st, index) => {
+            const a = st.ratingAttendance ?? "";
+            const s = st.ratingStudy ?? "";
+            const b = st.ratingBehavior ?? "";
+            const e = st.ratingExtra ?? "";
+            const total = calcTotalRating(st);
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${st.name}</td>
+                <td><input type="number" min="0" max="10" step="0.5" class="rating-input" data-id="${st.id}" data-field="attendance" value="${a}"></td>
+                <td><input type="number" min="0" max="10" step="0.5" class="rating-input" data-id="${st.id}" data-field="study" value="${s}"></td>
+                <td><input type="number" min="0" max="10" step="0.5" class="rating-input" data-id="${st.id}" data-field="behavior" value="${b}"></td>
+                <td><input type="number" min="0" max="10" step="0.5" class="rating-input" data-id="${st.id}" data-field="extra" value="${e}"></td>
+                <td>${total !== null ? total.toFixed(2) : ""}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll(".rating-input").forEach(inp => {
+            inp.addEventListener("input", () => {
+                const id = inp.getAttribute("data-id");
+                const field = inp.getAttribute("data-field");
+                let val = inp.value ? parseFloat(inp.value) : "";
+                if (val !== "" && (isNaN(val) || val < 0)) val = 0;
+                if (val !== "" && val > 10) val = 10;
+                inp.value = val === "" ? "" : val;
+                updateStudentRatingField(id, field, val);
+            });
+        });
+
+        updateTopRatings();
+    }
+
+    function calcTotalRating(st) {
+        const vals = [
+            st.ratingAttendance,
+            st.ratingStudy,
+            st.ratingBehavior,
+            st.ratingExtra
+        ].filter(v => typeof v === "number" && !isNaN(v));
+
+        if (vals.length === 0) return null;
+        const sum = vals.reduce((a,b) => a + b, 0);
+        return sum / vals.length;
+    }
+
+    function updateStudentRatingField(id, field, value) {
+        const st = teacherStudents.find(s => s.id === id);
+        if (!st) return;
+        const map = {
+            "attendance": "ratingAttendance",
+            "study": "ratingStudy",
+            "behavior": "ratingBehavior",
+            "extra": "ratingExtra"
+        };
+        const realField = map[field];
+        if (!realField) return;
+
+        st[realField] = value === "" ? "" : Number(value);
+        saveJson(STORAGE_KEYS.students, teacherStudents);
+        renderRatingTable();
+    }
+
+    function updateTopRatings() {
+        const box = document.getElementById("topRatingList");
+        if (!box) return;
+        box.innerHTML = "";
+
+        const list = teacherStudents.map(st => {
+            const total = calcTotalRating(st);
+            return { name: st.name, total };
+        }).filter(x => x.total !== null);
+
+        list.sort((a,b) => b.total - a.total);
+        list.slice(0, 5).forEach((item, idx) => {
+            const li = document.createElement("li");
+            li.innerHTML = `<span>${item.name}</span> – <span>${item.total.toFixed(2)}</span>`;
+            box.appendChild(li);
+        });
+
+        if (list.length === 0) {
+            const li = document.createElement("li");
+            li.textContent = "Әзірге дерек жоқ. Алдымен рейтинг өлшемдерін енгізіңіз.";
+            box.appendChild(li);
+        }
+    }
+
+    /* === BOOKS === */
+
+    function renderBooksTable() {
+        const tbody = document.getElementById("booksTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        teacherStudents.forEach((st, index) => {
+            if (!st.books) st.books = {};
+            const tr = document.createElement("tr");
+            let html = `
+                <td>${index + 1}</td>
+                <td>${st.name}</td>
+            `;
+            BOOK_SUBJECTS.forEach(subj => {
+                const checked = st.books[subj.key] ? "checked" : "";
+                html += `
+                    <td>
+                        <input type="checkbox" class="book-checkbox"
+                               data-id="${st.id}" data-subject="${subj.key}" ${checked}>
+                    </td>
+                `;
+            });
+            tr.innerHTML = html;
+            tbody.appendChild(tr);
+        });
+
+        document.querySelectorAll(".book-checkbox").forEach(cb => {
+            cb.addEventListener("change", () => {
+                const id = cb.getAttribute("data-id");
+                const subjKey = cb.getAttribute("data-subject");
+                const st = teacherStudents.find(s => s.id === id);
+                if (!st) return;
+                if (!st.books) st.books = {};
+                st.books[subjKey] = cb.checked;
+                saveJson(STORAGE_KEYS.students, teacherStudents);
+            });
+        });
+    }
+
+    /* === SOCIAL PASSPORT === */
+
+    function renderSocialStats() {
+        const container = document.getElementById("socialStats");
+        if (!container) return;
+        container.innerHTML = "";
+
+        if (!teacherStudents.length) return;
+
+        const total = teacherStudents.length;
+        const countBy = (status) => teacherStudents.filter(s => s.socialStatus === status).length;
+
+        const items = [
+            { label: "Барлық оқушы", value: total },
+            { label: "Көпбалалы отбасы", value: countBy("Көпбалалы") },
+            { label: "Аз қамтылған", value: countBy("Аз қамтылған") },
+            { label: "Толық емес отбасы", value: countBy("Толық емес отбасы") },
+            { label: "Қамқоршылықта", value: countBy("Қамқоршылықта") }
+        ];
+
+        items.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "tag-chip";
+            div.textContent = `${item.label}: ${item.value}`;
+            container.appendChild(div);
+        });
+    }
+
+    /* === PLAN === */
+
+    function renderPlanTable() {
+        const tbody = document.getElementById("planTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        teacherPlan.forEach((item, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${item.date ?? ""}</td>
+                <td>${item.week ?? ""}</td>
+                <td>${item.topic ?? ""}</td>
+                <td>${item.form ?? ""}</td>
+                <td>${item.note ?? ""}</td>
+                <td>
+                    <input type="file" accept="image/*" class="plan-photo-input" data-index="${index}">
+                    <div class="small-text">${item.photoName ? "Таңдалған фото: " + item.photoName : ""}</div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.querySelectorAll(".plan-photo-input").forEach(input => {
+            input.addEventListener("change", () => {
+                const idx = parseInt(input.getAttribute("data-index"), 10);
+                const file = input.files && input.files[0];
+                if (!teacherPlan[idx]) return;
+                teacherPlan[idx].photoName = file ? file.name : "";
+                saveJson(STORAGE_KEYS.plan, teacherPlan);
+                renderPlanTable();
+            });
+        });
+    }
+
+    /* === MEETINGS === */
+
+    function renderMeetingTable() {
+        const tbody = document.getElementById("meetingTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        teacherMeetings.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${item.date ?? ""}</td>
+                <td>${item.theme ?? ""}</td>
+                <td>${item.format ?? ""}</td>
+                <td>${item.note ?? ""}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function setupMeetingForm() {
+        const form = document.getElementById("meetingForm");
+        if (!form) return;
+
+        const dateInput = document.getElementById("meetingDate");
+        const themeInput = document.getElementById("meetingTheme");
+        const formatSelect = document.getElementById("meetingFormat");
+        const noteInput = document.getElementById("meetingNote");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (!dateInput.value || !themeInput.value.trim()) return;
+
+            teacherMeetings.push({
+                date: dateInput.value,
+                theme: themeInput.value.trim(),
+                format: formatSelect.value,
+                note: noteInput.value.trim()
+            });
+            saveJson(STORAGE_KEYS.meetings, teacherMeetings);
+            renderMeetingTable();
+
+            themeInput.value = "";
+            noteInput.value = "";
+        });
+    }
+
+    /* === EXTRA === */
+
+    function renderExtraList() {
+        const list = document.getElementById("extraList");
+        if (!list) return;
+        list.innerHTML = "";
+
+        teacherExtra.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "message-item";
+            div.innerHTML = `
+                <div class="message-meta">
+                    <span>Басталуы: ${item.date || "—"}</span>
+                    <span>Дедлайн: ${item.deadline || "—"}</span>
+                </div>
+                <div class="message-text">
+                    <strong>${item.title ?? ""}</strong><br>
+                    ${item.desc ?? ""}
+                </div>
+            `;
+            list.appendChild(div);
+        });
+
+        updateStudentStats();
+    }
+
+    function setupExtraForm() {
+        const form = document.getElementById("extraForm");
+        if (!form) return;
+
+        const dateInput = document.getElementById("extraDate");
+        const deadlineInput = document.getElementById("extraDeadline");
+        const title = document.getElementById("extraTitle");
+        const desc = document.getElementById("extraDesc");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (!title.value.trim()) return;
+
+            teacherExtra.push({
+                date: dateInput.value,
+                deadline: deadlineInput.value,
+                title: title.value.trim(),
+                desc: desc.value.trim()
+            });
+            saveJson(STORAGE_KEYS.extra, teacherExtra);
+            renderExtraList();
+
+            title.value = "";
+            desc.value = "";
+        });
+    }
+
+    /* === REPORTS (WORD) === */
+
+    function setupReports() {
+        const socialBtn = document.getElementById("exportSocialPassportBtn");
+        if (socialBtn) socialBtn.addEventListener("click", exportSocialPassportDoc);
+
+        const surveyBtn = document.getElementById("exportSurveyTemplateBtn");
+        if (surveyBtn) surveyBtn.addEventListener("click", exportSurveyTemplateDoc);
+
+        const booksBtn = document.getElementById("exportBooksBtn");
+        if (booksBtn) booksBtn.addEventListener("click", exportBooksDoc);
+
+        const movBtn = document.getElementById("exportMovementBtn");
+        if (movBtn) movBtn.addEventListener("click", exportMovementDoc);
+
+        const listBtn = document.getElementById("exportStudentListDocBtn");
+        if (listBtn) listBtn.addEventListener("click", exportStudentListDoc);
+
+        const ratingBtn = document.getElementById("exportRatingBtn");
+        if (ratingBtn) ratingBtn.addEventListener("click", exportRatingDoc);
+
+        const booksMonthBtn = document.getElementById("exportAttendanceMonthBtn");
+        if (booksMonthBtn) booksMonthBtn.addEventListener("click", exportAttendanceMonthDoc);
+
+        const planBtn = document.getElementById("exportPlanBtn");
+        if (planBtn) planBtn.addEventListener("click", exportPlanDoc);
+    }
+
+    function downloadWord(html, filename) {
+        const blob = new Blob([html], { type: "application/msword" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function exportStudentListDoc() {
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body>
+        <h3 style="text-align:center;">10 «Б» сыныбының оқушыларының тізімі</h3>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%;font-size:11pt;">
+        <tr>
+            <th>№</th>
+            <th>Алф./№</th>
+            <th>Оқушының тегі, аты, әкесінің аты</th>
+            <th>Ескерту</th>
+        </tr>
+        `;
+        teacherStudents.forEach((st, index) => {
+            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${st.alpha ?? ""}</td>
+                <td>${st.name}</td>
+                <td></td>
+            </tr>`;
+        });
+        html += `
+        </table>
+        <p style="margin-top:20px;">Сынып жетекшісі: Аяпбергенқызы Балжан</p>
+        </body></html>
+        `;
+        downloadWord(html, "10B_okushy_tizimi.doc");
+    }
+
+    function exportMovementDoc() {
+        const termSel = document.getElementById("movementTermSelect");
+        const yearInput = document.getElementById("movementYearText");
+        const term = termSel ? termSel.value : "1";
+        const yearText = yearInput && yearInput.value.trim() ? yearInput.value.trim() : "2025-2026";
+
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body>
+        <p style="text-align:right;margin-bottom:20px;">«Бекітемін»<br>
+        №221 жалпы білім беретін мектеп директоры _____________________</p>
+
+        <h3 style="text-align:center;margin-bottom:10px;">${yearText} оқу жылындағы 10 «Б» сыныбының ${term}-тоқсан қозғалыс есебі</h3>
+
+        <table border="1" cellspacing="0" cellpadding="3" style="border-collapse:collapse;width:100%;font-size:9pt;">
+        <tr>
+            <th>Р/с</th>
+            <th>Алф./№</th>
+            <th>Оқушының тегі, аты, әкесінің аты</th>
+            <th>Туған күн- айы, жылы</th>
+            <th>ЖСН</th>
+            <th>Жынысы</th>
+            <th>Ұлты</th>
+            <th>Мекен-жайы</th>
+            <th>Ескерту</th>
+        </tr>
+        `;
+
+        teacherStudents.forEach((st, index) => {
+            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${st.alpha ?? ""}</td>
+                <td>${st.name}</td>
+                <td>____.__.____</td>
+                <td>_______________</td>
+                <td>ұл/қыз</td>
+                <td>қазақ</td>
+                <td>__________________________________</td>
+                <td></td>
+            </tr>`;
+        });
+
+        html += `</table>
+
+        <p style="margin-top:20px;"><strong>Келді:</strong> ________________________________________________</p>
+        <p style="margin-top:8px;"><strong>Кетті:</strong> ________________________________________________</p>
+
+        <p style="margin-top:20px;">Сынып жетекшісі: ____________________ Аяпбергенқызы Балжан</p>
+        </body></html>
+        `;
+        downloadWord(html, `10B_kozgalys_esebi_${term}_toqsan.doc`);
+    }
+
+    function exportSocialPassportDoc() {
+        const total = teacherStudents.length;
+        const countBy = (status) => teacherStudents.filter(s => s.socialStatus === status).length;
+
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body>
+        <h3 style="text-align:center;margin-bottom:10px;">10 «Б» сыныбының әлеуметтік паспорты</h3>
+
+        <p>Барлық оқушы саны: <strong>${total}</strong></p>
+        <ul>
+            <li>Көпбалалы отбасынан: ${countBy("Көпбалалы")}</li>
+            <li>Аз қамтылған отбасынан: ${countBy("Аз қамтылған")}</li>
+            <li>Толық емес отбасынан: ${countBy("Толық емес отбасы")}</li>
+            <li>Қамқоршылықтағы: ${countBy("Қамқоршылықта")}</li>
+        </ul>
+
+        <h4 style="margin-top:15px;">1. Оқушылардың тізімі (әлеуметтік мәртебесімен)</h4>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%;font-size:10pt;">
+            <tr>
+                <th>№</th>
+                <th>Оқушының аты-жөні</th>
+                <th>Әлеуметтік мәртебесі</th>
+                <th>Ескерту</th>
+            </tr>
+        `;
+        teacherStudents.forEach((st, index) => {
+            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${st.name}</td>
+                <td>${st.socialStatus ?? ""}</td>
+                <td></td>
+            </tr>`;
+        });
+        html += `
+        </table>
+
+        <p style="margin-top:20px;">Сынып жетекшісі: ____________________ Аяпбергенқызы Балжан</p>
+        </body></html>
+        `;
+        downloadWord(html, "10B_aleumettik_pasport.doc");
+    }
+
+    function exportSurveyTemplateDoc() {
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body style="font-size:11pt;">
+        <h3 style="text-align:center;">САУАЛНАМА ПАРАҒЫ</h3>
+
+        <p><strong>5. Әлеуметтік тұрмыстық жағдай.</strong></p>
+
+        <p><u>Оқушы туралы мәлімет:</u></p>
+        <p>Оқушының аты-жөні: _____________________________________________</p>
+        <p>Туған жылы: «____» ____________ 20____ ж.</p>
+        <p>ЖСН: ____________________________</p>
+        <p>Ұлты: ___________________________</p>
+        <p>Тұрғылықты жері (тіркелген мекен-жайы): _____________________________</p>
+        <p>Тұрақты тұратын жерінің мекен-жайы: _______________________________</p>
+        <p>Байланыс мәліметтері (үй тел., жұмыс тел., ұялы тел.): ________________</p>
+
+        <br>
+        <p><u>Анасының (немесе орнын басушысының) мәліметі:</u></p>
+        <p>Аты-жөні: _____________________________________________</p>
+        <p>Туған жылы: «____» ____________ 19____ / 20____ ж.</p>
+        <p>Ұлты: ___________________________</p>
+        <p>Тұрғылықты жері (тіркелген мекен-жайы): _____________________________</p>
+        <p>Тұрақты тұратын жерінің мекен-жайы: _______________________________</p>
+        <p>Байланыс мәліметтері (үй тел., жұмыс тел., ұялы тел.): ________________</p>
+        <p>Білімі: жоғары / орта / арнайы орта</p>
+        <p>Жұмыс орны, мамандығы: _________________________________________</p>
+
+        <br>
+        <p><u>Әкесінің (немесе орнын басушысының) мәліметі:</u></p>
+        <p>Аты-жөні: _____________________________________________</p>
+        <p>Туған жылы: «____» ____________ 19____ / 20____ ж.</p>
+        <p>Ұлты: ___________________________</p>
+        <p>Тұрғылықты жері (тіркелген мекен-жайы): _____________________________</p>
+        <p>Тұрақты тұратын жерінің мекен-жайы: _______________________________</p>
+        <p>Байланыс мәліметтері (үй тел., жұмыс тел., ұялы тел.): ________________</p>
+        <p>Білімі: жоғары / орта / арнайы орта</p>
+        <p>Жұмыс орны, мамандығы: _________________________________________</p>
+
+        <br>
+        <p>Толық отбасы: иә / жоқ</p>
+        <p>Көп балалы отбасы: иә / жоқ</p>
+        <p>Әлеуметтік жағдайы: жақсы / орташа / төмен</p>
+        <p>АСП (Атаулы әлеуметтік көмек) алатын отбасы: иә / жоқ</p>
+        <p>Оқушының ата-анасы ажырасқан: иә / жоқ</p>
+        <p>Анасымен / әкесімен / ата-анасынан бөлек тұрады (тиістісін белгілеу)</p>
+        <p>Оқушының өгей анасы/әкесі бар ма? иә / жоқ</p>
+        <p>Оқушы тұл жетім / жартылай жетім бе? иә / жоқ</p>
+        <p>Оқушы мүгедек пе? иә / жоқ</p>
+        <p>Ата-анасы мүгедек пе? иә / жоқ</p>
+        <p>Оқушы тегін ыстық тамақ ішеді ме? иә / жоқ</p>
+        <p>Тұрақты тұратын жер: жалдамалы / жеке меншіктік</p>
+
+        <br>
+        <p>Мен өзімнің деректерімді (менің отбасым) мектепшілік қолдануына келісемін.
+        Сауалнамада көрсетілген ақпараттың шынайылығын растаймын.</p>
+
+        <p style="margin-top:20px;">Ата-ананың (заңды өкілдің) қолы: ___________________________</p>
+
+        <p style="margin-top:20px;">Сауалнама толтырылған күні: «____» ____________ 20____ ж.</p>
+        <p>Сауалнама жүргізген сынып жетекшінің аты-жөні, байланыс нөмірі: ______________________</p>
+
+        </body></html>
+        `;
+        downloadWord(html, "Sауалнама_paragy_ata_ana.doc");
+    }
+
+    function exportBooksDoc() {
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body style="font-size:10pt;">
+        <h3 style="text-align:center;margin-bottom:10px;">
+        ОҚУШЫЛАРДЫҢ ПӘНДЕР БОЙЫНША ОҚУ ӘДЕБИЕТТЕРІМЕН ҚАМТЫЛУЫ ТУРАЛЫ СТАТИСТИКАЛЫҚ ЕСЕП<br>
+        (10-сынып)
+        </h3>
+
+        <table border="1" cellspacing="0" cellpadding="3" style="border-collapse:collapse;width:100%;">
+        <tr>
+            <th rowspan="2">р/с</th>
+            <th rowspan="2">Оқушының аты-жөні</th>
+            <th colspan="17">Оқулық атауы</th>
+        </tr>
+        <tr>
+        `;
+        BOOK_SUBJECTS.forEach(s => {
+            html += `<th>${s.label}</th>`;
+        });
+        html += `</tr>`;
+
+        teacherStudents.forEach((st, index) => {
+            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${st.name}</td>
+            `;
+            BOOK_SUBJECTS.forEach(s => {
+                const mark = st.books && st.books[s.key] ? "✓" : "";
+                html += `<td style="text-align:center;">${mark}</td>`;
+            });
+            html += `</tr>`;
+        });
+
+        html += `
+        </table>
+
+        <p style="margin-top:20px;">Сынып жетекшісі: ____________________ Аяпбергенқызы Балжан</p>
+        </body></html>
+        `;
+        downloadWord(html, "10_syny_pender_boiynsha_okulyk_esep.doc");
+    }
+
+    function exportRatingDoc() {
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body style="font-size:10pt;">
+        <h3 style="text-align:center;margin-bottom:10px;">10 «Б» сыныбы оқушыларының рейтингі (критерийлер бойынша)</h3>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%;">
+        <tr>
+            <th>№</th>
+            <th>Оқушының аты-жөні</th>
+            <th>Қатысуы (1–10)</th>
+            <th>Орташа оқу үлгерімі (1–10)</th>
+            <th>Тәртібі (1–10)</th>
+            <th>Сыныптан тыс / кітап оқу (1–10)</th>
+            <th>Жалпы рейтинг</th>
+            <th>Ескерту</th>
+        </tr>
+        `;
+        teacherStudents.forEach((st, index) => {
+            const total = calcTotalRating(st);
+            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${st.name}</td>
+                <td>${st.ratingAttendance ?? ""}</td>
+                <td>${st.ratingStudy ?? ""}</td>
+                <td>${st.ratingBehavior ?? ""}</td>
+                <td>${st.ratingExtra ?? ""}</td>
+                <td>${total !== null ? total.toFixed(2) : ""}</td>
+                <td></td>
+            </tr>`;
+        });
+        html += `
+        </table>
+        <p style="margin-top:20px;">Сынып жетекшісі: ____________________ Аяпбергенқызы Балжан</p>
+        </body></html>
+        `;
+        downloadWord(html, "10B_rating_esep.doc");
+    }
+
+    function exportAttendanceMonthDoc() {
+        const monthSel = document.getElementById("attendanceMonth");
+        const yearInput = document.getElementById("attendanceYear");
+        const month = monthSel ? parseInt(monthSel.value, 10) : (new Date().getMonth() + 1);
+        const year = yearInput && yearInput.value ? parseInt(yearInput.value, 10) : new Date().getFullYear();
+
+        const stats = {};
+        teacherStudents.forEach(st => {
+            stats[st.id] = {
+                name: st.name,
+                came: 0,
+                late: 0,
+                sick: 0,
+                absent: 0
+            };
+        });
+
+        Object.entries(teacherAttendance).forEach(([iso, day]) => {
+            const d = new Date(iso);
+            if (d.getFullYear() === year && (d.getMonth() + 1) === month) {
+                Object.entries(day).forEach(([id, status]) => {
+                    const s = stats[id];
+                    if (!s) return;
+                    if (status === "келді") s.came++;
+                    else if (status === "кешікті") s.late++;
+                    else if (status === "ауырды") s.sick++;
+                    else if (status === "келмеді") s.absent++;
+                });
+            }
+        });
+
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body style="font-size:10pt;">
+        <h3 style="text-align:center;margin-bottom:10px;">10 «Б» сыныбының ${year} жылғы ${month}-айындағы қатысу есебі</h3>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%;">
+        <tr>
+            <th>№</th>
+            <th>Оқушының аты-жөні</th>
+            <th>Келді</th>
+            <th>Кешікті</th>
+            <th>Ауырды</th>
+            <th>Келмеді</th>
+        </tr>
+        `;
+
+        teacherStudents.forEach((st, index) => {
+            const s = stats[st.id];
+            html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${st.name}</td>
+                <td>${s.came}</td>
+                <td>${s.late}</td>
+                <td>${s.sick}</td>
+                <td>${s.absent}</td>
+            </tr>`;
+        });
+
+        html += `
+        </table>
+        <p style="margin-top:20px;">Сынып жетекшісі: ____________________ Аяпбергенқызы Балжан</p>
+        </body></html>
+        `;
+        downloadWord(html, `10B_katysu_${year}_${month}.doc`);
+    }
+
+    function exportPlanDoc() {
+        let html = `
+        <html><head><meta charset="UTF-8"></head><body style="font-size:10pt;">
+        <h3 style="text-align:center;margin-bottom:10px;">10 «Б» сыныбының тәрбие жұмыстарының жоспары (қыркүйек–желтоқсан)</h3>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%;">
+        <tr>
+            <th>Күні</th>
+            <th>Апта</th>
+            <th>Тақырыбы</th>
+            <th>Форматы</th>
+            <th>Нәтиже / ескертпе</th>
+            <th>Фото</th>
+        </tr>
+        `;
+
+        teacherPlan.forEach(item => {
+            html += `
+            <tr>
+                <td>${item.date ?? ""}</td>
+                <td>${item.week ?? ""}</td>
+                <td>${item.topic ?? ""}</td>
+                <td>${item.form ?? ""}</td>
+                <td>${item.note ?? ""}</td>
+                <td>${item.photoName ? "Фото тіркелген (" + item.photoName + ")" : ""}</td>
+            </tr>`;
+        });
+
+        html += `
+        </table>
+        <p style="margin-top:20px;">Сынып жетекшісі: ____________________ Аяпбергенқызы Балжан</p>
+        </body></html>
+        `;
+        downloadWord(html, "10B_tarbie_zhospary_kyrkuyek_zheltoksan.doc");
+    }
+
+    /* === AI HELPER === */
+
+    function setupAIHelper() {
+        const buttons = document.querySelectorAll(".ai-template-btn");
+        const area = document.getElementById("aiHelperText");
+        if (!buttons.length || !area) return;
+
+        const templates = {
+            "parent-meeting": `Құрметті ата-аналар!
+
+Сіздерді 10 «Б» сыныбының ата-аналар жиналысына шақырамын.
+Күні: ____ __________ 20____ жыл
+Уақыты: ____ : ____
+Форматы: офлайн / онлайн (Zoom/Teams)
+
+Күн тәртібі:
+1. Оқушылардың оқу жетістіктері.
+2. Сабаққа қатысу және тәртіп мәселелері.
+3. Алдағы тоқсандағы маңызды іс-шаралар.
+4. Сұрақтар мен ұсыныстар.
+
+Қатысуларыңыз балаңыздың болашағы үшін маңызды.
+Құрметпен: сынып жетекшісі Аяпбергенқызы Балжан.`,
+            "behavior": `Құрметті ата-ана!
+
+Сізге «оқушының аты-жөні» қатысты сабақтағы тәртіп мәселелері бойынша хабарласып отырмын.
+Соңғы уақытта келесі жағдайлар байқалды:
+- Сабаққа кешігу / сабақта сөйлемеу / тапсырмаларды орындамау (қажеттісін белгілеу).
+- Мұғалім ескертуінен кейін де қайталануы.
+
+Осыған байланысты Сізбен бірлесе отырып, баланың жауапкершілігін арттыруға жұмыс жүргізгім келеді.
+Қажет болса, жеке кездесу ұйымдастыруға дайынмын.
+
+Құрметпен: сынып жетекшісі Аяпбергенқызы Балжан.`,
+            "motivation": `Сәлеметсіз бе!
+
+10 «Б» сыныбының «оқушының аты-жөні» соңғы уақытта сабаққа жауапкершілікпен қарап,
+тапсырмаларды уақытылы орындап жүр. Белсенділігі мен талпынысы қуантады.
+
+Осы қарқынын жоғалтпай, алдағы уақытта да қолдап отырасыз деп сенемін.
+Балаңызға біз де, Сіз де бірге қолдау көрсетсек, нәтижеміз бұдан да жоғары болады.
+
+Құрметпен: сынып жетекшісі Аяпбергенқызы Балжан.`
+        };
+
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const key = btn.dataset.template;
+                area.value = templates[key] || "";
+                area.focus();
+            });
+        });
+    }
+</script>
+</body>
+</html>

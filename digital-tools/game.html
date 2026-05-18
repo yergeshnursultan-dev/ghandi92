@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>SPAI92 — Математикалық арқан тарту</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(#bfe5ff, #f5fbff);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      height: 650px;
+      background: radial-gradient(circle at top, #ffffff 0, #e6f3ff 45%, #cbe4ff 100%);
+      border-radius: 30px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+      display: flex;
+      padding: 30px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side {
+      flex: 0 0 280px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 26px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .question-box {
+      background: #0d3b8f;
+      color: #fff;
+      border-radius: 20px;
+      padding: 14px 20px;
+      font-size: 26px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .answer-display {
+      background: #f3f6ff;
+      border-radius: 18px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 14px;
+      border: 2px solid #d6e4ff;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .key {
+      height: 60px;
+      border-radius: 18px;
+      border: none;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+      background: #ffffff;
+      transition: transform 0.05s, box-shadow 0.05s, background 0.1s;
+    }
+    .key:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+    .key:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .key-clear {
+      background: #ff5b5b;
+      color: #fff;
+    }
+
+    .key-ok {
+      background: #3cb3ff;
+      color: #fff;
+      grid-column: span 2;
+    }
+
+    .middle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 25px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #123b7a;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #34568b;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .arena {
+      margin-top: 40px;
+      width: 100%;
+      max-width: 550px;
+      height: 260px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ОРТАДАҒЫ СЫЗЫҚ – ҚЫЗЫЛ */
+    .center-line {
+      position: absolute;
+      top: 5%;
+      bottom: 5%;
+      left: 50%;
+      width: 3px;
+      background: #ff1744; /* қызыл */
+      z-index: 1;
+    }
+
+    /* Арқан мен балаларды бірге жылжыту үшін */
+    .arena-inner {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.25s ease-out;
+    }
+
+    .rope-line {
+      position: absolute;
+      top: 69%;           /* арқанның биіктігі */
+      left: 18%;
+      right: 18%;
+      height: 5px;        /* қалыңдығы */
+      background: #c49a6c;
+      border-radius: 4px;
+      transform: translateY(-50%);
+      box-shadow: 0 0 6px rgba(0,0,0,0.25);
+    }
+
+    /* БАЛАЛАРДЫҢ ӨЛШЕМІН ҮЛКЕЙТТІМ */
+    .player {
+      position: absolute;
+      bottom: 10px;
+      width: 150px;   /* бұрын 110 */
+      height: 190px;  /* бұрын 140 */
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .player img {
+      max-height: 190px;
+      max-width: 150px;
+      object-fit: contain;
+    }
+
+    .player-left { left: 1%; }
+    .player-right { right: 1%; }
+
+    .status {
+      margin-top: 25px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #0d3b8f;
+      text-align: center;
+      min-height: 28px;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d6e4ff;
+    }
+    .dot.active-left  { background: #ff7043; }
+    .dot.active-right { background: #42a5f5; }
+
+    .end-screen {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .end-screen.hidden { display: none; }
+
+    .end-card {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 30px 40px;
+      text-align: center;
+      max-width: 420px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+      animation: pop 0.35s ease-out;
+    }
+    .end-title {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #123b7a;
+    }
+    .end-text {
+      font-size: 18px;
+      color: #455a7a;
+      margin-bottom: 25px;
+    }
+    .end-btn {
+      border: none;
+      padding: 12px 28px;
+      font-size: 18px;
+      border-radius: 999px;
+      background: #3cb3ff;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+    .end-btn:hover { transform: translateY(-1px); }
+
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    @media (max-width: 1100px) {
+      .game-wrapper {
+        flex-direction: column;
+        height: auto;
+      }
+      .side {
+        margin-bottom: 15px;
+        flex: 0 0 auto;
+      }
+      .middle { order: -1; }
+    }
+  </style>
+</head>
+<body>
+<a href="../tools.html" style="position:fixed;left:18px;top:18px;z-index:1000;text-decoration:none;background:#047857;color:white;padding:10px 14px;border-radius:14px;font:600 14px system-ui;box-shadow:0 8px 22px rgba(0,0,0,.15)">← Цифрлық құралдар</a>
+  <div class="game-wrapper">
+    <!-- Соңғы экран -->
+    <div id="end-screen" class="end-screen hidden">
+      <div class="end-card">
+        <div id="end-title" class="end-title">Жеңімпаз!</div>
+        <div id="end-text" class="end-text"></div>
+        <button id="restart-btn" class="end-btn">Қайта ойнау</button>
+      </div>
+    </div>
+
+    <!-- SOL ЖАҚ -->
+    <div class="side" data-side="left">
+      <div>
+        <div id="question-left" class="question-box">0 + 0 = ?</div>
+        <div id="answer-left" class="answer-display"></div>
+      </div>
+      <div class="keypad" data-side="left">
+        <button class="key">1</button>
+        <button class="key">2</button>
+        <button class="key">3</button>
+        <button class="key">4</button>
+        <button class="key">5</button>
+        <button class="key">6</button>
+        <button class="key">7</button>
+        <button class="key">8</button>
+        <button class="key">9</button>
+        <button class="key key-clear">C</button>
+        <button class="key">0</button>
+        <button class="key key-ok">Жүр</button>
+      </div>
+    </div>
+
+    <!-- ОРТА ДАЛА -->
+    <div class="middle">
+      <div>
+        <div class="title">Математика арқанын тарт. Aвторы: Аяпбергенқызы Балжан</div>
+        <div class="subtitle">Дұрыс жауап бер, қарсылас командаңды орта сызыққа дейін тартып ал!</div>
+      </div>
+
+      <div class="arena">
+        <div id="center-line" class="center-line"></div>
+
+        <div id="arena-inner" class="arena-inner">
+          <div class="rope-line"></div>
+
+          <!-- Суреттерді өзіңіздікіне ауыстыра аласыз -->
+          <div id="player-left" class="player player-left">
+            <img src="left.png" alt="Сол жақ оқушы">
+          </div>
+
+          <div id="player-right" class="player player-right">
+            <img src="right.png" alt="Оң жақ оқушы">
+          </div>
+        </div>
+      </div>
+
+      <div class="status" id="status"></div>
+      <div class="progress-dots" id="dots"></div>
+    </div>
+
+    <!-- ОҢ ЖАҚ -->
+    <div class="side" data-side="right">
+      <div>
+        <div id="question-right" class="question-box">0 + 0 = ?</div>
+        <div id="answer-right" class="answer-display"></div>
+      </div>
+      <div class="keypad" data-side="right">
+        <button class="key">1</button>
+        <button class="key">2</button>
+        <button class="key">3</button>
+        <button class="key">4</button>
+        <button class="key">5</button>
+        <button class="key">6</button>
+        <button class="key">7</button>
+        <button class="key">8</button>
+        <button class="key">9</button>
+        <button class="key key-clear">C</button>
+        <button class="key">0</button>
+        <button class="key key-ok">Жүр</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Баптаулар
+    const DOT_COUNT = 7;
+    const MIN_NUMBER = 1;
+    const MAX_NUMBER = 20;
+    const STEP_PX = 40;          // ҚАДАМДЫ ҮЛКЕЙТТІМ – анық көріну үшін
+    const MAX_UNIQUE_TASKS = 20; // 20 түрлі есеп
+
+    let state = {
+      left:  { answerStr: "", currentTask: null },
+      right: { answerStr: "", currentTask: null },
+      finished: false
+    };
+
+    // 0 – ортасы; минус – солға, плюс – оңға
+    let offsetSteps = 0;
+    const usedKeys = new Set();
+
+    const qLeft   = document.getElementById("question-left");
+    const qRight  = document.getElementById("question-right");
+    const aLeft   = document.getElementById("answer-left");
+    const aRight  = document.getElementById("answer-right");
+    const statusBox   = document.getElementById("status");
+    const centerLine  = document.getElementById("center-line");
+    const arenaInner  = document.getElementById("arena-inner");
+    const playerLeft  = document.getElementById("player-left");
+    const playerRight = document.getElementById("player-right");
+    const dotsBox     = document.getElementById("dots");
+    const endScreen   = document.getElementById("end-screen");
+    const endTitle    = document.getElementById("end-title");
+    const endText     = document.getElementById("end-text");
+    const restartBtn  = document.getElementById("restart-btn");
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Қайталанбайтын есеп
+    function generateUniqueTask() {
+      if (usedKeys.size >= MAX_UNIQUE_TASKS) return null;
+
+      let tries = 0;
+      while (tries < 200) {
+        let a = randInt(MIN_NUMBER, MAX_NUMBER);
+        let b = randInt(MIN_NUMBER, MAX_NUMBER);
+        const op = Math.random() < 0.5 ? "+" : "-";
+
+        if (op === "-" && b > a) [a, b] = [b, a];
+
+        const key = `${a}${op}${b}`;
+        if (!usedKeys.has(key)) {
+          usedKeys.add(key);
+          const result = op === "+" ? a + b : a - b;
+          return { a, b, op, result };
+        }
+        tries++;
+      }
+      return null;
+    }
+
+    function setNewTask(side) {
+      const t = generateUniqueTask();
+      if (!t) {
+        finishByTasks();
+        return;
+      }
+      state[side].currentTask = t;
+      const text = `${t.a} ${t.op} ${t.b} = ?`;
+      if (side === "left") qLeft.textContent = text;
+      else qRight.textContent = text;
+    }
+
+    function updateAnswerDisplay(side) {
+      const display = side === "left" ? aLeft : aRight;
+      display.textContent = state[side].answerStr;
+    }
+
+    function applyArenaTransform() {
+      // ОСЫ ЖЕР – АРҚАНДЫ ЖӘНЕ БАЛАЛАРДЫ ОҢҒА-СОЛҒА ЖЫЛЖЫТУ
+      arenaInner.style.transform = `translateX(${offsetSteps * STEP_PX}px)`;
+    }
+
+    function renderDots() {
+      dotsBox.innerHTML = "";
+      const leftPull  = Math.max(0, -offsetSteps);
+      const rightPull = Math.max(0,  offsetSteps);
+
+      for (let i = 0; i < DOT_COUNT; i++) {
+        const d = document.createElement("div");
+        d.className = "dot";
+        if (i < leftPull)  d.classList.add("active-left");
+        if (i < rightPull) d.classList.add("active-right");
+        dotsBox.appendChild(d);
+      }
+    }
+
+    function showEndScreen(winnerSide, reasonText) {
+      state.finished = true;
+      if (winnerSide === "left") {
+        endTitle.textContent = "1-топ (сол жақ) жеңді!";
+      } else if (winnerSide === "right") {
+        endTitle.textContent = "2-топ (оң жақ) жеңді!";
+      } else {
+        endTitle.textContent = "Тең ойын!";
+      }
+      endText.textContent = reasonText;
+      endScreen.classList.remove("hidden");
+    }
+
+    function checkLoser() {
+      const centerRect = centerLine.getBoundingClientRect();
+      const leftRect   = playerLeft.getBoundingClientRect();
+      const rightRect  = playerRight.getBoundingClientRect();
+
+      if (leftRect.right >= centerRect.left) {
+        statusBox.textContent = "1-топ орта сызыққа келіп қалды – 1-топ жеңілді 😅";
+        showEndScreen("right", "Сол жақ ойыншысы қызыл сызыққа тартылып келді. 2-топ жеңімпаз!");
+      } else if (rightRect.left <= centerRect.right) {
+        statusBox.textContent = "2-топ орта сызыққа келіп қалды – 2-топ жеңілді 😅";
+        showEndScreen("left", "Оң жақ ойыншысы қызыл сызыққа тартылып келді. 1-топ жеңімпаз!");
+      }
+    }
+
+    function onCorrect(side) {
+      if (state.finished) return;
+
+      if (side === "left") {
+        offsetSteps -= 1; // сол жақ дұрыс – аренаны солға
+        statusBox.textContent = "1-топ дұрыс жауап берді! Арқан солға тартылды 💪";
+      } else {
+        offsetSteps += 1; // оң жақ дұрыс – аренаны оңға
+        statusBox.textContent = "2-топ дұрыс жауап берді! Арқан оңға тартылды 💪";
+      }
+
+      applyArenaTransform();
+      renderDots();
+      checkLoser();
+    }
+
+    function handleOk(side) {
+      if (state.finished) return;
+
+      const task = state[side].currentTask;
+      if (!task) return;
+      const entered = parseInt(state[side].answerStr || "NaN", 10);
+
+      if (entered === task.result) {
+        onCorrect(side);
+        if (!state.finished) setNewTask(side);
+      } else {
+        statusBox.textContent = "Қате жауап, тағы ойлан! 🙂";
+      }
+
+      state[side].answerStr = "";
+      updateAnswerDisplay(side);
+    }
+
+    document.querySelectorAll(".keypad").forEach(keypad => {
+      const side = keypad.getAttribute("data-side");
+      keypad.addEventListener("click", (e) => {
+        if (!e.target.classList.contains("key")) return;
+
+        const val = e.target.textContent.trim();
+
+        if (e.target.classList.contains("key-clear")) {
+          state[side].answerStr = "";
+          updateAnswerDisplay(side);
+          return;
+        }
+
+        if (e.target.classList.contains("key-ok")) {
+          handleOk(side);
+          return;
+        }
+
+        if (state[side].answerStr.length >= 3) return;
+        state[side].answerStr += val;
+        updateAnswerDisplay(side);
+      });
+    });
+
+    function finishByTasks() {
+      if (state.finished) return;
+
+      if (offsetSteps > 0) {
+        statusBox.textContent = "Есептер аяқталды – 2-топ арқанды көбірек тартты!";
+        showEndScreen("right", "Барлық 20 есеп аяқталды. 2-топ арқанды өз жағына көбірек тартты.");
+      } else if (offsetSteps < 0) {
+        statusBox.textContent = "Есептер аяқталды – 1-топ арқанды көбірек тартты!";
+        showEndScreen("left", "Барлық 20 есеп аяқталды. 1-топ арқанды өз жағына көбірек тартты.");
+      } else {
+        statusBox.textContent = "Есептер аяқталды – екі жақ та тең!";
+        showEndScreen(null, "Барлық 20 есеп аяқталды. Арқан дәл ортасында қалды – достық жеңді!");
+      }
+    }
+
+    function initGame() {
+      state.left.answerStr = "";
+      state.right.answerStr = "";
+      state.left.currentTask = null;
+      state.right.currentTask = null;
+      state.finished = false;
+      offsetSteps = 0;
+      usedKeys.clear();
+
+      statusBox.textContent = "";
+      aLeft.textContent = "";
+      aRight.textContent = "";
+      arenaInner.style.transform = "translateX(0)";
+      endScreen.classList.add("hidden");
+
+      setNewTask("left");
+      setNewTask("right");
+      renderDots();
+    }
+
+    restartBtn.addEventListener("click", initGame);
+
+    initGame();
+  </script>
+</body>
+</html>

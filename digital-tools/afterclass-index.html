@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>AfterClass Qadam — Кіру</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-light: #e5f0ff;
+            --bg-card: #ffffff;
+            --accent: #2563eb;
+            --accent-soft: #dbeafe;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-soft: #d1d5db;
+            --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.15);
+            --radius: 18px;
+            --transition: 0.18s ease-out;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(135deg, #e5f0ff, #eff6ff);
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 380px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--accent-soft);
+            padding: 18px 18px 16px;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 0%, #bfdbfe 0, #60a5fa 40%, #2563eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0b1120;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.6);
+        }
+
+        .logo-text-main {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .logo-text-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .input,
+        .select {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid var(--border-soft);
+            padding: 7px 9px;
+            font-size: 13px;
+            background: #f9fafb;
+            color: var(--text-main);
+        }
+
+        .input:focus,
+        .select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+            background: #ffffff;
+        }
+
+        .btn-row {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            border: none;
+            border-radius: 999px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            color: #f9fafb;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+            transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px rgba(37, 99, 235, 0.5);
+            filter: brightness(1.03);
+        }
+
+        .info-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .info-text span {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .footnote {
+            margin-top: 8px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <header class="logo-row">
+        <div class="logo-icon">AC</div>
+        <div>
+            <div class="logo-text-main">AfterClass Qadam</div>
+            <div class="logo-text-sub">Сынып жетекші платформасы</div>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="title">Жүйеге кіру</h1>
+        <p class="subtitle">
+            Рөліңізді таңдап, аты-жөніңізді жазыңыз. 
+        </p>
+
+        <div class="form-group">
+            <label for="roleSelect">Рөліңіз:</label>
+            <select id="roleSelect" class="select">
+                <option value="teacher">Сынып жетекші (мұғалім)</option>
+                <option value="parent">Ата-ана</option>
+                <option value="student">Оқушы</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="userName">Аты-жөніңіз:</label>
+            <input id="userName" class="input" type="text"
+                   placeholder="       ">
+        </div>
+
+        <div class="form-group">
+            <label for="userCode">Сынып / код (қажет болса):</label>
+            <input id="userCode" class="input" type="text"
+                   placeholder="               ">
+        </div>
+
+        <div class="btn-row">
+            <button type="button" class="btn-primary" id="loginBtn">
+                Кіру
+            </button>
+            <p class="info-text">
+                Таңдалған рөл: <span id="roleLabel">Сынып жетекші</span>
+            </p>
+        </div>
+
+        <p class="footnote">
+            
+        </p>
+    </main>
+</div>
+
+<script>
+    const ROLE_KEY = "acq-role";
+    const NAME_KEY = "acq-user-name";
+
+    const roleSelect = document.getElementById("roleSelect");
+    const roleLabel  = document.getElementById("roleLabel");
+    const nameInput  = document.getElementById("userName");
+    const loginBtn   = document.getElementById("loginBtn");
+
+    function updateRoleLabel() {
+        const val = roleSelect.value;
+        let text = "Сынып жетекші";
+        if (val === "parent") text = "Ата-ана";
+        if (val === "student") text = "Оқушы";
+        roleLabel.textContent = text;
+    }
+
+    // Рөл өзгергенде жазуды ауыстыру
+    roleSelect.addEventListener("change", () => {
+        updateRoleLabel();
+    });
+
+    // Бұрынғы сақталған мәндерді жүктеу
+    (function restore() {
+        try {
+            const savedRole = localStorage.getItem(ROLE_KEY);
+            if (savedRole && roleSelect.querySelector(`option[value="${savedRole}"]`)) {
+                roleSelect.value = savedRole;
+                updateRoleLabel();
+            }
+            const savedName = localStorage.getItem(NAME_KEY);
+            if (savedName && nameInput) nameInput.value = savedName;
+        } catch (e) {}
+    })();
+
+    // Кіру батырмасы
+    loginBtn.addEventListener("click", () => {
+        const role = roleSelect.value;
+        const name = nameInput.value.trim();
+
+        try {
+            localStorage.setItem(ROLE_KEY, role);
+            if (name) localStorage.setItem(NAME_KEY, name);
+        } catch (e) {}
+
+        if (role === "teacher") {
+            // Мұғалім кабинеті
+            window.location.href = "teacher.html";
+        } else if (role === "parent") {
+            alert("Ата-ана кабинеті кейін parent.html бетімен қосылады.");
+            // window.location.href = "parent.html";
+        } else if (role === "student") {
+            alert("Оқушы кабинеті кейін student.html бетімен қосылады.");
+            // window.location.href = "student.html";
+        }
+    });
+
+    // Бастапқы жазуды орнату
+    updateRoleLabel();
+</script>
+</body>
+</html>
