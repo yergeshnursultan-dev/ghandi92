@@ -192,14 +192,34 @@
       }
       setLoading(true);
       try{
-        const res = await fetch('/api/tup-sana', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
-        if(!res.ok) throw new Error('API route unavailable');
-        const data = await res.json();
-        if(!data.ok) throw new Error(data.message || 'AI жауап бермеді');
-        renderImage(data.imageDataUrl || demoSvg(payload), data.description || localDescription(payload), false);
-      }catch(err){
-        renderImage(demoSvg(payload), localDescription(payload) + '<br><br><span class="text-pink-600 font-bold">Демо режим:</span> нақты AI сурет үшін жобаны Vercel-ге қосып, Environment Variables ішіне OPENAI_API_KEY қойыңыз.', true);
-      }finally{
+            const res = await fetch('/api/tup-sana', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(payload)
+});
+
+const data = await res.json().catch(() => ({}));
+
+if (!res.ok || !data.ok) {
+  throw new Error(data.message || `API қатесі: ${res.status}`);
+}
+
+renderImage(
+  data.imageDataUrl || demoSvg(payload),
+  data.description || localDescription(payload),
+  false
+);
+}catch(err){
+  console.error('Tup Sana error:', err);
+
+  renderImage(
+    demoSvg(payload),
+    localDescription(payload) +
+    `<br><br><span class="text-pink-600 font-bold">Қате:</span> ${escapeHtml(err.message || 'Белгісіз қате')}`,
+    true
+  );
+}finally{
+      
         setLoading(false);
       }
     });
